@@ -1,6 +1,6 @@
 {
   "name": "ia-front-ref-assistant",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Componente React visual para asistir la codificación con IA",
   "type": "module",
   "main": "./dist/ia-front-ref-assistant.cjs",

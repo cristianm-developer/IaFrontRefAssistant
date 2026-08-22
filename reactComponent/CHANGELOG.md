@@ -7,6 +7,13 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 
 ---
 
+## [0.1.2] — 2026-08-22
+
+### 📝 Documentación
+- `README.md` reescrito en inglés (era español)
+- Instalación documentada para las 3 herramientas más comunes — Claude Code, OpenAI Codex CLI y Cursor — con la ruta y el mecanismo real de cada una (verificado contra su documentación oficial), en vez de asumir solo Claude Code
+- Nota: la v0.1.1 quedó publicada en npm con el `README.md` viejo en español (se publicó antes de terminar la traducción); este bump no trae otros cambios de código
+
 ## [0.1.1] — 2026-08-22
 
 ### 🐛 Corregido

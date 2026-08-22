@@ -2,7 +2,7 @@
 
 A React component that adds a floating visual interface to your app for working with AI coding assistants. It lets you capture, tag, and generate prompts for UI elements in real time.
 
-![Version](https://img.shields.io/badge/version-0.1.1-blue)
+![Version](https://img.shields.io/badge/version-0.1.2-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 ## What is it?
