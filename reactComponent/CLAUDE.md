@@ -1,141 +1,141 @@
-# CLAUDE.md — Documentación Técnica
+# CLAUDE.md — Technical Documentation
 
-**Proyecto:** IA Front Ref Assistant  
-**Descripción:** Componente React que proporciona interfaz visual para asistir codificación con IA  
-**Versión:** 0.1.0  
-**Estado:** Completo (Fases 0-10)  
+**Project:** IA Front Ref Assistant
+**Description:** React component providing a visual interface to assist AI-driven coding
+**Version:** 0.1.2
+**Status:** Complete (Phases 0-10)
 
 ---
 
-## 📋 Guía Rápida
+## 📋 Quick Guide
 
-### Estructura
+### Structure
 
 ```
 reactComponent/
-├── src/              # Código fuente (TypeScript/React)
-│   ├── lib/         # Utilidades puras (tipos, constantes, lógica)
-│   ├── config/      # Configuración y tipos de usuario
+├── src/              # Source code (TypeScript/React)
+│   ├── lib/         # Pure utilities (types, constants, logic)
+│   ├── config/      # Configuration and user types
 │   ├── context/     # React Context + Provider
-│   ├── hooks/       # Custom hooks (estado, DOM tracking)
-│   ├── components/  # Componentes React
-│   ├── styles/      # CSS modular (tokens + partials)
-│   └── index.ts     # Exports públicos
-├── example/         # App React de ejemplo (consume localmente)
-├── plan/            # Documentación de fases 0-10
-├── package.json     # Metadata y scripts
-├── tsconfig.json    # Configuración TypeScript
-├── vite.config.ts   # Configuración Vite (builder)
-└── vitest.config.ts # Configuración Vitest (tests)
+│   ├── hooks/       # Custom hooks (state, DOM tracking)
+│   ├── components/  # React components
+│   ├── styles/      # Modular CSS (tokens + partials)
+│   └── index.ts     # Public exports
+├── example/         # Example React app (consumes the library locally)
+├── plan/            # Phase 0-10 documentation
+├── package.json     # Metadata and scripts
+├── tsconfig.json    # TypeScript configuration
+├── vite.config.ts   # Vite configuration (builder)
+└── vitest.config.ts # Vitest configuration (tests)
 ```
 
-### Scripts principales
+### Main scripts
 
 ```bash
-npm run build           # Compilar librería (Vite lib mode)
-npm test               # Correr tests (Vitest)
-npm run dev            # Watch mode para desarrollo
-npm run typecheck      # Verificar tipos (tsc --noEmit)
-npm run example:dev    # Levantar app de ejemplo
+npm run build           # Build the library (Vite lib mode)
+npm test               # Run tests (Vitest)
+npm run dev            # Watch mode for development
+npm run typecheck      # Check types (tsc --noEmit)
+npm run example:dev    # Start the example app
 ```
 
 ---
 
-## 🏗️ Arquitectura
+## 🏗️ Architecture
 
-### Componentes principales
+### Main components
 
-#### 1. **FloatingButton** (punto de entrada)
-- Botón fijo en esquina inferior derecha
-- Badge muestra cantidad de prompts
-- Abre menú al click
-- Control total: Ctrl+click (captura), Ctrl+Alt+click (overlays)
+#### 1. **FloatingButton** (entry point)
+- Fixed button in the bottom-right corner
+- Badge shows the number of prompts
+- Opens the menu on click
+- Full control: Ctrl+click (capture), Ctrl+Alt+click (overlays)
 
-#### 2. **Menu System** (navegación)
-- Menú principal con acciones: Capture, Show, Clear, Exit
-- SubMenu para acciones contextuales
-- ToggleRow para switches (ej: modo captura activo/inactivo)
-- Positioning automático (clampea al viewport)
+#### 2. **Menu System** (navigation)
+- Main menu with actions: Capture, Show, Clear, Exit
+- SubMenu for contextual actions
+- ToggleRow for switches (e.g. capture mode on/off)
+- Automatic positioning (clamps to the viewport)
 
-#### 3. **Overlay System** (visualización)
-- **CaptureOverlay**: Interactivo, permite click para capturar
-- **ShowOverlay**: Muestra todos los elementos detectados, no interactivo
-- **FrameLabel**: Etiqueta con nombre de elemento + flip automático
-- Eficiente: RAF throttling en `useHoveredTarget` + `useRect`
+#### 3. **Overlay System** (visualization)
+- **CaptureOverlay**: Interactive, allows clicking to capture
+- **ShowOverlay**: Shows every detected element, non-interactive
+- **FrameLabel**: Label with element name + automatic flip
+- Efficient: RAF throttling in `useHoveredTarget` + `useRect`
 
-#### 4. **PromptModal** (salida)
-- Textarea editable con prompts capturados
-- Integraciones: VariantSizePicker + ThemePicker (si existen definiciones)
-- Copia a clipboard con botón "Save"
+#### 4. **PromptModal** (output)
+- Editable textarea with captured prompts
+- Integrations: VariantSizePicker + ThemePicker (if definitions exist)
+- Copies to clipboard via a "Save" button
 
 #### 5. **DOM Tracking** (`useTrackedTargets`)
-- MutationObserver que detecta cambios
-- Debouncing (120ms) para eficiencia
-- Soporta 3 flags independientes: sections, components, elements
-- Heurística de hojas: identifica elementos "atómicos" vs contenedores
+- MutationObserver that detects changes
+- Debouncing (120ms) for efficiency
+- Supports 3 independent flags: sections, components, elements
+- Leaf-node heuristic: identifies "atomic" elements vs. containers
 
-#### 6. **Context** (estado global)
-- AssistantProvider gestiona config, prompts, flags
-- Persistencia automática en localStorage
-- Merge field-by-field para tolerar versiones viejas
+#### 6. **Context** (global state)
+- AssistantProvider manages config, prompts, flags
+- Automatic localStorage persistence
+- Field-by-field merge to tolerate old versions
 
 ---
 
-## 🔑 Conceptos Clave
+## 🔑 Key Concepts
 
-### Atributos de datos
+### Data attributes
 
-El componente identifica elementos usando 3 atributos (opcionales):
+The component identifies elements using 3 attributes (all optional):
 
 ```html
-<!-- Sección identificada como "hero" -->
+<!-- Section identified as "hero" -->
 <section data-wrapper-id="hero">
-  <!-- Componente reutilizable "card" -->
+  <!-- Reusable component instance "card" -->
   <div data-component-id="featured-card" data-component-kind="card">
-    <!-- Elemento hoja individual -->
+    <!-- Individual leaf element -->
     <button>Click me</button>
   </div>
 </section>
 ```
 
-**`data-wrapper-id`**: Identifica secciones grandes (hero, footer, etc.)  
-**`data-component-id`**: Identifica instancias reutilizables  
-**`data-component-kind`**: Enlaza con definición de config (p.e. "card", "button-primary")
+**`data-wrapper-id`**: Identifies large sections (hero, footer, etc.)
+**`data-component-id`**: Identifies reusable instances
+**`data-component-kind`**: Links to a config definition (e.g. "card", "button-primary")
 
-### Tagueo automático
+### Automatic tagging
 
-El hook `useTrackedTargets` escanea el DOM:
+The `useTrackedTargets` hook scans the DOM:
 
-1. Busca elementos con `data-wrapper-id` → genera IDs relativos
-2. Busca elementos con `data-component-id` → genera IDs relativos
-3. Busca "hojas" (elementos sin contenedor de texto) → genera IDs por selector
+1. Looks for elements with `data-wrapper-id` → generates relative IDs
+2. Looks for elements with `data-component-id` → generates relative IDs
+3. Looks for "leaf" elements (elements with no text container) → generates IDs by selector
 
-Todos los elementos se almacenan como `TrackedTarget`:
+Every element is stored as a `TrackedTarget`:
 ```typescript
 interface TrackedTarget {
-  id: string;                    // ID único (ej: "hero/featured-card/button[0]")
+  id: string;                    // Unique ID (e.g. "hero/featured-card/button[0]")
   type: TargetType;              // 'wrapper' | 'component' | 'element'
   element: HTMLElement;
-  kind?: string;                 // Valor de data-component-kind
-  level: number;                 // Profundidad en DOM
+  kind?: string;                 // Value of data-component-kind
+  level: number;                 // Depth in the DOM
 }
 ```
 
-### Configuración de usuario
+### User configuration
 
 ```typescript
 interface IaFraConfig {
-  active: boolean;               // Activar/desactivar globalmente
-  currentVariant?: string;       // Variante actual (ej: "default", "dark")
-  currentTheme?: string;         // Tema actual (ej: "light")
-  components?: {                 // Definiciones de componentes
+  active: boolean;               // Turn the component on/off globally
+  currentVariant?: string;       // Current variant (e.g. "default", "dark")
+  currentTheme?: string;         // Current theme (e.g. "light")
+  components?: {                 // Component definitions
     [kind: string]: {
       label: string;
       variants?: string[];
       sizes?: string[];
     }
   };
-  themeTokens?: {                // Definiciones de temas
+  themeTokens?: {                // Theme definitions
     [themeName: string]: {
       label: string;
       values: Record<string, string>;
@@ -148,21 +148,21 @@ interface IaFraConfig {
 
 ## 🧪 Tests
 
-### Estrategia
+### Strategy
 
-- **Unit tests**: Para funciones puras (`lib/`, hooks)
-- **Component tests**: Para componentes React (RTL)
-- **Integration tests**: Flujos completos (Modal, Overlays, etc.)
+- **Unit tests**: For pure functions (`lib/`, hooks)
+- **Component tests**: For React components (RTL)
+- **Integration tests**: Full flows (Modal, Overlays, etc.)
 
-### Cobertura
+### Coverage
 
 ```
-src/lib/types.ts              → (tipos, no testeados)
-src/lib/constants.ts          → (constantes, no testeadas)
-src/lib/position.ts           → Testeado
+src/lib/types.ts              → (types, untested)
+src/lib/constants.ts          → (constants, untested)
+src/lib/position.ts           → Tested
 src/lib/dom.ts                → 7 tests
 src/lib/storage.ts            → 9 tests
-src/lib/promptFormat.ts       → (puro formato, testeado en Modal)
+src/lib/promptFormat.ts       → (pure formatting, tested in Modal)
 
 src/context/AssistantProvider → 8 tests
 src/hooks/useTrackedTargets   → 13 tests
@@ -174,42 +174,42 @@ src/components/Menu/*         → 35 tests (Menu, MenuItem, SubMenu, etc.)
 src/components/Overlay/*      → 33 tests (overlays + hooks)
 src/components/PromptModal/*  → 27 tests (Modal, pickers)
 
-src/IaFrontRefAssistant       → 2 tests (composición, Portal SSR)
+src/IaFrontRefAssistant       → 2 tests (composition, Portal SSR)
 src/index.ts                  → (exports, no tests)
 ```
 
-**Total: 152 tests pasando**
+**Total: 155 passing tests**
 
-### Ejecución
+### Running them
 
 ```bash
-# Todos los tests
+# All tests
 npm test
 
-# Modo watch (desarrollo)
+# Watch mode (development)
 npm test:watch
 
-# Tests específicos
+# Specific tests
 npm test -- src/lib/dom.ts
 
-# Con cobertura (si Vitest lo soporta)
+# With coverage (if Vitest supports it)
 npm test -- --coverage
 ```
 
-### Notas de testing
+### Testing notes
 
-- RTL (React Testing Library) es la base
-- Se usan snapshot mínimamente (solo para SVG)
-- Mocking de `localStorage` en cada test
-- SSR-safety verificado en AssistantProvider (mount guard)
+- RTL (React Testing Library) is the foundation
+- Snapshots are used minimally (only for SVG)
+- `localStorage` is mocked in every test
+- SSR-safety verified in AssistantProvider (mount guard)
 
 ---
 
-## 🎨 Estilos
+## 🎨 Styling
 
-### CSS Modular
+### Modular CSS
 
-Los estilos se dividen en partials para evitar conflictos en compilación multi-agente:
+Styles are split into partials to avoid conflicts during multi-agent compilation:
 
 ```
 src/styles/
@@ -218,12 +218,12 @@ src/styles/
 ├── overlays.css       # .ia-fra-overlay, .ia-fra-frame
 ├── modal.css          # .ia-fra-modal, .ia-fra-textarea
 ├── pickers.css        # .ia-fra-picker, .ia-fra-pill
-└── index.css          # @import de todos (orden: tokens primero)
+└── index.css          # @import of all partials (tokens first)
 ```
 
-### Variables CSS
+### CSS Variables
 
-Todas definidas en `tokens.css`, namespace `--ia-fra-*`:
+All defined in `tokens.css`, `--ia-fra-*` namespace:
 
 ```css
 .ia-fra-root {
@@ -233,33 +233,33 @@ Todas definidas en `tokens.css`, namespace `--ia-fra-*`:
   --ia-fra-border: #e5e7eb;
   --ia-fra-accent: #3b82f6;
   --ia-fra-danger: #ef4444;
-  
+
   /* Layout */
   --ia-fra-radius: 6px;
   --ia-fra-spacing-xs: 4px;
   --ia-fra-spacing-sm: 8px;
   --ia-fra-spacing-md: 12px;
-  
+
   /* Effects */
   --ia-fra-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --ia-fra-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-  
-  /* Z-index (gap de 1000 para insertar nuevas capas)*/
+
+  /* Z-index (1000-wide gap to insert new layers)*/
   --ia-fra-z-overlay: 2147482999;
   --ia-fra-z-menu: 2147483000;
 }
 ```
 
-### Convenciones
+### Conventions
 
-- **Prefijo**: Todos los elementos usan `.ia-fra-*` para evitar colisiones
-- **BEM ligero**: `.ia-fra-button`, `.ia-fra-button--active`, `.ia-fra-button__icon`
-- **Responsive**: Mobile-first, media queries para desktop
-- **Accesibilidad**: Focus outlines, contrast ratios, semantic HTML
+- **Prefix**: Every element uses `.ia-fra-*` to avoid collisions
+- **Light BEM**: `.ia-fra-button`, `.ia-fra-button--active`, `.ia-fra-button__icon`
+- **Responsive**: Mobile-first, media queries for desktop
+- **Accessibility**: Focus outlines, contrast ratios, semantic HTML
 
 ---
 
-## 📦 Compilación
+## 📦 Build
 
 ### Vite (builder)
 
@@ -271,7 +271,7 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'IaFrontRefAssistant',
-      // Salidas
+      // Outputs
       fileName: (format) => `ia-front-ref-assistant.${format === 'es' ? 'js' : 'cjs'}`
     },
     rollupOptions: {
@@ -284,32 +284,32 @@ export default defineConfig({
 });
 ```
 
-**Salidas:**
+**Outputs:**
 - `dist/ia-front-ref-assistant.js` (ESM)
 - `dist/ia-front-ref-assistant.cjs` (CommonJS)
 - `dist/index.d.ts` (TypeScript definitions)
-- `dist/style.css` (Estilos compilados)
+- `dist/style.css` (compiled styles)
 
-### Tamaño
+### Size
 
-- **JS (ESM)**: ~26.5 kB (minificado)
-- **CJS**: ~18 kB (minificado)
-- **CSS**: ~3 kB (minificado)
-- **Total**: ~47.5 kB antes de gzip
+- **JS (ESM)**: ~28.7 kB (minified)
+- **CJS**: ~19.3 kB (minified)
+- **CSS**: ~6 kB (minified)
+- **Total**: ~54 kB before gzip
 
 ---
 
 ## 🔧 Development Workflow
 
-### Setup inicial
+### Initial setup
 
 ```bash
-# Clonar/instalar
-git clone <repo>
-cd reactComponent
+# Clone/install
+git clone https://github.com/cristianm-developer/IaFrontRefAssistant.git
+cd IaFrontRefAssistant/reactComponent
 npm install
 
-# Tests/verificación
+# Tests/verification
 npm test
 npm run typecheck
 
@@ -317,48 +317,48 @@ npm run typecheck
 npm run dev
 ```
 
-### Crear archivo nuevo
+### Creating a new file
 
-1. Coloca en carpeta correcta (`lib/`, `hooks/`, `components/`)
-2. Crea `.test.ts(x)` adyacente
-3. Exporta desde `src/index.ts` si es público
-4. Asegúrate que tipea correctamente
+1. Place it in the right folder (`lib/`, `hooks/`, `components/`)
+2. Create an adjacent `.test.ts(x)`
+3. Export it from `src/index.ts` if it's public
+4. Make sure it types correctly
 
-### Modificar estilos
+### Editing styles
 
-1. Edita el partial CSS correcto (ej: `button-menu.css`)
-2. Usa variables `--ia-fra-*` de `tokens.css`
-3. Nunca edites `index.css` directamente (solo imports)
-4. Verifica que otras secciones no se rompan
+1. Edit the right CSS partial (e.g. `button-menu.css`)
+2. Use `--ia-fra-*` variables from `tokens.css`
+3. Never edit `index.css` directly (imports only)
+4. Verify other sections aren't broken
 
 ---
 
-## 🚀 Release / Publicación
+## 🚀 Release / Publishing
 
-### Checklist pre-release
+### Pre-release checklist
 
-- [ ] `npm run build` sin errores
-- [ ] `npm test` — 100% pasando
-- [ ] `npm run typecheck` — sin errores
-- [ ] `npm run example:dev` — funciona bien
-- [ ] README actualizado
-- [ ] CHANGELOG.md añadido
-- [ ] Version bump en `package.json`
-- [ ] Git tags creado
+- [ ] `npm run build` with no errors
+- [ ] `npm test` — 100% passing
+- [ ] `npm run typecheck` — no errors
+- [ ] `npm run example:dev` — works well
+- [ ] README updated
+- [ ] CHANGELOG.md added
+- [ ] Version bumped in `package.json`
+- [ ] Git tag created
 
-### Publicar en npm
+### Publishing to npm
 
 ```bash
 # Bump version
 npm version patch|minor|major
 
-# Build final
+# Final build
 npm run build
 
-# Publicar
+# Publish
 npm publish
 
-# Verificar
+# Verify
 npm info ia-front-ref-assistant
 ```
 
@@ -366,28 +366,28 @@ npm info ia-front-ref-assistant
 
 ## 🐛 Debugging
 
-### Logs útiles
+### Useful logs
 
-En AssistantProvider se puede agregar:
+You can add these to AssistantProvider:
 
 ```typescript
-// Ver estado actual
+// See current state
 console.log('Config:', config);
 console.log('Active targets:', targets);
 
-// Ver eventos de captura
+// See capture events
 console.log('Prompt captured:', promptEntry);
 ```
 
 ### React DevTools
 
-- Inspeciona `<AssistantProvider>` para ver estado global
-- Profiler para medir renders innecesarios
+- Inspect `<AssistantProvider>` to see global state
+- Profiler to measure unnecessary renders
 
-### Overlay interactivo
+### Interactive overlay
 
 ```typescript
-// En consola del navegador
+// In the browser console
 const targets = document.querySelectorAll('[data-component-id]');
 console.table(Array.from(targets).map(el => ({
   id: el.getAttribute('data-component-id'),
@@ -398,103 +398,103 @@ console.table(Array.from(targets).map(el => ({
 
 ---
 
-## 📚 Referencias Internas
+## 📚 Internal References
 
-### Fases del proyecto (en `plan/`)
+### Project phases (in `plan/`)
 
 ```
-00-overview.md           → Visión general y contrato
-01-data-types.md         → Tipos base
-02-positioning.md        → Posicionamiento
-03-ui-shell.md          → Botón flotante
-04-dom-tracking.md      → Motor de detección
-05-overlay-capture.md   → Modo captura
-06-prompt-clipboard.md  → Modal de prompts
-07-component-assembly.md → Integración (IaFrontRefAssistant.tsx)
-08-component-config.md  → Configuración de usuario
-09-claude-code-integration.md → Skills para Claude
-10-parallel-execution-plan.md → Cómo se ejecutó (multi-agente)
+00-overview.md           → Overview and contract
+01-data-types.md         → Base types
+02-positioning.md        → Positioning
+03-ui-shell.md          → Floating button
+04-dom-tracking.md      → Detection engine
+05-overlay-capture.md   → Capture mode
+06-prompt-clipboard.md  → Prompt modal
+07-component-assembly.md → Integration (IaFrontRefAssistant.tsx)
+08-component-config.md  → User configuration
+09-claude-code-integration.md → Skills for Claude Code
+10-parallel-execution-plan.md → How it was executed (multi-agent)
 ```
 
-### Archivos críticos
+### Critical files
 
-- **`src/index.ts`** — Punto de entrada público
-- **`src/IaFrontRefAssistant.tsx`** — Componente raíz
-- **`src/context/AssistantProvider.tsx`** — Estado global
-- **`src/hooks/useTrackedTargets.ts`** — Core de detección DOM
-- **`src/styles/tokens.css`** — Sistema de diseño (fuente de verdad)
-
----
-
-## 🤝 Colaboración (Multi-agente)
-
-Si se trabaja con múltiples agentes (como en fase 10):
-
-### Reglas
-
-1. **Un archivo = un dueño por oleada** — No modificar el mismo archivo simultáneamente
-2. **Checkpoints entre oleadas** — Verificar que cada fase compila/testa antes de la siguiente
-3. **Dependencias respetadas** — Si tu archivo importa algo, espera que esté completo primero
-
-### Fases (secuencial)
-
-1. **Oleada 0** (1 agente) → tipos, constantes, CSS base
-2. **Oleada 1** (8 agentes paralelo) → componentes, hooks, context
-3. **Oleada 2** (1 agente) → integración CSS
-4. **Oleada 3** (1 agente) → composición final
-5. **Oleada 4** (1 agente) → patches y refinamientos
-
-Ver `plan/10-parallel-execution-plan.md` para detalles completos.
+- **`src/index.ts`** — Public entry point
+- **`src/IaFrontRefAssistant.tsx`** — Root component
+- **`src/context/AssistantProvider.tsx`** — Global state
+- **`src/hooks/useTrackedTargets.ts`** — Core DOM detection
+- **`src/styles/tokens.css`** — Design system (source of truth)
 
 ---
 
-## 📝 Notas de Implementación
+## 🤝 Collaboration (Multi-agent)
 
-### Por qué `useTrackedTargets` usa MutationObserver
+If working with multiple agents (as in phase 10):
 
-- Detecta cambios en el DOM sin polling
-- Debouncing (120ms) evita spam de listeners
-- TreeWalker con filtro personalizado para heurística de hojas
+### Rules
 
-### Por qué localStorage + Context
+1. **One file = one owner per wave** — Don't modify the same file at the same time
+2. **Checkpoints between waves** — Verify each phase compiles/tests before the next
+3. **Respect dependencies** — If your file imports something, wait for it to be complete first
 
-- Context: estado reactivo en tiempo real (React)
-- localStorage: persistencia entre reloads
-- Merge field-by-field tolera upgrades de config
+### Phases (sequential)
 
-### Por qué Portal para la UI
+1. **Wave 0** (1 agent) → types, constants, base CSS
+2. **Wave 1** (8 agents in parallel) → components, hooks, context
+3. **Wave 2** (1 agent) → CSS integration
+4. **Wave 3** (1 agent) → final composition
+5. **Wave 4** (1 agent) → patches and refinements
 
-- No interfiere con layout del usuario (`display: none` o Portal)
-- SSR-safe: verifica `typeof window === 'undefined'`
-- Z-index manejado con CSS variables
-
-### Por qué CSS modular en partials
-
-- Permite compilación paralela (multi-agente)
-- No hay conflictos de merge en `styles/index.css`
-- Cada partial es independiente hasta el import final
+See `plan/10-parallel-execution-plan.md` for full details.
 
 ---
 
-## 🎓 Aprendizajes
+## 📝 Implementation Notes
 
-- **React 18/19 compat**: Cuidado con hooks que dependen de versión
-- **LocalStorage + React**: Necesita inicialización en effect, no en render
-- **MutationObserver**: Puede ser costoso, necesita debouncing
-- **TreeWalker**: Más eficiente que querySelectorAll para traversal
-- **Portal + SSR**: Siempre verificar que `document` existe
+### Why `useTrackedTargets` uses MutationObserver
+
+- Detects DOM changes without polling
+- Debouncing (120ms) avoids listener spam
+- TreeWalker with a custom filter for the leaf-node heuristic
+
+### Why localStorage + Context
+
+- Context: reactive, real-time state (React)
+- localStorage: persistence across reloads
+- Field-by-field merge tolerates config upgrades
+
+### Why a Portal for the UI
+
+- Doesn't interfere with the user's layout (`display: none` or Portal)
+- SSR-safe: checks `typeof window === 'undefined'`
+- Z-index managed via CSS variables
+
+### Why modular CSS in partials
+
+- Enables parallel compilation (multi-agent)
+- No merge conflicts in `styles/index.css`
+- Each partial is independent until the final import
 
 ---
 
-## 📞 Contacto / Preguntas
+## 🎓 Lessons Learned
 
-Si necesitas clarificar algo:
-
-1. Revisa el archivo de fase correspondiente en `plan/`
-2. Busca comentarios en el código (especialmente TTD/heurística)
-3. Revisa los tests para ver comportamiento esperado
+- **React 18/19 compat**: Watch out for hooks that depend on the version
+- **LocalStorage + React**: Needs initialization in an effect, not during render
+- **MutationObserver**: Can be expensive, needs debouncing
+- **TreeWalker**: More efficient than querySelectorAll for traversal
+- **Portal + SSR**: Always check that `document` exists
 
 ---
 
-**Última actualización:** 2025-08-21  
-**Compilado por:** Multi-agente (Oleadas 0-4)
+## 📞 Contact / Questions
+
+If you need something clarified:
+
+1. Check the corresponding phase file in `plan/`
+2. Look for comments in the code (especially TODO/heuristic notes)
+3. Check the tests to see the expected behavior
+
+---
+
+**Last updated:** 2026-08-22
+**Built by:** Multi-agent system (waves 0-4)

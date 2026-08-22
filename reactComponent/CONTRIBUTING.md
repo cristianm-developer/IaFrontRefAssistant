@@ -1,41 +1,41 @@
-# Guía de Contribución
+# Contributing Guide
 
-Gracias por tu interés en contribuir a **IA Front Ref Assistant**. Este documento te guiará en el proceso.
+Thanks for your interest in contributing to **IA Front Ref Assistant**. This document walks you through the process.
 
-## 📋 Tabla de contenidos
+## 📋 Table of contents
 
-- [Cómo empezar](#cómo-empezar)
-- [Desarrollo local](#desarrollo-local)
-- [Estructura de commits](#estructura-de-commits)
+- [Getting started](#getting-started)
+- [Local development](#local-development)
+- [Commit structure](#commit-structure)
 - [Pull requests](#pull-requests)
-- [Checklist de código](#checklist-de-código)
-- [Preguntas frecuentes](#preguntas-frecuentes)
+- [Code checklist](#code-checklist)
+- [FAQ](#faq)
 
 ---
 
-## Cómo empezar
+## Getting started
 
-### Requisitos previos
+### Prerequisites
 
-- Node.js 18+ o 20+
-- npm 9+ o pnpm 8+
+- Node.js 18+ or 20+
+- npm 9+ or pnpm 8+
 - Git
-- Conocimiento básico de React, TypeScript
+- Basic knowledge of React, TypeScript
 
 ### Setup
 
-1. **Fork el repositorio**
+1. **Fork the repository**
    ```bash
-   git clone https://github.com/tu-usuario/ia-front-ref-assistant.git
-   cd ia-front-ref-assistant/reactComponent
+   git clone https://github.com/cristianm-developer/IaFrontRefAssistant.git
+   cd IaFrontRefAssistant/reactComponent
    ```
 
-2. **Instala dependencias**
+2. **Install dependencies**
    ```bash
    npm install
    ```
 
-3. **Verifica que todo funciona**
+3. **Verify everything works**
    ```bash
    npm test
    npm run build
@@ -43,78 +43,78 @@ Gracias por tu interés en contribuir a **IA Front Ref Assistant**. Este documen
 
 ---
 
-## Desarrollo local
+## Local development
 
-### Estructura del proyecto
+### Project structure
 
 ```
 reactComponent/
-├── src/              # Código fuente (edita aquí)
-│   ├── lib/         # Utilidades puras
-│   ├── config/      # Configuración
+├── src/              # Source code (edit here)
+│   ├── lib/         # Pure utilities
+│   ├── config/      # Configuration
 │   ├── context/     # React Context
 │   ├── hooks/       # Custom hooks
-│   ├── components/  # Componentes React
+│   ├── components/  # React components
 │   ├── styles/      # CSS
 │   └── index.ts     # Exports
-├── example/         # App de prueba (para QA manual)
-├── plan/            # Documentación de fases
-└── test files (*.test.ts/tsx)  # Tests adyacentes a archivos
+├── example/         # Test app (for manual QA)
+├── plan/            # Phase documentation
+└── test files (*.test.ts/tsx)  # Tests next to their source files
 ```
 
-### Workflow típico
+### Typical workflow
 
 ```bash
-# 1. Crea una rama para tu feature
-git checkout -b feat/nombre-descriptivo
+# 1. Create a branch for your feature
+git checkout -b feat/descriptive-name
 
-# 2. Desarrollo con watch mode
+# 2. Develop with watch mode
 npm run dev
 
-# 3. Prueba en la app ejemplo
+# 3. Try it in the example app
 npm run example:dev
 
-# 4. Corre tests mientras desarrollas
+# 4. Run tests while you develop
 npm test:watch
 
-# 5. Verifica tipos antes de commit
+# 5. Check types before committing
 npm run typecheck
 
-# 6. Build final
+# 6. Final build
 npm run build
 
-# 7. Commit y push
+# 7. Commit and push
 git add .
-git commit -m "feat: descripción de cambio"
-git push origin feat/nombre-descriptivo
+git commit -m "feat: description of the change"
+git push origin feat/descriptive-name
 ```
 
-### Tips de productividad
+### Productivity tips
 
-**Terminal 1 — Compilar en watch mode:**
+**Terminal 1 — Build in watch mode:**
 ```bash
 npm run dev
 ```
 
-**Terminal 2 — Tests en watch mode:**
+**Terminal 2 — Tests in watch mode:**
 ```bash
 npm test:watch
 ```
 
-**Terminal 3 — App ejemplo:**
+**Terminal 3 — Example app:**
 ```bash
 npm run example:dev
 ```
 
-Luego abre http://localhost:5173 (ejemplo) y http://localhost:5174 (si hay otro puerto) en navegadores paralelos.
+Then open http://localhost:5173 (example) and http://localhost:5174 (if another port) in separate browser windows.
 
 ---
 
-## Estructura de commits
+## Commit structure
 
-Usamos [Conventional Commits](https://www.conventionalcommits.org/) para claridad:
+We use [Conventional Commits](https://www.conventionalcommits.org/) for clarity:
 
-### Formato
+### Format
 
 ```
 <type>(<scope>): <subject>
@@ -124,31 +124,31 @@ Usamos [Conventional Commits](https://www.conventionalcommits.org/) para clarida
 <footer>
 ```
 
-### Tipos
+### Types
 
-- **feat**: Nueva funcionalidad
-- **fix**: Corrección de bug
-- **docs**: Cambios en documentación
-- **style**: Cambios de formato (sin lógica)
-- **refactor**: Refactorización sin cambios de comportamiento
-- **perf**: Mejoras de performance
-- **test**: Tests nuevos o modificados
-- **chore**: Cambios en config, deps, etc.
+- **feat**: New functionality
+- **fix**: Bug fix
+- **docs**: Documentation changes
+- **style**: Formatting changes (no logic)
+- **refactor**: Refactor without behavior changes
+- **perf**: Performance improvements
+- **test**: New or modified tests
+- **chore**: Config, deps, etc. changes
 
 ### Scopes
 
-- **components**: Componentes React
+- **components**: React components
 - **hooks**: Custom hooks
-- **lib**: Utilidades
+- **lib**: Utilities
 - **context**: State management
-- **config**: Configuración
+- **config**: Configuration
 - **styles**: CSS
-- **types**: Tipos TypeScript
+- **types**: TypeScript types
 - **tests**: Tests
-- **docs**: Documentación
+- **docs**: Documentation
 - **ci**: GitHub Actions, etc.
 
-### Ejemplos
+### Examples
 
 ```bash
 # Good ✓
@@ -167,127 +167,127 @@ git commit -m "wip"
 
 ## Pull Requests
 
-### Antes de abrir PR
+### Before opening a PR
 
-1. **Crea una rama descriptiva:**
+1. **Create a descriptive branch:**
    ```bash
    git checkout -b feat/component-name
    ```
 
-2. **Verifica que pasa todo:**
+2. **Verify everything passes:**
    ```bash
    npm run typecheck
    npm test
    npm run build
    ```
 
-3. **Actualiza documentación si es necesario:**
+3. **Update documentation if needed:**
    - README.md
    - CLAUDE.md
    - INTEGRATION.md
-   - CHANGELOG.md (agrega bajo "Unreleased")
+   - CHANGELOG.md (add under "Unreleased")
 
-### Crear el PR
+### Creating the PR
 
-1. **En GitHub, abre un nuevo PR**
-   - Título: sigue Conventional Commits
-   - Descripción: explica *qué* y *por qué*
+1. **On GitHub, open a new PR**
+   - Title: follows Conventional Commits
+   - Description: explains *what* and *why*
 
-2. **Template (copia en descripción del PR):**
+2. **Template (copy into the PR description):**
 
 ```markdown
-## 📝 Descripción
+## 📝 Description
 
-Explica brevemente qué hace este PR.
+Briefly explain what this PR does.
 
-## 🎯 Tipo de cambio
+## 🎯 Type of change
 
-- [ ] Bug fix (no rompe cambios existentes)
-- [ ] Nueva funcionalidad (no rompe cambios existentes)
-- [ ] Breaking change (rompe funcionalidad existente)
-- [ ] Documentación
+- [ ] Bug fix (non-breaking)
+- [ ] New feature (non-breaking)
+- [ ] Breaking change (breaks existing functionality)
+- [ ] Documentation
 
 ## 🧪 Testing
 
-Describe cómo verificaste que funciona:
-- [ ] Tests locales pasaron
-- [ ] Probé en app ejemplo
-- [ ] Probé en navegador real
+Describe how you verified it works:
+- [ ] Local tests passed
+- [ ] Tried it in the example app
+- [ ] Tried it in a real browser
 
 ## 📋 Checklist
 
-- [ ] Código sigue las convenciones del proyecto
-- [ ] Agregué tests si es funcionalidad nueva
-- [ ] Actualicé documentación relevante
-- [ ] No hay breaking changes (o está documentado)
-- [ ] TypeScript typecheck pasa
-- [ ] Commits son descriptivos
+- [ ] Code follows the project's conventions
+- [ ] Added tests for any new functionality
+- [ ] Updated relevant documentation
+- [ ] No breaking changes (or they're documented)
+- [ ] TypeScript typecheck passes
+- [ ] Commits are descriptive
 
-## 📸 Screenshots (si aplica)
+## 📸 Screenshots (if applicable)
 
-Pega screenshots de cambios visuales.
+Paste screenshots of any visual changes.
 
 ## ⚠️ Breaking Changes
 
-Si hay breaking changes, documenta:
-- Qué cambió
-- Cómo migrar
+If there are breaking changes, document:
+- What changed
+- How to migrate
 ```
 
 ### Review Process
 
-- Un contributor mínimo debe revisar
-- CI debe pasar (tests, build, typecheck)
-- Resolveré comentarios o pediré cambios
-- Merge cuando esté listo
+- At least one contributor must review
+- CI must pass (tests, build, typecheck)
+- I'll resolve comments or request changes
+- Merge once it's ready
 
 ---
 
-## Checklist de código
+## Code checklist
 
-### Antes de cada commit, verifica:
+### Before every commit, verify:
 
-- [ ] **TypeScript tipado correctamente**
+- [ ] **TypeScript typed correctly**
   ```bash
   npm run typecheck
   ```
 
-- [ ] **Tests pasan**
+- [ ] **Tests pass**
   ```bash
   npm test
   ```
 
-- [ ] **Build sin errores**
+- [ ] **Build has no errors**
   ```bash
   npm run build
   ```
 
-- [ ] **Archivos nuevos están exportados** (si es público)
-  - Agregado a `src/index.ts`
-  - Documentado en CLAUDE.md
+- [ ] **New files are exported** (if public)
+  - Added to `src/index.ts`
+  - Documented in CLAUDE.md
 
-- [ ] **Tests nuevos** (si es funcionalidad nueva)
-  - Archivo `.test.ts(x)` adyacente
-  - Mínimo 80% de cobertura de líneas
-  - Casos borde cubiertos
+- [ ] **New tests** (for new functionality)
+  - Adjacent `.test.ts(x)` file
+  - Minimum 80% line coverage
+  - Edge cases covered
 
-- [ ] **CSS bien estructurado**
-  - Variables CSS para colores/espaciado
-  - Prefijo `.ia-fra-*` en clases
-  - Sin colisiones con otros libros
+- [ ] **Well-structured CSS**
+  - CSS variables for colors/spacing
+  - `.ia-fra-*` prefix on classes
+  - No collisions with other libraries
 
-- [ ] **Documentación actualizada**
-  - README.md si es cambio de uso
-  - CLAUDE.md si es cambio arquitectónico
-  - Comentarios en código complejo
+- [ ] **Documentation updated**
+  - README.md for usage changes
+  - CLAUDE.md for architectural changes
+  - Comments on complex code
 
-- [ ] **Commits descriptivos**
-  - Sigue Conventional Commits
-  - Uno por cambio lógico (no acumules)
+- [ ] **Descriptive commits**
+  - Follows Conventional Commits
+  - One per logical change (don't batch unrelated changes)
 
 ---
 
-## Guías de estilo
+## Style guides
 
 ### TypeScript
 
@@ -309,10 +309,10 @@ interface TrackedTarget {
 }
 ```
 
-- Usa `interface` para tipos públicos
-- Usa `type` para tipos internos/uniones
-- Exports explícitos (no star imports)
-- Comments solo para "por qué", no "qué"
+- Use `interface` for public types
+- Use `type` for internal types/unions
+- Explicit exports (no star imports)
+- Comments only for "why", not "what"
 
 ### React
 
@@ -320,12 +320,12 @@ interface TrackedTarget {
 // ✓ Good
 function MyComponent({ label, onClick }: Props) {
   const [state, setState] = useState(false)
-  
+
   useEffect(() => {
     // Handle cleanup
     return () => {}
   }, [])
-  
+
   return <button onClick={onClick}>{label}</button>
 }
 
@@ -339,10 +339,10 @@ const MyComponent = ({ label, onClick }) => {
 }
 ```
 
-- Funciones nombradas (no arrow functions anónimas)
-- Props tipadas
-- useEffect con dependency array siempre
-- Limpia listeners/timers en cleanup
+- Named functions (not anonymous arrow functions)
+- Typed props
+- useEffect always with a dependency array
+- Clean up listeners/timers in cleanup
 
 ### CSS
 
@@ -364,73 +364,73 @@ const MyComponent = ({ label, onClick }) => {
   background: #3B82F6;  /* hardcoded */
   padding: 12px;        /* no variable */
   border-radius: 6px;
-  transition: all;      /* vago */
+  transition: all;      /* vague */
 }
 ```
 
-- Variables CSS para todo
-- Transiciones explícitas
-- Namespace `.ia-fra-*`
-- Comentarios en partials complejos
+- CSS variables for everything
+- Explicit transitions
+- `.ia-fra-*` namespace
+- Comments on complex partials
 
 ---
 
-## Preguntas frecuentes
+## FAQ
 
-### ¿Dónde reporto bugs?
+### Where do I report bugs?
 
-Abre un issue con template:
+Open an issue with this template:
 ```markdown
 ## Bug report
 
-### Descripción
-Qué pasa de mal
+### Description
+What's going wrong
 
-### Pasos para reproducir
+### Steps to reproduce
 1. ...
 2. ...
 
-### Comportamiento esperado
-Qué debería pasar
+### Expected behavior
+What should happen instead
 
 ### Logs/Screenshots
-Pega errores o screenshots
+Paste errors or screenshots
 ```
 
-### ¿Puedo trabajar en feature X?
+### Can I work on feature X?
 
-1. Abre una issue primero
-2. Discute el approach
-3. Aguarda aprobación
-4. Luego sí, abre el PR
+1. Open an issue first
+2. Discuss the approach
+3. Wait for approval
+4. Only then, open the PR
 
-Esto evita conflictos si alguien ya está trabajando en eso.
+This avoids conflicts if someone else is already working on it.
 
-### ¿Qué con la cobertura de tests?
+### What about test coverage?
 
-- Nuevas funciones: mínimo 80% cobertura
-- Cambios en existentes: mantén cobertura
-- Tests pueden fallar por motivos válidos (no es requisito del 100%)
+- New functions: minimum 80% coverage
+- Changes to existing code: keep coverage steady
+- Tests can fail for valid reasons (100% is not a hard requirement)
 
-### ¿Puedo hacer breaking changes?
+### Can I make breaking changes?
 
-Sí, pero:
-1. Docúmentalos en PR
-2. Actualiza CHANGELOG.md
-3. Veremos si hacemos 1.0.0 o esperar
+Yes, but:
+1. Document them in the PR
+2. Update CHANGELOG.md
+3. We'll decide whether it warrants a 1.0.0 or should wait
 
-### ¿Cómo agrego una nueva dependencia?
+### How do I add a new dependency?
 
-1. Abre issue primero
-2. Justifica por qué la necesitas
-3. Veremos si es crítica o se puede evitar
-4. Si sí, `npm install <pkg>` + commit + PR
+1. Open an issue first
+2. Justify why you need it
+3. We'll see whether it's critical or avoidable
+4. If it's a go, `npm install <pkg>` + commit + PR
 
-Queremos mantener las deps mínimas.
+We want to keep dependencies minimal.
 
 ---
 
-## Recursos útiles
+## Useful resources
 
 - [Conventional Commits](https://www.conventionalcommits.org/)
 - [Keep a Changelog](https://keepachangelog.com/)
@@ -441,23 +441,23 @@ Queremos mantener las deps mínimas.
 
 ---
 
-## Código de Conducta
+## Code of Conduct
 
-Por favor, sé respetuoso con otros contribuidores. Esto incluye:
-- Comentarios constructivos en reviews
-- No spam, self-promotion, o off-topic
-- Inclusión de todes
+Please be respectful to other contributors. This includes:
+- Constructive comments in reviews
+- No spam, self-promotion, or off-topic content
+- Inclusivity for everyone
 
-Violaciones: avísame directamente en un issue privado.
-
----
-
-## Reconocimientos
-
-Agradezco a todos los que contribuyen, reportan bugs, y dan feedback.
+Violations: reach out to me directly in a private issue.
 
 ---
 
-**¡Gracias por contribuir!** 🙌
+## Acknowledgments
 
-**Última actualización:** Agosto 21, 2025
+Thanks to everyone who contributes, reports bugs, and gives feedback.
+
+---
+
+**Thanks for contributing!** 🙌
+
+**Last updated:** August 21, 2025

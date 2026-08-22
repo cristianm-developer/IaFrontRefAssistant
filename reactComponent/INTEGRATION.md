@@ -1,8 +1,8 @@
-# Guía de Integración
+# Integration Guide
 
-Ejemplos de cómo integrar `ia-front-ref-assistant` en diferentes stacks y frameworks.
+Examples of how to integrate `ia-front-ref-assistant` into different stacks and frameworks.
 
-## Tabla de contenidos
+## Table of contents
 
 1. [React (Vite)](#react-vite)
 2. [Next.js (App Router)](#nextjs-app-router)
@@ -14,13 +14,13 @@ Ejemplos de cómo integrar `ia-front-ref-assistant` en diferentes stacks y frame
 
 ## React + Vite
 
-### Instalación
+### Installation
 
 ```bash
 npm install ia-front-ref-assistant
 ```
 
-### Setup básico
+### Basic setup
 
 ```tsx
 // main.tsx
@@ -76,7 +76,7 @@ function Main() {
 export default App
 ```
 
-### Personalizar temas
+### Customizing themes
 
 ```tsx
 // theme.css
@@ -108,13 +108,13 @@ import 'ia-front-ref-assistant/style.css'
 
 ## Next.js (App Router)
 
-### Instalación
+### Installation
 
 ```bash
 npm install ia-front-ref-assistant
 ```
 
-### Setup con Client Component
+### Setup with a Client Component
 
 ```tsx
 // app/page.tsx (Server Component)
@@ -161,7 +161,7 @@ export function AssistantWrapper({ children }: { children: ReactNode }) {
 }
 ```
 
-### Con configuración dinámica
+### With dynamic configuration
 
 ```tsx
 // app/api/assistant-config/route.ts
@@ -233,7 +233,7 @@ export function DynamicAssistantWrapper({ children }: { children: ReactNode }) {
 }
 ```
 
-### Con layout.tsx
+### With layout.tsx
 
 ```tsx
 // app/layout.tsx
@@ -266,7 +266,7 @@ export default function RootLayout({
 
 ## Create React App
 
-### Instalación
+### Installation
 
 ```bash
 npm install ia-front-ref-assistant
@@ -331,13 +331,13 @@ export default App
 
 ## Remix
 
-### Instalación
+### Installation
 
 ```bash
 npm install ia-front-ref-assistant
 ```
 
-### Setup con Outlet
+### Setup with Outlet
 
 ```tsx
 // app/root.tsx
@@ -411,14 +411,14 @@ export function AssistantWrapper({ children }: { children: ReactNode }) {
 
 ## Astro
 
-### Instalación
+### Installation
 
 ```bash
 npm install ia-front-ref-assistant
 npm install react react-dom
 ```
 
-### Setup en isla React
+### Setup in a React island
 
 ```astro
 ---
@@ -468,19 +468,19 @@ export function AssistantClient({ children }: { children: ReactNode }) {
 
 ---
 
-## Casos de Uso Avanzados
+## Advanced Use Cases
 
-### 1. Solo en desarrollo
+### 1. Development only
 
 ```tsx
 const config = defineConfig({
-  // Solo activa en desarrollo
+  // Only active in development
   active: process.env.NODE_ENV === 'development',
   components: { /* ... */ },
 })
 ```
 
-### 2. Toggle por URL param
+### 2. Toggle via URL param
 
 ```tsx
 const searchParams = new URLSearchParams(window.location.search)
@@ -490,7 +490,7 @@ const config = defineConfig({
 })
 ```
 
-### 3. Toggle por localStorage
+### 3. Toggle via localStorage
 
 ```tsx
 const config = defineConfig({
@@ -499,15 +499,15 @@ const config = defineConfig({
 })
 ```
 
-### 4. Configuración por usuario
+### 4. Per-user configuration
 
 ```tsx
-// Cargar desde API
+// Load from an API
 const userConfig = await fetch(`/api/user/${userId}/ia-fra-config`).then(r => r.json())
 const config = defineConfig(userConfig)
 ```
 
-### 5. Integración con Storybook
+### 5. Storybook integration
 
 ```tsx
 // .storybook/preview.tsx
@@ -538,42 +538,42 @@ export const decorators = [
 
 ## Troubleshooting
 
-### "Estilos no se aplican"
+### "Styles aren't applied"
 
-✅ Asegúrate de importar el CSS:
+✅ Make sure you're importing the CSS:
 ```tsx
 import 'ia-front-ref-assistant/style.css'
 ```
 
-### "Componente no aparece"
+### "Component doesn't show up"
 
-✅ Verifica que el wrapper esté en la raíz:
+✅ Verify the wrapper is at the root:
 ```tsx
 <IaFrontRefAssistant>
-  {/* Tu app debe estar aquí */}
+  {/* Your app must be here */}
 </IaFrontRefAssistant>
 ```
 
-✅ Revisa que `active: true` en config
+✅ Check that `active: true` in the config
 
-### "localStorage errors en SSR"
+### "localStorage errors during SSR"
 
-✅ Esto es normal, el componente maneja SSR-safety. No hay error real, solo warning.
+✅ This is expected — the component handles SSR-safety. There's no real error, just a warning.
 
-### "TypeScript errors con React Server Components"
+### "TypeScript errors with React Server Components"
 
-✅ Usa `'use client'` en el wrapper:
+✅ Use `'use client'` in the wrapper:
 ```tsx
 'use client'
 
 import IaFrontRefAssistant from 'ia-front-ref-assistant'
 ```
 
-### "Conflictos de z-index"
+### "z-index conflicts"
 
-✅ Usa CSS variables:
+✅ Use the CSS variables:
 ```css
-/* Sube el z-index si es necesario */
+/* Raise the z-index if needed */
 .ia-fra-root {
   --ia-fra-z-menu: 9999;
   --ia-fra-z-overlay: 9998;
@@ -582,9 +582,9 @@ import IaFrontRefAssistant from 'ia-front-ref-assistant'
 
 ---
 
-## Rendimiento
+## Performance
 
-### Lazy loading (opcional)
+### Lazy loading (optional)
 
 ```tsx
 import { lazy, Suspense } from 'react'
@@ -602,7 +602,7 @@ export function App() {
 }
 ```
 
-### Desactivar en producción
+### Disabling in production
 
 ```tsx
 const config = defineConfig({
@@ -613,9 +613,9 @@ const config = defineConfig({
 
 ---
 
-## Más ejemplos
+## More examples
 
-Ver carpeta `example/` en el repositorio para una app React funcional completa.
+See the `example/` folder in the repository for a full, working React app.
 
 ```bash
 cd example
@@ -625,5 +625,5 @@ npm run dev
 
 ---
 
-**Versión:** 0.1.0  
-**Última actualización:** 2025-08-21
+**Version:** 0.1.2
+**Last updated:** 2026-08-22

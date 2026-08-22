@@ -1,31 +1,33 @@
-# 📚 Índice de Documentación
+# 📚 Documentation Index
 
-Guía completa de documentación para el proyecto **IA Front Ref Assistant**.
+A complete documentation guide for the **IA Front Ref Assistant** project.
 
 ---
 
-## 🗂️ Ubicación de archivos
+## 🗂️ File locations
 
 ```
 IaFrontRefAssistant/
-├── README.md                           # ← Guía de usuario
-├── LICENSE                             # ← Licencia MIT
-├── DOCUMENTATION.md                    # ← Este archivo
-└── reactComponent/                    # Librería principal (npm)
-    ├── CLAUDE.md                      # ← Documentación técnica (devs)
-    ├── INTEGRATION.md                 # ← Guías de integración por framework
-    ├── CHANGELOG.md                   # ← Historial de versiones
-    ├── CONTRIBUTING.md                # ← Cómo contribuir
-    ├── CLAUDE_CODE_SKILLS.md          # ← Skills para Claude Code (CLI)
-    ├── plan/                          # ← Fases 0-10 (especificaciones técnicas)
+├── README.md                    # ← User guide
+├── LICENSE                      # ← MIT License
+├── DOCUMENTATION.md             # ← This file
+├── .agents/skills/              # ← Portable skill pack (Codex CLI, Cursor, ...)
+├── ia-skills/                   # ← Claude Code plugin wrapper
+└── reactComponent/              # Main library (npm)
+    ├── README.md               # ← Copy of the root README (npm needs its own)
+    ├── CLAUDE.md                # ← Technical documentation (devs)
+    ├── INTEGRATION.md           # ← Per-framework integration guides
+    ├── CHANGELOG.md             # ← Version history
+    ├── CONTRIBUTING.md          # ← How to contribute
+    ├── plan/                    # ← Phases 0-10 (technical specs)
     │   ├── 00-overview.md
     │   ├── 01-data-types.md
     │   ├── 02-*.md
     │   ├── ...
     │   ├── 09-claude-code-integration.md
     │   └── 10-parallel-execution-plan.md
-    ├── src/                           # Código fuente (TypeScript/React)
-    ├── example/                       # App React de prueba
+    ├── src/                     # Source code (TypeScript/React)
+    ├── example/                 # Sample React app
     ├── package.json
     ├── tsconfig.json
     ├── vite.config.ts
@@ -34,277 +36,256 @@ IaFrontRefAssistant/
 
 ---
 
-## 📖 Documentación por audiencia
+## 📖 Documentation by audience
 
-### 👤 **Para usuarios finales**
+### 👤 **For end users**
 
-**Quiero usar la librería en mi proyecto**
+**I want to use the library in my project**
 
-1. Comienza con: [`README.md`](README.md)
-   - Instalación
-   - Uso básico
-   - Configuración
+1. Start with: [`README.md`](README.md)
+   - Installation
+   - Basic usage
+   - Configuration
 
-2. Luego: [`reactComponent/INTEGRATION.md`](reactComponent/INTEGRATION.md)
-   - Ejemplos para tu framework (React, Next.js, etc.)
+2. Then: [`reactComponent/INTEGRATION.md`](reactComponent/INTEGRATION.md)
+   - Examples for your framework (React, Next.js, etc.)
    - Troubleshooting
 
 3. API Reference: [`README.md#api-reference`](README.md#api-reference)
 
-### 👨‍💻 **Para desarrolladores del proyecto**
+### 👨‍💻 **For project developers**
 
-**Quiero entender el código y contribuir**
+**I want to understand the code and contribute**
 
-1. Comienza con: [`reactComponent/CLAUDE.md`](reactComponent/CLAUDE.md)
-   - Arquitectura general
-   - Componentes principales
-   - Estructura de carpetas
+1. Start with: [`reactComponent/CLAUDE.md`](reactComponent/CLAUDE.md)
+   - General architecture
+   - Main components
+   - Folder structure
 
-2. Luego: Documentación de fases en [`reactComponent/plan/`](reactComponent/plan/)
-   - Lee la fase que te interesa (ej: `04-dom-tracking-engine.md`)
-   - Entenderás el diseño específico
+2. Then: Phase documentation in [`reactComponent/plan/`](reactComponent/plan/)
+   - Read the phase you're interested in (e.g. `04-dom-tracking-engine.md`)
+   - You'll understand that specific design
 
-3. Finalmente: [`reactComponent/CONTRIBUTING.md`](reactComponent/CONTRIBUTING.md)
-   - Cómo hacer cambios
-   - Workflow de PR
-   - Guías de estilo
+3. Finally: [`reactComponent/CONTRIBUTING.md`](reactComponent/CONTRIBUTING.md)
+   - How to make changes
+   - PR workflow
+   - Style guides
 
-### 🚀 **Para integrar skills en Claude Code**
+### 🚀 **To install the skill pack in your AI tool**
 
-**Quiero usar los skills en mi workflow de Claude**
+**I want to use the skills in my Claude Code / Codex CLI / Cursor workflow**
 
-1. Comienza con: [`reactComponent/CLAUDE_CODE_SKILLS.md`](reactComponent/CLAUDE_CODE_SKILLS.md) *(próximamente)*
-   - Qué son los skills
-   - Instalación en Claude
-   - Comandos disponibles
+1. Start with: [`README.md` — Recommended install](README.md#recommended-install-the-skill-pack-automated-setup)
+   - What the skills do
+   - Per-tool installation table (Claude Code, Codex CLI, Cursor)
 
-2. O lee directamente en: [`reactComponent/ia-skills/`](reactComponent/ia-skills/)
+2. Or read directly: [`.agents/skills/`](.agents/skills/) (portable, Codex/Cursor) or [`ia-skills/`](ia-skills/) (Claude Code plugin)
    - Plugin manifests
-   - SKILL.md files
+   - `SKILL.md` files
 
-### 📋 **Para release/publicación**
+### 📋 **For release/publishing**
 
-**Quiero publicar una versión nueva**
+**I want to publish a new version**
 
-1. Revisa: [`reactComponent/CHANGELOG.md`](reactComponent/CHANGELOG.md)
-   - Historial de cambios
-   - Cómo documentar nuevas versiones
+1. Check: [`reactComponent/CHANGELOG.md`](reactComponent/CHANGELOG.md)
+   - Change history
+   - How to document new versions
 
-2. Sigue checklist en: [`reactComponent/CONTRIBUTING.md#checklist-de-código`](reactComponent/CONTRIBUTING.md#checklist-de-código)
+2. Follow the checklist in: [`reactComponent/CONTRIBUTING.md#code-checklist`](reactComponent/CONTRIBUTING.md#code-checklist)
 
 ---
 
-## 🎯 Documentación por tópico
+## 🎯 Documentation by topic
 
-### **Instalación & Setup**
+### **Installation & Setup**
 
-- [`README.md` — Instalación](README.md#instalación)
-- [`INTEGRATION.md` — Setup por framework](reactComponent/INTEGRATION.md)
+- [`README.md` — Installation](README.md#installation)
+- [`INTEGRATION.md` — Per-framework setup](reactComponent/INTEGRATION.md)
 
-### **Cómo usar**
+### **How to use it**
 
-- [`README.md` — Uso básico](README.md#uso-básico)
-- [`README.md` — Tagueo de elementos](README.md#tagueo-de-elementos)
-- [`INTEGRATION.md` — Ejemplos completos](reactComponent/INTEGRATION.md)
+- [`README.md` — Basic usage](README.md#basic-usage)
+- [`README.md` — Tagging elements](README.md#tagging-elements)
+- [`INTEGRATION.md` — Full examples](reactComponent/INTEGRATION.md)
 
-### **Configuración**
+### **Configuration**
 
-- [`README.md` — Configuración avanzada](README.md#configuración-avanzada)
-- [`CLAUDE.md` — Conceptos de config](reactComponent/CLAUDE.md#configuración-de-usuario)
+- [`README.md` — Advanced configuration](README.md#advanced-configuration)
+- [`CLAUDE.md` — Config concepts](reactComponent/CLAUDE.md#user-configuration)
 
-### **Estilos & Temas**
+### **Styling & Theming**
 
-- [`README.md` — Estilos y temas](README.md#estilos-y-temas)
-- [`CLAUDE.md` — CSS modular](reactComponent/CLAUDE.md#-estilos)
+- [`README.md` — Styling and theming](README.md#styling-and-theming)
+- [`CLAUDE.md` — Modular CSS](reactComponent/CLAUDE.md#-styling)
 
-### **Desarrollo**
+### **Development**
 
-- [`CLAUDE.md` — Arquitectura](reactComponent/CLAUDE.md#-arquitectura)
+- [`CLAUDE.md` — Architecture](reactComponent/CLAUDE.md#-architecture)
 - [`CLAUDE.md` — Setup & workflow](reactComponent/CLAUDE.md#-development-workflow)
-- [`CONTRIBUTING.md` — Guía de contribución](reactComponent/CONTRIBUTING.md)
+- [`CONTRIBUTING.md` — Contributing guide](reactComponent/CONTRIBUTING.md)
 
 ### **Testing**
 
 - [`CLAUDE.md` — Tests](reactComponent/CLAUDE.md#-tests)
-- [`CONTRIBUTING.md` — Checklist de código](reactComponent/CONTRIBUTING.md#checklist-de-código)
+- [`CONTRIBUTING.md` — Code checklist](reactComponent/CONTRIBUTING.md#code-checklist)
 
-### **Compilación & Release**
+### **Build & Release**
 
-- [`CLAUDE.md` — Release](reactComponent/CLAUDE.md#-release--publicación)
-- [`CHANGELOG.md` — Versionado](reactComponent/CHANGELOG.md)
+- [`CLAUDE.md` — Release](reactComponent/CLAUDE.md#-release--publishing)
+- [`CHANGELOG.md` — Versioning](reactComponent/CHANGELOG.md)
 
 ### **Troubleshooting**
 
-- [`README.md` — FAQ implícitas](README.md#rendimiento)
 - [`INTEGRATION.md` — Troubleshooting](reactComponent/INTEGRATION.md#troubleshooting)
 
 ---
 
-## 📚 Documentación Técnica (Fases)
+## 📚 Technical Documentation (Phases)
 
-Ubicación: [`reactComponent/plan/`](reactComponent/plan/)
+Location: [`reactComponent/plan/`](reactComponent/plan/)
 
-Cada fase documenta un aspecto específico del componente:
+Each phase documents one specific aspect of the component:
 
-| Fase | Archivo | Tópico |
+| Phase | File | Topic |
 |------|---------|--------|
-| 00 | `00-overview.md` | Visión general, contrato de datos, convenciones |
-| 01 | `01-data-types.md` | Tipos TypeScript y estado base |
-| 02 | `02-positioning-foundation.md` | Cálculo de posicionamiento (menú, overlays) |
-| 03 | `03-ui-shell-button.md` | Botón flotante y UI shell |
-| 04 | `04-dom-tracking-engine.md` | Motor de detección con MutationObserver |
-| 05 | `05-overlay-capture.md` | Modo captura interactivo |
-| 06 | `06-overlay-show.md` | Modo mostrar elementos |
-| 07 | `07-prompt-clipboard.md` | Modal de prompts |
-| 08 | `08-component-assembly.md` | Integración de componentes (IaFrontRefAssistant.tsx) |
-| 09 | `09-component-config.md` | Configuración de usuario (themes, variants) |
-| 10 | `09-claude-code-integration.md` | Skills para Claude Code |
-| Plan | `10-parallel-execution-plan.md` | Cómo se ejecutó el proyecto (multi-agente) |
+| 00 | `00-overview.md` | Overview, data contract, conventions |
+| 01 | `01-data-types.md` | TypeScript types and base state |
+| 02 | `02-positioning-foundation.md` | Positioning math (menu, overlays) |
+| 03 | `03-ui-shell-button.md` | Floating button and UI shell |
+| 04 | `04-dom-tracking-engine.md` | Detection engine (MutationObserver) |
+| 05 | `05-overlay-capture.md` | Interactive capture mode |
+| 06 | `06-overlay-show.md` | Show-elements mode |
+| 07 | `07-prompt-clipboard.md` | Prompt modal |
+| 08 | `08-component-assembly.md` | Component integration (IaFrontRefAssistant.tsx) |
+| 09 | `09-component-config.md` | User configuration (themes, variants) |
+| 10 | `09-claude-code-integration.md` | Claude Code skills |
+| Plan | `10-parallel-execution-plan.md` | How the project was executed (multi-agent) |
 
-**Lectura recomendada:**
+**Suggested reading:**
 
-- Para entender un componente específico → Lee su fase (ej: `04-dom-tracking-engine.md` para useTrackedTargets)
-- Para arquitectura global → Comienza por `00-overview.md`
-- Para debugging → Lee la fase + revisa código + tests adyacentes
+- To understand a specific component → Read its phase (e.g. `04-dom-tracking-engine.md` for useTrackedTargets)
+- For the overall architecture → Start with `00-overview.md`
+- For debugging → Read the phase + review the code + adjacent tests
 
 ---
 
-## 🔍 Búsqueda rápida
+## 🔍 Quick lookup
 
-### ¿Cómo...?
+### How do I...?
 
-| Pregunta | Respuesta |
+| Question | Answer |
 |----------|-----------|
-| ...instalar? | [`README.md` — Instalación](README.md#instalación) |
-| ...usar en React? | [`README.md` — Uso básico](README.md#uso-básico) |
-| ...usar en Next.js? | [`INTEGRATION.md` — Next.js](reactComponent/INTEGRATION.md#nextjs-app-router) |
-| ...personalizar estilos? | [`README.md` — Estilos](README.md#estilos-y-temas) |
-| ...entender la arquitectura? | [`CLAUDE.md` — Arquitectura](reactComponent/CLAUDE.md#-arquitectura) |
-| ...contribuir? | [`CONTRIBUTING.md`](reactComponent/CONTRIBUTING.md) |
-| ...reportar un bug? | [`CONTRIBUTING.md` — FAQ](reactComponent/CONTRIBUTING.md#preguntas-frecuentes) |
-| ...ver el historial de cambios? | [`CHANGELOG.md`](reactComponent/CHANGELOG.md) |
-| ...usar skills en Claude? | [`CLAUDE_CODE_SKILLS.md`](reactComponent/CLAUDE_CODE_SKILLS.md) *(próximamente)* |
+| ...install it? | [`README.md` — Installation](README.md#installation) |
+| ...use it in React? | [`README.md` — Basic usage](README.md#basic-usage) |
+| ...use it in Next.js? | [`INTEGRATION.md` — Next.js](reactComponent/INTEGRATION.md#nextjs-app-router) |
+| ...customize the styles? | [`README.md` — Styling](README.md#styling-and-theming) |
+| ...understand the architecture? | [`CLAUDE.md` — Architecture](reactComponent/CLAUDE.md#-architecture) |
+| ...contribute? | [`CONTRIBUTING.md`](reactComponent/CONTRIBUTING.md) |
+| ...report a bug? | [`CONTRIBUTING.md` — FAQ](reactComponent/CONTRIBUTING.md#faq) |
+| ...see the change history? | [`CHANGELOG.md`](reactComponent/CHANGELOG.md) |
+| ...install the skills in Claude/Codex/Cursor? | [`README.md` — Recommended install](README.md#recommended-install-the-skill-pack-automated-setup) |
 
 ---
 
-## 📊 Estadísticas de documentación
+## 🎓 Learning curve
 
-```
-Total de archivos de documentación: 11
-├── README.md                    ← 300+ líneas
-├── CLAUDE.md                    ← 400+ líneas
-├── INTEGRATION.md               ← 350+ líneas
-├── CONTRIBUTING.md              ← 250+ líneas
-├── CHANGELOG.md                 ← 200+ líneas
-├── plan/ (10 archivos)         ← 1000+ líneas
-└── Este archivo (DOCUMENTATION.md)
+### Beginner (1-2 hours)
 
-Total: ~2500+ líneas de documentación
-Coverage: ~95% del código
+1. [`README.md`](README.md) — Overview
+2. [`INTEGRATION.md`](reactComponent/INTEGRATION.md) — Your specific framework
+3. Run `npm run example:dev` and try it live
 
-Lenguajes: Español + Inglés (comentarios en código)
-```
+### Intermediate (3-5 hours)
 
----
+1. [`CLAUDE.md`](reactComponent/CLAUDE.md) — Architecture
+2. Review the code in `src/` alongside the phase docs
+3. Read the tests (`*.test.ts`) to see expected behavior
 
-## 🎓 Curva de aprendizaje
+### Advanced (6+ hours)
 
-### Principiante (1-2 horas)
-
-1. [`README.md`](README.md) — Visión general
-2. [`INTEGRATION.md`](reactComponent/INTEGRATION.md) — Tu framework específico
-3. Ejecuta `npm run example:dev` y prueba en vivo
-
-### Intermedio (3-5 horas)
-
-1. [`CLAUDE.md`](reactComponent/CLAUDE.md) — Arquitectura
-2. Revisa código en `src/` junto con documentación de fases
-3. Lee tests (`*.test.ts`) para ver comportamiento esperado
-
-### Avanzado (6+ horas)
-
-1. Todas las fases en [`plan/`](reactComponent/plan/)
-2. Debugging con herramientas (DevTools, RTL logs)
-3. Contribuciones según [`CONTRIBUTING.md`](reactComponent/CONTRIBUTING.md)
+1. All phases in [`plan/`](reactComponent/plan/)
+2. Debugging with tooling (DevTools, RTL logs)
+3. Contribute per [`CONTRIBUTING.md`](reactComponent/CONTRIBUTING.md)
 
 ---
 
-## 🔗 Enlaces útiles
+## 🔗 Useful links
 
-### Documentación externa
+### External documentation
 
 - [React Docs](https://react.dev/)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 - [Vite Guide](https://vitejs.dev/guide/)
 - [Vitest Docs](https://vitest.dev/)
 - [React Testing Library](https://testing-library.com/react)
+- [Agent Skills (agents.md)](https://agents.md)
 
-### Recursos del proyecto
+### Project resources
 
-- [GitHub Repository](https://github.com/yourusername/ia-front-ref-assistant)
+- [GitHub Repository](https://github.com/cristianm-developer/IaFrontRefAssistant)
 - [NPM Package](https://www.npmjs.com/package/ia-front-ref-assistant)
-- [Issues](https://github.com/yourusername/ia-front-ref-assistant/issues)
-- [Discussions](https://github.com/yourusername/ia-front-ref-assistant/discussions)
+- [Issues](https://github.com/cristianm-developer/IaFrontRefAssistant/issues)
+- [Discussions](https://github.com/cristianm-developer/IaFrontRefAssistant/discussions)
 
 ---
 
-## ✨ Notas especiales
+## ✨ Special notes
 
-### Multi-agente
+### Multi-agent
 
-Este proyecto fue compilado usando un sistema multi-agente (fases 0-10 en paralelo).
+This project was built using a multi-agent system (phases 0-10 in parallel).
 
-Ver: [`reactComponent/plan/10-parallel-execution-plan.md`](reactComponent/plan/10-parallel-execution-plan.md)
+See: [`reactComponent/plan/10-parallel-execution-plan.md`](reactComponent/plan/10-parallel-execution-plan.md)
 
-**Implicación:** El código está altamente modular y cada componente es independiente. Puedes trabajar en casi cualquier parte sin romper otras.
+**Implication:** the code is highly modular and each component is independent. You can work on almost any part without breaking the rest.
 
-### Accesibilidad
+### Accessibility
 
-Toda la documentación intenta ser accesible:
-- Títulos claros y jerárquicos
-- Tablas y listas para organizar
-- Links descriptivos (no "click here")
-- Ejemplos ejecutables
+All the documentation tries to be accessible:
+- Clear, hierarchical headings
+- Tables and lists to organize content
+- Descriptive links (never "click here")
+- Runnable examples
 
-### Mantenimiento
+### Maintenance
 
-Documentación se actualiza junto con código:
-- CHANGELOG.md en cada commit notable
-- Plan/*.md si hay cambios arquitectónicos
-- README.md si cambia la API pública
-
----
-
-## 🆘 Necesito ayuda
-
-### Para usuarios
-
-1. Revisa [`INTEGRATION.md` — Troubleshooting](reactComponent/INTEGRATION.md#troubleshooting)
-2. Si no resuelve → Abre issue en GitHub
-3. Incluye: versión de Node/React, pasos exactos, error completo
-
-### Para desarrolladores
-
-1. Revisa [`CLAUDE.md` — Debugging](reactComponent/CLAUDE.md#-debugging)
-2. Revisa tests relacionados (`.test.ts` files)
-3. Si no resuelve → Abre discussion en GitHub
-
-### Para contribuidores
-
-1. Lee [`CONTRIBUTING.md` — FAQ](reactComponent/CONTRIBUTING.md#preguntas-frecuentes)
-2. Abre issue para discutir feature antes de trabajar
-3. Sigue el workflow de PR
+Documentation is updated alongside the code:
+- CHANGELOG.md on every notable commit
+- Plan/*.md for architectural changes
+- README.md when the public API changes
 
 ---
 
-## 📝 Versionado de documentación
+## 🆘 I need help
 
-- **Versión de documentación:** 0.1.0
-- **Última actualización:** Agosto 21, 2025
-- **Compatible con:** ia-front-ref-assistant 0.1.0+
+### For users
+
+1. Check [`INTEGRATION.md` — Troubleshooting](reactComponent/INTEGRATION.md#troubleshooting)
+2. If that doesn't resolve it → open an issue on GitHub
+3. Include: Node/React version, exact steps, the full error
+
+### For developers
+
+1. Check [`CLAUDE.md` — Debugging](reactComponent/CLAUDE.md#-debugging)
+2. Check related tests (`.test.ts` files)
+3. If that doesn't resolve it → open a discussion on GitHub
+
+### For contributors
+
+1. Read [`CONTRIBUTING.md` — FAQ](reactComponent/CONTRIBUTING.md#faq)
+2. Open an issue to discuss a feature before working on it
+3. Follow the PR workflow
 
 ---
 
-**¡Bienvenido a la comunidad!** 🙌
+## 📝 Documentation versioning
 
-Para cualquier pregunta sobre documentación, [abre un issue](https://github.com/yourusername/ia-front-ref-assistant/issues).
+- **Documentation version:** 0.1.2
+- **Last updated:** August 22, 2026
+- **Compatible with:** ia-front-ref-assistant 0.1.2+
+
+---
+
+**Welcome to the community!** 🙌
+
+For any documentation questions, [open an issue](https://github.com/cristianm-developer/IaFrontRefAssistant/issues).

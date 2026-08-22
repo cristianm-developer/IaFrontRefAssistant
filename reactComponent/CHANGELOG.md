@@ -1,141 +1,141 @@
 # CHANGELOG
 
-Todos los cambios notables en este proyecto se documentan en este archivo.
+All notable changes to this project are documented in this file.
 
-El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
 ## [0.1.2] — 2026-08-22
 
-### 📝 Documentación
-- `README.md` reescrito en inglés (era español)
-- Instalación documentada para las 3 herramientas más comunes — Claude Code, OpenAI Codex CLI y Cursor — con la ruta y el mecanismo real de cada una (verificado contra su documentación oficial), en vez de asumir solo Claude Code
-- Nota: la v0.1.1 quedó publicada en npm con el `README.md` viejo en español (se publicó antes de terminar la traducción); este bump no trae otros cambios de código
+### 📝 Documentation
+- `README.md` rewritten in English (was Spanish)
+- Documented installation for the 3 most common tools — Claude Code, OpenAI Codex CLI, and Cursor — with each one's actual path and mechanism (verified against their official docs), instead of assuming Claude Code only
+- Note: v0.1.1 was published to npm with the old Spanish `README.md` (it got published before the translation was finished); this bump carries no other code changes
 
 ## [0.1.1] — 2026-08-22
 
-### 🐛 Corregido
-- **`useRect`** — el primer render no actualizaba el rect (esperaba 100ms de throttle incluso en el primer tick), rompiendo overlays hasta el segundo frame
-- **`FrameLabel`** — el frame completo (no solo el label) capturaba `pointer-events`, bloqueando clics sobre el contenido subyacente cuando `interactive`
-- **`process.env.NODE_ENV`** sin guard — podía lanzar `ReferenceError: process is not defined` en bundlers de consumidores que no polyfillean `process` en el browser
-- Tests de `ThemePicker` desactualizados (asumían un toggle de pills que ya no existe; el componente usa `<select>`) — reescritos para reflejar la UI actual
-- Empaquetado: faltaban `README.md`/`LICENSE` dentro de `reactComponent/`, por lo que no se publicaban con el paquete de npm
+### 🐛 Fixed
+- **`useRect`** — the first render never updated the rect (it waited for a 100ms throttle window even on the very first tick), breaking overlays until the second frame
+- **`FrameLabel`** — the whole frame (not just the label) captured `pointer-events`, blocking clicks on underlying content when `interactive`
+- **`process.env.NODE_ENV`** accessed without a guard — could throw `ReferenceError: process is not defined` in consumer bundlers that don't polyfill `process` in the browser
+- Stale `ThemePicker` tests (assumed a pill/toggle UI that no longer exists; the component uses `<select>`) — rewritten to match the current UI
+- Packaging: `README.md`/`LICENSE` were missing from inside `reactComponent/`, so they weren't published with the npm package
 
 ## [0.1.0] — 2025-08-21 — Initial Release
 
-### ✨ Agregado
+### ✨ Added
 
-#### Núcleo
-- **Componente `IaFrontRefAssistant`** — Raíz de la aplicación con SSR-safety
-  - Renderiza vía Portal a `document.body`
-  - Detecta instancias anidadas con warning
-  - Soporta prop `definitions` para configuración de usuario
+#### Core
+- **`IaFrontRefAssistant` component** — App root with SSR-safety
+  - Renders via Portal to `document.body`
+  - Detects nested instances with a warning
+  - Supports a `definitions` prop for user configuration
 
 #### UI/UX
-- **FloatingButton** — Botón fijo en esquina inferior derecha
-  - Badge que muestra cantidad de prompts capturados
-  - Interacciones: click (menú), Ctrl+click (captura), Ctrl+Alt+click (overlays)
-  - Opacidad dinámica cuando inactivo
+- **FloatingButton** — Fixed button in the bottom-right corner
+  - Badge showing the number of captured prompts
+  - Interactions: click (menu), Ctrl+click (capture), Ctrl+Alt+click (overlays)
+  - Dynamic opacity when inactive
 
-- **Menu System** — Navegación jerárquica
-  - Menu.tsx — Menú principal posicionado dinámicamente
-  - MenuItem.tsx — Filas genéricas con chevron y slots
-  - SubMenu.tsx — Submenús laterales con positioning automático
-  - ToggleRow.tsx — Switches con deslizador animado
-  - ActionRow.tsx — Botones de acciones
+- **Menu System** — Hierarchical navigation
+  - Menu.tsx — Main menu, dynamically positioned
+  - MenuItem.tsx — Generic rows with chevron and slots
+  - SubMenu.tsx — Side submenus with automatic positioning
+  - ToggleRow.tsx — Switches with an animated slider
+  - ActionRow.tsx — Action buttons
 
-- **Overlay System** — Visualización de elementos
-  - CaptureOverlay.tsx — Modo interactivo para capturar elementos
-  - ShowOverlay.tsx — Modo persistente que muestra todos los elementos
-  - FrameLabel.tsx — Etiquetas de elementos con flip automático
-  - useHoveredTarget.ts — Hook para trackear elemento bajo mouse (RAF throttling)
-  - useRect.ts — Hook para trackear DOMRect con RAF loop
+- **Overlay System** — Element visualization
+  - CaptureOverlay.tsx — Interactive mode to capture elements
+  - ShowOverlay.tsx — Persistent mode showing all elements
+  - FrameLabel.tsx — Element labels with automatic flip
+  - useHoveredTarget.ts — Hook to track the element under the mouse (RAF throttling)
+  - useRect.ts — Hook to track a DOMRect via an RAF loop
 
-- **PromptModal** — Generador de prompts
-  - Modal editable con textarea
-  - VariantSizePicker.tsx — Selector de variantes y tamaños
-  - ThemePicker.tsx — Selector de tokens de tema (collapsable)
-  - Copia a clipboard con botón "Save"
+- **PromptModal** — Prompt generator
+  - Editable modal with a textarea
+  - VariantSizePicker.tsx — Variant and size picker
+  - ThemePicker.tsx — Theme token picker (collapsible)
+  - Copy to clipboard via a "Save" button
 
-#### Funcionalidad
+#### Functionality
 - **DOM Tracking** (`useTrackedTargets`)
-  - Detección automática de elementos via MutationObserver
-  - Debouncing (120ms) para eficiencia
-  - Soporta 3 flags independientes: sections, components, elements
-  - Heurística de elementos "hoja" (atómicos)
+  - Automatic element detection via MutationObserver
+  - Debouncing (120ms) for efficiency
+  - Supports 3 independent flags: sections, components, elements
+  - "Leaf" (atomic) element heuristic
 
 - **State Management** (AssistantProvider + Context)
-  - Context global con useState
-  - Persistencia automática en localStorage
-  - Merge field-by-field para tolerar upgrades
+  - Global context with useState
+  - Automatic localStorage persistence
+  - Field-by-field merge to tolerate upgrades
 
 - **Storage** (SSR-safe)
-  - Wrapper sobre localStorage con fallback
+  - Wrapper around localStorage with a fallback
   - JSON serialization/deserialization
-  - Silent error handling (no tira la app)
+  - Silent error handling (never crashes the app)
 
 - **Positioning** (clampMenuPosition)
-  - Cálculo automático para evitar overflow
-  - Margen configurable
-  - Respeta límites de viewport
+  - Automatic calculation to avoid overflow
+  - Configurable margin
+  - Respects viewport bounds
 
-#### Configuración
-- **IaFraConfig** — Interfaz de configuración
-  - `active` — Activar/desactivar globalmente
-  - `currentVariant` — Variante actual
-  - `currentTheme` — Tema actual
-  - `components` — Definiciones de componentes reutilizables
-  - `themeTokens` — Definiciones de temas
+#### Configuration
+- **IaFraConfig** — Configuration interface
+  - `active` — Turn the component on/off globally
+  - `currentVariant` — Current variant
+  - `currentTheme` — Current theme
+  - `components` — Reusable component definitions
+  - `themeTokens` — Theme definitions
 
-- **defineConfig()** — Helper para type inference en tiempo de escritura
+- **defineConfig()** — Helper for compile-time type inference
 
-#### Estilos
-- **Sistema de diseño CSS** — 14 variables base
-  - Paleta de colores (bg, fg, border, accent, danger)
-  - Espaciado y tipografía
-  - Sombras y border-radius
-  - Z-index configurables
+#### Styling
+- **CSS design system** — 14 base variables
+  - Color palette (bg, fg, border, accent, danger)
+  - Spacing and typography
+  - Shadows and border-radius
+  - Configurable z-index
 
-- **CSS Modular** — 5 archivos + 1 index
-  - tokens.css — Variables y base
-  - button-menu.css — Botón flotante y menú
-  - overlays.css — Overlays y frames
-  - modal.css — Modal de prompts
-  - pickers.css — Pickers de variantes/temas
-  - index.css — Imports finales
+- **Modular CSS** — 5 files + 1 index
+  - tokens.css — Variables and base
+  - button-menu.css — Floating button and menu
+  - overlays.css — Overlays and frames
+  - modal.css — Prompt modal
+  - pickers.css — Variant/theme pickers
+  - index.css — Final imports
 
-#### Documentación
-- **README.md** — Guía de usuario completa
-  - Instalación
-  - Uso básico
-  - Configuración avanzada
-  - Referencias de API
-  - Compatibilidad
+#### Documentation
+- **README.md** — Full user guide
+  - Installation
+  - Basic usage
+  - Advanced configuration
+  - API reference
+  - Compatibility
 
-- **CLAUDE.md** — Documentación técnica para desarrolladores
-  - Arquitectura y componentes
-  - Conceptos clave
-  - Tests y cobertura
-  - Workflow de desarrollo
+- **CLAUDE.md** — Technical documentation for developers
+  - Architecture and components
+  - Key concepts
+  - Tests and coverage
+  - Development workflow
   - Debugging
 
-- **INTEGRATION.md** — Guías de integración
-  - Ejemplos para: React+Vite, Next.js, CRA, Remix, Astro
-  - Casos de uso avanzados
+- **INTEGRATION.md** — Integration guides
+  - Examples for: React+Vite, Next.js, CRA, Remix, Astro
+  - Advanced use cases
   - Troubleshooting
   - Performance tips
 
-- **CHANGELOG.md** — Este archivo
+- **CHANGELOG.md** — This file
 
 #### Testing
-- **152 tests pasando** (21 archivos)
-  - Unit tests para librerías (`lib/`, `hooks/`)
-  - Component tests para React (RTL)
-  - Integration tests para flujos
+- **152 passing tests** (21 files)
+  - Unit tests for libraries (`lib/`, `hooks/`)
+  - Component tests for React (RTL)
+  - Integration tests for full flows
 
-- **Cobertura:**
+- **Coverage:**
   - storage.ts → 9 tests
   - AssistantProvider.tsx → 8 tests
   - useTrackedTargets.ts → 13 tests
@@ -148,122 +148,122 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
   - IaFrontRefAssistant.tsx → 2 tests
 
 #### Build & Distribution
-- **Compilación Vite lib mode**
+- **Vite lib mode build**
   - ESM: dist/ia-front-ref-assistant.js (~26.5 kB)
   - CJS: dist/ia-front-ref-assistant.cjs (~18 kB)
   - TypeScript definitions: dist/index.d.ts
-  - Estilos compilados: dist/style.css (~3 kB)
+  - Compiled styles: dist/style.css (~3 kB)
 
 - **Package exports**
-  - Entrada principal: IaFrontRefAssistant
+  - Main entry: IaFrontRefAssistant
   - Subexport: `ia-front-ref-assistant/style.css`
-  - Tipos públicos exportados
+  - Public types exported
 
-#### Skills para Claude Code
-- **plugin.json** — Manifest del plugin
-- **frontend-data-tagging SKILL** — Tagueo automático de elementos
-- **config-mapper SKILL** — Mapeo de configuración
-- **init-ia-front-assistent command** — Inicialización de proyectos
+#### Claude Code Skills
+- **plugin.json** — Plugin manifest
+- **frontend-data-tagging SKILL** — Automatic element tagging
+- **config-mapper SKILL** — Configuration mapping
+- **init-ia-front-assistent command** — Project initialization
 
-### 🏗️ Arquitectura
-- **Componentes puros** — Sin side effects salvo donde necesario
-- **Hooks custom** — useTrackedTargets, useHoverCloseTimer, useAssistant
-- **React Context** — Estado global con Provider
-- **Portal rendering** — UI flotante sin afectar layout
-- **SSR-safe** — Detecta `typeof window` en AssistantProvider
+### 🏗️ Architecture
+- **Pure components** — No side effects except where necessary
+- **Custom hooks** — useTrackedTargets, useHoverCloseTimer, useAssistant
+- **React Context** — Global state via a Provider
+- **Portal rendering** — Floating UI that doesn't affect layout
+- **SSR-safe** — Detects `typeof window` in AssistantProvider
 
-### 🎨 Diseño
-- **Mobile-first CSS** — Responsive en todos los tamaños
-- **BEM ligero** — Prefijo `.ia-fra-*` para evitar colisiones
-- **Variables CSS** — Sistema de tokens personalizable
-- **Accesibilidad** — ARIA labels, focus management, semantic HTML
+### 🎨 Design
+- **Mobile-first CSS** — Responsive at every size
+- **Light BEM** — `.ia-fra-*` prefix to avoid collisions
+- **CSS variables** — Customizable token system
+- **Accessibility** — ARIA labels, focus management, semantic HTML
 
-### 📦 Dependencias
+### 📦 Dependencies
 - **Peer Dependencies:** React 18+/19+, ReactDOM 18+/19+
 - **Dev Dependencies:** TypeScript, Vite, Vitest, React Testing Library, JSdom
 
-### 🔧 Configuración
-- `vite.config.ts` — Builder y lib mode
+### 🔧 Configuration
+- `vite.config.ts` — Builder and lib mode
 - `vitest.config.ts` — Test runner
 - `tsconfig.json` — TypeScript strict mode
-- `package.json` — Scripts y metadata
+- `package.json` — Scripts and metadata
 
-### 📋 Ejecución
-Realizada en **5 oleadas paralelas**:
+### 📋 Execution
+Built in **5 parallel waves**:
 
-1. **Oleada 0** (1 agente) — Fundaciones puras
-   - 6 archivos base (tipos, constantes, posición, DOM, CSS tokens)
+1. **Wave 0** (1 agent) — Pure foundations
+   - 6 base files (types, constants, positioning, DOM, CSS tokens)
    - Checkpoint: typecheck ✓
 
-2. **Oleada 1** (8 agentes paralelo) — Grueso del trabajo
-   - A: Storage/Context (3 archivos, 13 tests)
-   - B: UI shell (7 archivos, 47 tests)
-   - C: Submenú (2 archivos, 13 tests)
-   - D: Motor DOM (1 archivo, 20 tests)
-   - E: Overlays (6 archivos, 33 tests)
-   - F: Prompt/clipboard (4 archivos)
-   - G: Config + pickers (4 archivos, 19 tests)
-   - H: Skills (4 archivos, paralelo con todo)
+2. **Wave 1** (8 agents in parallel) — The bulk of the work
+   - A: Storage/Context (3 files, 13 tests)
+   - B: UI shell (7 files, 47 tests)
+   - C: Submenu (2 files, 13 tests)
+   - D: DOM engine (1 file, 20 tests)
+   - E: Overlays (6 files, 33 tests)
+   - F: Prompt/clipboard (4 files)
+   - G: Config + pickers (4 files, 19 tests)
+   - H: Skills (4 files, in parallel with everything)
    - Checkpoint: 145 tests ✓
 
-3. **Oleada 2** (1 agente) — Integración CSS
-   - 1 archivo (imports finales)
+3. **Wave 2** (1 agent) — CSS integration
+   - 1 file (final imports)
    - Checkpoint: build ✓
 
-4. **Oleada 3** (1 agente) — Integración total
-   - 3 archivos (IaFrontRefAssistant, index.ts, App.tsx)
+4. **Wave 3** (1 agent) — Full integration
+   - 3 files (IaFrontRefAssistant, index.ts, App.tsx)
    - Checkpoint: 152 tests, build ✓
 
-5. **Oleada 4** (1 agente) — Patches fase 8
-   - 6 patches secuenciales (configuración avanzada)
+5. **Wave 4** (1 agent) — Phase 8 patches
+   - 6 sequential patches (advanced configuration)
    - Checkpoint: tests + build ✓
 
-**Total:** ~70 archivos, 152 tests, cero conflictos de merge
+**Total:** ~70 files, 152 tests, zero merge conflicts
 
-### ✅ Verificaciones
-- ✓ TypeScript typecheck (con warnings pre-existentes)
-- ✓ npm test — 152 tests pasando
-- ✓ npm run build — Compilación exitosa
-- ✓ npm run example:dev — App ejemplo funcional
-- ✓ SSR-safe — Soporta Next.js, Astro
+### ✅ Checks
+- ✓ TypeScript typecheck (with pre-existing warnings)
+- ✓ npm test — 152 passing tests
+- ✓ npm run build — Build succeeds
+- ✓ npm run example:dev — Example app works
+- ✓ SSR-safe — Supports Next.js, Astro
 - ✓ React 18/19 compatible
 
 ---
 
-## Notas de esta versión
+## Notes for this release
 
-### Deuda técnica
-- Algunos tests tienen warnings de `act()` (no bloquean tests)
-- typecheck reporta errores pre-existentes en ciertos tests (no en código principal)
-- Vulnerabilidades en dependencias transitivas (audit fix pendiente)
+### Technical debt
+- Some tests have `act()` warnings (don't fail the tests)
+- typecheck reports pre-existing errors in certain test files (not in the main code)
+- Vulnerabilities in transitive dependencies (audit fix pending)
 
-### Roadmap futuro
+### Future roadmap
 - [ ] Theme builder UI
-- [ ] Cloud sync de prompts
-- [ ] Colaboración en tiempo real
-- [ ] Export de prompts a diferentes formatos
-- [ ] Integración con más assistants de IA
-- [ ] Modo "screenshot" para guardar overlays
-- [ ] Keyboard shortcuts customizables
-- [ ] Analytics (anónimas)
+- [ ] Cloud sync for prompts
+- [ ] Real-time collaboration
+- [ ] Export prompts to different formats
+- [ ] Integration with more AI assistants
+- [ ] "Screenshot" mode to save overlays
+- [ ] Customizable keyboard shortcuts
+- [ ] Anonymous analytics
 
 ### Breaking changes
-N/A — Primera versión
+N/A — First release
 
 ---
 
-## Cómo contribuir
+## How to contribute
 
-1. Revisa [CLAUDE.md](CLAUDE.md) para entender la arquitectura
-2. Lee [plan/10-parallel-execution-plan.md](plan/10-parallel-execution-plan.md) para el workflow
-3. Asegúrate que tests pasen: `npm test`
-4. Verifica tipos: `npm run typecheck`
-5. Actualiza CHANGELOG.md si es un cambio notable
+1. Read [CLAUDE.md](CLAUDE.md) to understand the architecture
+2. Read [plan/10-parallel-execution-plan.md](plan/10-parallel-execution-plan.md) for the workflow
+3. Make sure tests pass: `npm test`
+4. Check types: `npm run typecheck`
+5. Update CHANGELOG.md for any notable change
 
 ---
 
-**Fecha de lanzamiento:** Agosto 21, 2025  
-**Compilado por:** Sistema multi-agente (Haiku + Sonnet)  
-**Tiempo de desarrollo:** ~8 horas (paralelo)  
-**Tests:** 152/152 ✓  
-**Build:** ✓ Exitoso
+**Release date:** August 21, 2025
+**Built by:** Multi-agent system (Haiku + Sonnet)
+**Development time:** ~8 hours (parallel)
+**Tests:** 152/152 ✓
+**Build:** ✓ Successful
