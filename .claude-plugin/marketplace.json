@@ -1,0 +1,13 @@
+{
+  "name": "ia-front-ref-assistant",
+  "owner": {
+    "name": "cristianm-developer"
+  },
+  "plugins": [
+    {
+      "name": "ia-skills",
+      "source": "./ia-skills",
+      "description": "Auto-installs ia-front-ref-assistant, tags your components, and syncs iafrontrefassistant.config.ts."
+    }
+  ]
+}

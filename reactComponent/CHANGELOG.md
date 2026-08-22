@@ -7,6 +7,15 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 
 ---
 
+## [0.1.1] — 2026-08-22
+
+### 🐛 Corregido
+- **`useRect`** — el primer render no actualizaba el rect (esperaba 100ms de throttle incluso en el primer tick), rompiendo overlays hasta el segundo frame
+- **`FrameLabel`** — el frame completo (no solo el label) capturaba `pointer-events`, bloqueando clics sobre el contenido subyacente cuando `interactive`
+- **`process.env.NODE_ENV`** sin guard — podía lanzar `ReferenceError: process is not defined` en bundlers de consumidores que no polyfillean `process` en el browser
+- Tests de `ThemePicker` desactualizados (asumían un toggle de pills que ya no existe; el componente usa `<select>`) — reescritos para reflejar la UI actual
+- Empaquetado: faltaban `README.md`/`LICENSE` dentro de `reactComponent/`, por lo que no se publicaban con el paquete de npm
+
 ## [0.1.0] — 2025-08-21 — Initial Release
 
 ### ✨ Agregado

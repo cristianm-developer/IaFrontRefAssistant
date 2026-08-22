@@ -1,15 +1,22 @@
 ---
-description: Inicializa o audita ia-front-ref-assistant en este proyecto — instala el paquete si falta, crea/sincroniza iafrontrefassistant.config.ts, retagea vistas/componentes existentes con data-wrapper-id/data-component-id/data-component-kind, y monta <IaFrontRefAssistant> en la raíz de la app si todavía no está.
+name: init-ia-front-assistant
+description: Usar cuando el usuario pida inicializar, instalar, auditar o sincronizar `ia-front-ref-assistant` en este proyecto (frases tipo "instalá ia-front-ref-assistant", "inicializá el asistente de IA", "sincronizá el tagueo de componentes"). Instala el paquete si falta, crea/sincroniza `iafrontrefassistant.config.ts`, retagea vistas/componentes existentes con `data-wrapper-id`/`data-component-id`/`data-component-kind`, y monta `<IaFrontRefAssistant>` en la raíz de la app si todavía no está.
 ---
 
 # Inicialización de ia-front-ref-assistant
+
+> Esta skill es la versión portable (formato [Agent Skills](https://agents.md))
+> del comando `/init-ia-front-assistent` de Claude Code — mismo contenido,
+> pensada para invocarse desde cualquier agente que lea `.agents/skills/`
+> (Codex CLI vía `$init-ia-front-assistant`, Cursor, etc.), no solo desde
+> Claude Code.
 
 > El paquete ya está publicado en npm (`npm install ia-front-ref-assistant`);
 > usá esa forma por default. Solo recurrí a la URL de git
 > (`git+https://github.com/cristianm-developer/IaFrontRefAssistant.git`,
 > subdirectorio `reactComponent`) si el usuario pide explícitamente
 > instalar desde el repo (ej. para probar un cambio sin publicar).
-> Si este comando se corre desde una copia local
+> Si esta skill se corre desde una copia local
 > del monorepo (herMANO de `reactComponent/` en el mismo checkout, típico
 > mientras se desarrolla el propio paquete), usá esa ruta local
 > (`file:../ruta/a/reactComponent`) en vez de la URL de git.
@@ -34,7 +41,7 @@ Ejecutá estos pasos en orden:
    (no tagees ni montes nada sobre un paquete que no quedó instalado).
 3. Si `ia-front-ref-assistant` ya estaba en las dependencias (paso 2 no
    tuvo que instalar nada), preguntale al usuario si quiere que igual se
-   actualice a la última versión del git (`npm update ia-front-ref-assistant`
+   actualice a la última versión (`npm update ia-front-ref-assistant`
    o equivalente) antes de seguir — no lo hagas sin preguntar, puede tener
    una versión fijada a propósito.
 4. Antes de escribir nada, **interrogá al usuario** sobre lo que sea
@@ -44,8 +51,9 @@ Ejecutá estos pasos en orden:
    concreto, preguntá (adaptá las preguntas si algo ya es evidente del
    código, no repreguntes lo obvio):
    - Qué skills/comandos propios del proyecto (si hay varios candidatos
-     detectados en `ia-skills/` o el directorio equivalente) deberían
-     citarse siempre en el prompt final, y con qué nombre exacto.
+     detectados en `.agents/skills/`, `ia-skills/` o el directorio
+     equivalente) deberían citarse siempre en el prompt final, y con qué
+     nombre exacto.
    - Si hay convenciones de implementación obligatorias (carpeta de
      componentes, patrón de nombrado, linter/formatter, librería de
      estilos) que la IA que reciba el prompt siempre deba tener en cuenta.
@@ -121,7 +129,7 @@ Ejecutá estos pasos en orden:
    confirmar que todo compila con los cambios (instalación de dependencia,
    atributos `data-*`, y el nuevo wrapper en la raíz).
 
-Este comando es **idempotente**: correrlo dos veces seguidas no debe
+Esta skill es **idempotente**: correrla dos veces seguidas no debe
 reinstalar el paquete si ya está (paso 2), no debe duplicar ids ni volver a
 taguear lo ya tagueado (paso 6 explícitamente dice "no re-tagear lo que ya
 está tagueado"), no debe duplicar entradas en el config (paso 5 delega en
@@ -135,22 +143,22 @@ antes de tocar nada).
 ## Casos borde
 
 - Proyecto sin ningún componente/vista detectable (recién creado, vacío) →
-  `/init-ia-front-assistent` crea igual el `iafrontrefassistant.config.ts` base (con
+  esta skill crea igual el `iafrontrefassistant.config.ts` base (con
   `components: []`, `theme: []`) y reporta "0 componentes tagueados" sin
   error.
 - Proyecto muy grande (cientos de componentes) → recorrer por directorios
   conocidos primero (paso 6) en vez de todo el repo, para no perder tiempo
   en `node_modules`, `dist`, `.next`, etc. (excluir siempre esas carpetas).
 - El usuario no tiene skills/comandos propios detectables ni convenciones
-  fijas que valga la pena citar siempre (proyecto chico, sin `ia-skills/`
-  propio) → tras preguntar en el paso 4, si el usuario confirma que no
-  hace falta, seguir sin `prePrompt` (no es obligatorio, ver nota en
-  `config-mapper`).
+  fijas que valga la pena citar siempre (proyecto chico, sin
+  `.agents/skills/`/`ia-skills/` propio) → tras preguntar en el paso 4, si
+  el usuario confirma que no hace falta, seguir sin `prePrompt` (no es
+  obligatorio, ver nota en `config-mapper`).
 - Un componente con `variant`/`size` tipado como `string` genérico (no
   union de literales) → no se puede derivar una lista cerrada de opciones;
   `config-mapper` no agrega `variants`/`sizes` para ese componente en ese
   caso (deja el array vacío/ausente), no inventa valores.
-- El usuario corre `/init-ia-front-assistent` en un proyecto que **no** usa React (el
+- El usuario invoca esta skill en un proyecto que **no** usa React (el
   paquete es React-only) → detectá esto (ausencia de `react`/`react-dom`
   en dependencias) **antes** del paso 2 (instalación) y avisá que el
   paquete no aplica, sin instalar ni taguear ni montar nada.

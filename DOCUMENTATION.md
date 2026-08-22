@@ -8,27 +8,28 @@ Guía completa de documentación para el proyecto **IA Front Ref Assistant**.
 
 ```
 IaFrontRefAssistant/
-├── reactComponent/                    # Librería principal (npm)
-│   ├── README.md                      # ← Guía de usuario
-│   ├── CLAUDE.md                      # ← Documentación técnica (devs)
-│   ├── INTEGRATION.md                 # ← Guías de integración por framework
-│   ├── CHANGELOG.md                   # ← Historial de versiones
-│   ├── CONTRIBUTING.md                # ← Cómo contribuir
-│   ├── CLAUDE_CODE_SKILLS.md          # ← Skills para Claude Code (CLI)
-│   ├── plan/                          # ← Fases 0-10 (especificaciones técnicas)
-│   │   ├── 00-overview.md
-│   │   ├── 01-data-types.md
-│   │   ├── 02-*.md
-│   │   ├── ...
-│   │   ├── 09-claude-code-integration.md
-│   │   └── 10-parallel-execution-plan.md
-│   ├── src/                           # Código fuente (TypeScript/React)
-│   ├── example/                       # App React de prueba
-│   ├── package.json
-│   ├── tsconfig.json
-│   ├── vite.config.ts
-│   └── vitest.config.ts
-└── DOCUMENTATION.md                   # ← Este archivo
+├── README.md                           # ← Guía de usuario
+├── LICENSE                             # ← Licencia MIT
+├── DOCUMENTATION.md                    # ← Este archivo
+└── reactComponent/                    # Librería principal (npm)
+    ├── CLAUDE.md                      # ← Documentación técnica (devs)
+    ├── INTEGRATION.md                 # ← Guías de integración por framework
+    ├── CHANGELOG.md                   # ← Historial de versiones
+    ├── CONTRIBUTING.md                # ← Cómo contribuir
+    ├── CLAUDE_CODE_SKILLS.md          # ← Skills para Claude Code (CLI)
+    ├── plan/                          # ← Fases 0-10 (especificaciones técnicas)
+    │   ├── 00-overview.md
+    │   ├── 01-data-types.md
+    │   ├── 02-*.md
+    │   ├── ...
+    │   ├── 09-claude-code-integration.md
+    │   └── 10-parallel-execution-plan.md
+    ├── src/                           # Código fuente (TypeScript/React)
+    ├── example/                       # App React de prueba
+    ├── package.json
+    ├── tsconfig.json
+    ├── vite.config.ts
+    └── vitest.config.ts
 ```
 
 ---
@@ -39,7 +40,7 @@ IaFrontRefAssistant/
 
 **Quiero usar la librería en mi proyecto**
 
-1. Comienza con: [`reactComponent/README.md`](reactComponent/README.md)
+1. Comienza con: [`README.md`](README.md)
    - Instalación
    - Uso básico
    - Configuración
@@ -48,7 +49,7 @@ IaFrontRefAssistant/
    - Ejemplos para tu framework (React, Next.js, etc.)
    - Troubleshooting
 
-3. API Reference: [`reactComponent/README.md#api-reference`](reactComponent/README.md#api-reference)
+3. API Reference: [`README.md#api-reference`](README.md#api-reference)
 
 ### 👨‍💻 **Para desarrolladores del proyecto**
 
@@ -97,23 +98,23 @@ IaFrontRefAssistant/
 
 ### **Instalación & Setup**
 
-- [`README.md` — Instalación](reactComponent/README.md#instalación)
+- [`README.md` — Instalación](README.md#instalación)
 - [`INTEGRATION.md` — Setup por framework](reactComponent/INTEGRATION.md)
 
 ### **Cómo usar**
 
-- [`README.md` — Uso básico](reactComponent/README.md#uso-básico)
-- [`README.md` — Tagueo de elementos](reactComponent/README.md#tagueo-de-elementos)
+- [`README.md` — Uso básico](README.md#uso-básico)
+- [`README.md` — Tagueo de elementos](README.md#tagueo-de-elementos)
 - [`INTEGRATION.md` — Ejemplos completos](reactComponent/INTEGRATION.md)
 
 ### **Configuración**
 
-- [`README.md` — Configuración avanzada](reactComponent/README.md#configuración-avanzada)
+- [`README.md` — Configuración avanzada](README.md#configuración-avanzada)
 - [`CLAUDE.md` — Conceptos de config](reactComponent/CLAUDE.md#configuración-de-usuario)
 
 ### **Estilos & Temas**
 
-- [`README.md` — Estilos y temas](reactComponent/README.md#estilos-y-temas)
+- [`README.md` — Estilos y temas](README.md#estilos-y-temas)
 - [`CLAUDE.md` — CSS modular](reactComponent/CLAUDE.md#-estilos)
 
 ### **Desarrollo**
@@ -134,7 +135,7 @@ IaFrontRefAssistant/
 
 ### **Troubleshooting**
 
-- [`README.md` — FAQ implícitas](reactComponent/README.md#rendimiento)
+- [`README.md` — FAQ implícitas](README.md#rendimiento)
 - [`INTEGRATION.md` — Troubleshooting](reactComponent/INTEGRATION.md#troubleshooting)
 
 ---
@@ -174,10 +175,10 @@ Cada fase documenta un aspecto específico del componente:
 
 | Pregunta | Respuesta |
 |----------|-----------|
-| ...instalar? | [`README.md` — Instalación](reactComponent/README.md#instalación) |
-| ...usar en React? | [`README.md` — Uso básico](reactComponent/README.md#uso-básico) |
+| ...instalar? | [`README.md` — Instalación](README.md#instalación) |
+| ...usar en React? | [`README.md` — Uso básico](README.md#uso-básico) |
 | ...usar en Next.js? | [`INTEGRATION.md` — Next.js](reactComponent/INTEGRATION.md#nextjs-app-router) |
-| ...personalizar estilos? | [`README.md` — Estilos](reactComponent/README.md#estilos-y-temas) |
+| ...personalizar estilos? | [`README.md` — Estilos](README.md#estilos-y-temas) |
 | ...entender la arquitectura? | [`CLAUDE.md` — Arquitectura](reactComponent/CLAUDE.md#-arquitectura) |
 | ...contribuir? | [`CONTRIBUTING.md`](reactComponent/CONTRIBUTING.md) |
 | ...reportar un bug? | [`CONTRIBUTING.md` — FAQ](reactComponent/CONTRIBUTING.md#preguntas-frecuentes) |
@@ -210,7 +211,7 @@ Lenguajes: Español + Inglés (comentarios en código)
 
 ### Principiante (1-2 horas)
 
-1. [`README.md`](reactComponent/README.md) — Visión general
+1. [`README.md`](README.md) — Visión general
 2. [`INTEGRATION.md`](reactComponent/INTEGRATION.md) — Tu framework específico
 3. Ejecuta `npm run example:dev` y prueba en vivo
 

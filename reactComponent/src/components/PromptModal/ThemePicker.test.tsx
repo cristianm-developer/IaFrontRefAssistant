@@ -4,43 +4,62 @@ import { ThemePicker } from './ThemePicker';
 import type { ThemeTokenDefinition } from '../../config/types';
 
 describe('ThemePicker', () => {
-  it('renderiza el toggle colapsado por defecto', () => {
+  it('devuelve null cuando el array de tokens está vacío', () => {
+    const { container } = render(<ThemePicker tokens={[]} onPick={() => {}} />);
+
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('renderiza el selector de propiedad con todos los tokens', () => {
+    const tokens: ThemeTokenDefinition[] = [
+      { key: 'bg-color', label: 'Color de fondo' },
+      { key: 'border-color', label: 'Color de borde' },
+      { key: 'border-radius', label: 'Border radius' },
+    ];
+
+    render(<ThemePicker tokens={tokens} onPick={() => {}} />);
+
+    const select = screen.getByRole('combobox');
+    expect(select).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'bg-color' })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'border-color' })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'border-radius' })).toBeInTheDocument();
+  });
+
+  it('no muestra el selector de valor hasta elegir una propiedad', () => {
     const tokens: ThemeTokenDefinition[] = [{ key: 'bg-color', label: 'Color de fondo' }];
 
     render(<ThemePicker tokens={tokens} onPick={() => {}} />);
 
-    expect(screen.getByRole('button', { name: /Theme ▾/ })).toBeInTheDocument();
+    expect(screen.getAllByRole('combobox')).toHaveLength(1);
   });
 
-  it('expande el contenido al hacer click en el toggle', () => {
+  it('token sin values muestra un input de texto libre', () => {
     const tokens: ThemeTokenDefinition[] = [{ key: 'bg-color', label: 'Color de fondo' }];
 
     render(<ThemePicker tokens={tokens} onPick={() => {}} />);
 
-    const toggle = screen.getByRole('button', { name: /Theme ▾/ });
-    fireEvent.click(toggle);
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'bg-color' } });
 
-    // Debería mostrar el token
-    expect(screen.getByRole('button', { name: 'Color de fondo' })).toBeInTheDocument();
-    expect(screen.getByText(/Theme ▴/)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Escribí el valor…')).toBeInTheDocument();
   });
 
-  it('token sin values llama onPick con oración abierta', () => {
+  it('input de texto libre llama onPick al presionar Enter', () => {
     const tokens: ThemeTokenDefinition[] = [{ key: 'bg-color', label: 'Color de fondo' }];
     const onPick = vi.fn();
 
     render(<ThemePicker tokens={tokens} onPick={onPick} />);
 
-    const toggle = screen.getByRole('button', { name: /Theme ▾/ });
-    fireEvent.click(toggle);
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'bg-color' } });
 
-    const tokenButton = screen.getByRole('button', { name: 'Color de fondo' });
-    fireEvent.click(tokenButton);
+    const input = screen.getByPlaceholderText('Escribí el valor…');
+    fireEvent.change(input, { target: { value: '#fff' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
 
-    expect(onPick).toHaveBeenCalledWith('Cambiá Color de fondo a ');
+    expect(onPick).toHaveBeenCalledWith('Cambiá `bg-color` a `#fff`.');
   });
 
-  it('token con values expande y renderiza sub-pills', () => {
+  it('token con values renderiza un segundo selector con las opciones', () => {
     const tokens: ThemeTokenDefinition[] = [
       {
         key: 'border-radius',
@@ -54,20 +73,15 @@ describe('ThemePicker', () => {
 
     render(<ThemePicker tokens={tokens} onPick={() => {}} />);
 
-    // Expandir el theme
-    const toggle = screen.getByRole('button', { name: /Theme ▾/ });
-    fireEvent.click(toggle);
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'border-radius' } });
 
-    // Click en el token para expandir
-    const tokenButton = screen.getByRole('button', { name: 'Border radius' });
-    fireEvent.click(tokenButton);
-
-    // Debería aparecer los values
-    expect(screen.getByRole('button', { name: 'Pequeño' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Mediano' })).toBeInTheDocument();
+    const selects = screen.getAllByRole('combobox');
+    expect(selects).toHaveLength(2);
+    expect(screen.getByRole('option', { name: 'Pequeño' })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'Mediano' })).toBeInTheDocument();
   });
 
-  it('click en un value llama onPick con oración cerrada y comillas', () => {
+  it('elegir un value llama onPick con la oración formateada', () => {
     const tokens: ThemeTokenDefinition[] = [
       {
         key: 'border-radius',
@@ -79,57 +93,15 @@ describe('ThemePicker', () => {
 
     render(<ThemePicker tokens={tokens} onPick={onPick} />);
 
-    // Expandir theme
-    const toggle = screen.getByRole('button', { name: /Theme ▾/ });
-    fireEvent.click(toggle);
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'border-radius' } });
 
-    // Expandir token
-    const tokenButton = screen.getByRole('button', { name: 'Border radius' });
-    fireEvent.click(tokenButton);
+    const [, valueSelect] = screen.getAllByRole('combobox');
+    fireEvent.change(valueSelect, { target: { value: 'sm' } });
 
-    // Click en value
-    const valueButton = screen.getByRole('button', { name: 'Pequeño' });
-    fireEvent.click(valueButton);
-
-    expect(onPick).toHaveBeenCalledWith('Cambiá Border radius a "Pequeño".');
+    expect(onPick).toHaveBeenCalledWith('Cambiá `border-radius` a `Pequeño`.');
   });
 
-  it('devuelve null cuando el array de tokens está vacío', () => {
-    const { container } = render(<ThemePicker tokens={[]} onPick={() => {}} />);
-
-    expect(container.firstChild).toBeNull();
-  });
-
-  it('collapsa el token expandido al hacer click nuevamente', () => {
-    const tokens: ThemeTokenDefinition[] = [
-      {
-        key: 'border-radius',
-        label: 'Border radius',
-        values: [{ value: 'sm', label: 'Pequeño' }],
-      },
-    ];
-
-    render(<ThemePicker tokens={tokens} onPick={() => {}} />);
-
-    // Expandir theme
-    const toggle = screen.getByRole('button', { name: /Theme ▾/ });
-    fireEvent.click(toggle);
-
-    // Expandir token
-    const tokenButton = screen.getByRole('button', { name: 'Border radius' });
-    fireEvent.click(tokenButton);
-
-    // Verificar que el value está visible
-    expect(screen.getByRole('button', { name: 'Pequeño' })).toBeInTheDocument();
-
-    // Hacer click nuevamente para colapsar
-    fireEvent.click(tokenButton);
-
-    // El value debería desaparecer
-    expect(screen.queryByRole('button', { name: 'Pequeño' })).not.toBeInTheDocument();
-  });
-
-  it('maneja tokens con array de values vacío como sin values', () => {
+  it('maneja tokens con array de values vacío como sin values (input libre)', () => {
     const tokens: ThemeTokenDefinition[] = [
       {
         key: 'border-radius',
@@ -137,35 +109,11 @@ describe('ThemePicker', () => {
         values: [],
       },
     ];
-    const onPick = vi.fn();
-
-    render(<ThemePicker tokens={tokens} onPick={onPick} />);
-
-    // Expandir theme
-    const toggle = screen.getByRole('button', { name: /Theme ▾/ });
-    fireEvent.click(toggle);
-
-    // Click en el token debería llamar onPick con oración abierta
-    const tokenButton = screen.getByRole('button', { name: 'Border radius' });
-    fireEvent.click(tokenButton);
-
-    expect(onPick).toHaveBeenCalledWith('Cambiá Border radius a ');
-  });
-
-  it('renderiza múltiples tokens', () => {
-    const tokens: ThemeTokenDefinition[] = [
-      { key: 'bg-color', label: 'Color de fondo' },
-      { key: 'border-color', label: 'Color de borde' },
-      { key: 'border-radius', label: 'Border radius' },
-    ];
 
     render(<ThemePicker tokens={tokens} onPick={() => {}} />);
 
-    const toggle = screen.getByRole('button', { name: /Theme ▾/ });
-    fireEvent.click(toggle);
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'border-radius' } });
 
-    expect(screen.getByRole('button', { name: 'Color de fondo' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Color de borde' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Border radius' })).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Escribí el valor…')).toBeInTheDocument();
   });
 });

@@ -32,7 +32,7 @@ export function IaFrontRefAssistant({ children, definitions }: IaFrontRefAssista
   // hay una instancia más arriba, esta es anidada — no duplicar provider/UI.
   const existing = useContext(AssistantContext);
   if (existing) {
-    if (process.env.NODE_ENV !== 'production') {
+    if (typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production') {
       console.warn(
         '[ia-front-ref-assistant] <IaFrontRefAssistant> ya está montado más ' +
         'arriba en el árbol; esta instancia anidada no vuelve a montar el ' +

@@ -41,7 +41,7 @@ describe('useRect', () => {
 
     const { result, rerender } = renderHook(
       ({ el }) => useRect(el),
-      { initialProps: { el: div } }
+      { initialProps: { el: div as HTMLDivElement | null } }
     );
 
     act(() => {
@@ -62,7 +62,7 @@ describe('useRect', () => {
     const mockRect = new DOMRect(0, 0, 100, 100);
     vi.spyOn(div, 'getBoundingClientRect').mockReturnValue(mockRect);
 
-    const cancelAnimationFrameSpy = vi.spyOn(global, 'cancelAnimationFrame');
+    const cancelAnimationFrameSpy = vi.spyOn(globalThis, 'cancelAnimationFrame');
     const { unmount } = renderHook(() => useRect(div));
 
     act(() => {

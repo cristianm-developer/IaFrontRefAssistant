@@ -15,7 +15,7 @@ export function useRect(el: Element | null): DOMRect | null {
       setRect(null);
       return;
     }
-    let lastUpdate = Date.now();
+    let lastUpdate = 0; // fuerza que el primer tick actualice de inmediato
     function tick() {
       const now = Date.now();
       // Throttle: solo actualizar cada 100ms para evitar parpadeos durante hover

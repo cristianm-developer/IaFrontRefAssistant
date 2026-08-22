@@ -30,15 +30,8 @@ export function FrameLabel({ rect, label, opacity = 1, interactive = false, onCl
         width: displayRect.width,
         height: displayRect.height,
         opacity,
-        pointerEvents: interactive ? 'auto' : 'none',
-        cursor: interactive ? 'pointer' : 'default',
+        pointerEvents: 'none',
       }}
-      onMouseEnter={() => {
-        setFrozenRect(rect);
-        setFrozen(true);
-      }}
-      onMouseLeave={() => setFrozen(false)}
-      onClick={interactive ? onClick : undefined}
     >
       <span
         className="ia-fra-frame__label"
@@ -46,8 +39,15 @@ export function FrameLabel({ rect, label, opacity = 1, interactive = false, onCl
           position: 'absolute',
           top: labelInside ? 2 : -22,
           left: 0,
-          pointerEvents: 'none',
+          pointerEvents: interactive ? 'auto' : 'none',
+          cursor: interactive ? 'pointer' : 'default',
         }}
+        onMouseEnter={() => {
+          setFrozenRect(rect);
+          setFrozen(true);
+        }}
+        onMouseLeave={() => setFrozen(false)}
+        onClick={interactive ? onClick : undefined}
       >
         {label}
       </span>

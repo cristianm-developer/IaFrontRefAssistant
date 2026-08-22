@@ -72,28 +72,28 @@ describe('storage', () => {
     });
 
     it('maneja undefined en window', () => {
-      const originalWindow = global.window;
+      const originalWindow = globalThis.window;
       // @ts-ignore - test only
-      global.window = undefined;
+      globalThis.window = undefined;
 
       const data = { key: 'value' };
       expect(() => writeJSON('test-key', data)).not.toThrow();
 
-      global.window = originalWindow;
+      globalThis.window = originalWindow;
     });
   });
 
   describe('readJSON con window undefined', () => {
     it('devuelve fallback si window es undefined', () => {
-      const originalWindow = global.window;
+      const originalWindow = globalThis.window;
       // @ts-ignore - test only
-      global.window = undefined;
+      globalThis.window = undefined;
 
       const fallback = { key: 'value' };
       const result = readJSON('test-key', fallback);
       expect(result).toEqual(fallback);
 
-      global.window = originalWindow;
+      globalThis.window = originalWindow;
     });
   });
 });

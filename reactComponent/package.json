@@ -1,6 +1,6 @@
 {
   "name": "ia-front-ref-assistant",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Componente React visual para asistir la codificación con IA",
   "type": "module",
   "main": "./dist/ia-front-ref-assistant.cjs",
@@ -40,7 +40,8 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TU_USUARIO/ia-front-ref-assistant.git"
+    "url": "git+https://github.com/cristianm-developer/IaFrontRefAssistant.git",
+    "directory": "reactComponent"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",

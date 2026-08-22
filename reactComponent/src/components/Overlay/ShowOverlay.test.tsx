@@ -46,7 +46,7 @@ describe('ShowOverlay', () => {
       vi.advanceTimersByTime(16);
     });
 
-    const frames = container.querySelectorAll('.ia-fra-frame');
+    const frames = container.querySelectorAll<HTMLElement>('.ia-fra-frame');
     expect(frames.length).toBe(2);
   });
 
@@ -108,7 +108,7 @@ describe('ShowOverlay', () => {
       vi.advanceTimersByTime(16);
     });
 
-    const frames = container.querySelectorAll('.ia-fra-frame');
+    const frames = container.querySelectorAll<HTMLElement>('.ia-fra-frame');
     expect(frames.length).toBe(2);
     expect(frames[0].style.opacity).toBe('1');
     expect(frames[1].style.opacity).toBe('0.35');
@@ -140,7 +140,7 @@ describe('ShowOverlay', () => {
       vi.advanceTimersByTime(16);
     });
 
-    const frames = container.querySelectorAll('.ia-fra-frame');
+    const frames = container.querySelectorAll<HTMLElement>('.ia-fra-frame');
     expect(frames.length).toBe(2);
     expect(frames[0].style.opacity).toBe('0.35');
     expect(frames[1].style.opacity).toBe('0.35');
@@ -196,7 +196,7 @@ describe('ShowOverlay', () => {
       vi.advanceTimersByTime(16);
     });
 
-    const frames = container.querySelectorAll('.ia-fra-frame');
+    const frames = container.querySelectorAll<HTMLElement>('.ia-fra-frame');
     expect(frames.length).toBe(2);
   });
 });

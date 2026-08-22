@@ -1,0 +1,8 @@
+{
+  "name": "ia-skills",
+  "version": "0.1.1",
+  "description": "Claude Code skills for ia-front-ref-assistant: auto-installs the npm package, tags components with data-wrapper-id/data-component-id/data-component-kind, and keeps iafrontrefassistant.config.ts in sync.",
+  "author": {
+    "name": "cristianm-developer"
+  }
+}

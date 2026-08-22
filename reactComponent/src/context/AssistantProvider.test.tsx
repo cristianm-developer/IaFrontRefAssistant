@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { AssistantProvider } from './AssistantProvider';
 import { useAssistant } from './AssistantContext';
-import { DEFAULT_CONFIG } from '../lib/types';
 
 function TestComponent() {
   const { config, prompts, toggleActive, addPrompt, clearPrompts } = useAssistant();
