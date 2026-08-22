@@ -1,0 +1,166 @@
+.ia-fra-root {
+  --ia-fra-bg: #0d0d0d;
+  --ia-fra-fg: #ffffff;
+  --ia-fra-border: #2a2a2a;
+  --ia-fra-accent: #3b82f6;
+  --ia-fra-danger: #ef4444;
+  --ia-fra-radius: 10px;
+  --ia-fra-radius-sm: 6px;
+  --ia-fra-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  --ia-fra-gap: 8px;
+  --ia-fra-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --ia-fra-font-size: 13px;
+  --ia-fra-z: 2147483000;
+  --ia-fra-button-size: 52px;
+
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: var(--ia-fra-z);
+  font-family: var(--ia-fra-font);
+  font-size: var(--ia-fra-font-size);
+}
+
+.ia-fra-button {
+  position: relative;
+  width: var(--ia-fra-button-size);
+  height: var(--ia-fra-button-size);
+  border-radius: 50%;
+  background: var(--ia-fra-bg);
+  color: var(--ia-fra-fg);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--ia-fra-shadow);
+  transition: opacity 0.15s ease;
+}
+
+.ia-fra-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--ia-fra-danger);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.ia-fra-menu {
+  min-width: 220px;
+  background: var(--ia-fra-bg);
+  color: var(--ia-fra-fg);
+  border-radius: var(--ia-fra-radius);
+  box-shadow: var(--ia-fra-shadow);
+  padding: 6px;
+  opacity: 0;
+  animation: ia-fra-menu-in 120ms ease forwards;
+}
+
+.ia-fra-menu--sub {
+  min-width: 200px;
+}
+
+/* Nota: esta animación NO puede usar `transform` en .ia-fra-menu — un
+   transform en un ancestro crea un nuevo containing block para sus
+   descendientes `position: fixed`. El submenú (.ia-fra-menu--sub) es
+   fixed y vive anidado dentro del menú principal (también fixed): si el
+   padre tuviera transform, el submenú se posicionaría relativo a él en
+   vez del viewport, sumando ambos offsets y quedando fuera de pantalla. */
+@keyframes ia-fra-menu-in {
+  to {
+    opacity: 1;
+  }
+}
+
+.ia-fra-menu-item-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.ia-fra-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--ia-fra-gap);
+  padding: 8px 10px;
+  border-radius: var(--ia-fra-radius-sm);
+  cursor: default;
+}
+
+.ia-fra-menu-item[role="button"] {
+  cursor: pointer;
+}
+
+.ia-fra-menu-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.ia-fra-menu-item__label {
+  flex: 1;
+  white-space: nowrap;
+}
+
+.ia-fra-chevron {
+  display: inline-block;
+  transition: transform 0.15s ease;
+  opacity: 0.6;
+}
+
+.ia-fra-chevron--open {
+  transform: rotate(90deg);
+}
+
+.ia-fra-action-row {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--ia-fra-fg);
+  font: inherit;
+  cursor: pointer;
+}
+
+.ia-fra-action-row:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ia-fra-toggle {
+  position: relative;
+  width: 34px;
+  height: 20px;
+  border-radius: 999px;
+  border: none;
+  background: #333333;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+
+.ia-fra-toggle--on {
+  background: var(--ia-fra-accent);
+}
+
+.ia-fra-toggle__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  transition: transform 0.15s ease;
+}
+
+.ia-fra-toggle--on .ia-fra-toggle__thumb {
+  transform: translateX(14px);
+}

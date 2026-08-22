@@ -1,0 +1,5 @@
+{
+  "name": "ia-front-ref-assistant",
+  "version": "0.1.0",
+  "description": "Tagueo automático data-wrapper-id/data-component-id/data-component-kind y sincronización de iafrontrefassistant.config.ts."
+}

@@ -1,0 +1,52 @@
+.ia-fra-picker {
+  margin-bottom: 8px;
+}
+.ia-fra-picker__toggle {
+  background: none;
+  border: none;
+  color: var(--ia-fra-fg);
+  opacity: 0.7;
+  font: inherit;
+  cursor: pointer;
+  padding: 0 0 6px;
+}
+.ia-fra-picker__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.ia-fra-picker__row-label {
+  font-size: 11px;
+  opacity: 0.6;
+  margin-right: 4px;
+}
+.ia-fra-picker__token {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ia-fra-picker__subrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding-left: 8px;
+}
+.ia-fra-pill {
+  background: #1a1a1a;
+  color: var(--ia-fra-fg);
+  border: 1px solid var(--ia-fra-border);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.ia-fra-pill--ghost {
+  border-style: dashed;
+  opacity: 0.7;
+}
+.ia-fra-pill--sub {
+  font-size: 11px;
+  padding: 3px 8px;
+}
