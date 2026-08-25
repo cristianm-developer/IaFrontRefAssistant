@@ -61,6 +61,7 @@ function AssistantRoot({
 }) {
   const { config, prompts, ...actions } = useAssistant();
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const widgetRootRef = useRef<HTMLDivElement>(null);
   const capturarRef = useRef<HTMLDivElement>(null);
   const modoPromptRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -106,7 +107,11 @@ function AssistantRoot({
     const onDocumentClick = (event: MouseEvent) => {
       const hit = event.target;
       if (!(hit instanceof Element)) return;
-      if (hit.closest('.ia-fra-root')) return;
+      // El widget vive en un portal propio. Usar la referencia evita que el
+      // listener global intercepte los clicks del botón/menú del asistente,
+      // especialmente en integraciones donde Preact y Astro tienen roots
+      // distintos.
+      if (widgetRootRef.current?.contains(hit)) return;
 
       let selected: TrackedTarget | null = null;
       let selectedDepth = Number.POSITIVE_INFINITY;
@@ -171,6 +176,7 @@ function AssistantRoot({
 
   const floatingUI = (
     <div
+      ref={widgetRootRef}
       className="ia-fra-root"
       onMouseEnter={hoverHandlers.onMouseEnter}
       onMouseLeave={hoverHandlers.onMouseLeave}
