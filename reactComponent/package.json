@@ -1,7 +1,7 @@
 {
   "name": "ia-front-ref-assistant",
-  "version": "0.1.2",
-  "description": "Componente React visual para asistir la codificación con IA",
+  "version": "0.1.3",
+  "description": "Widget visual (Preact embebido, cero dependencias de runtime) para asistir la codificación con IA — funciona en cualquier framework",
   "type": "module",
   "main": "./dist/ia-front-ref-assistant.cjs",
   "module": "./dist/ia-front-ref-assistant.js",
@@ -12,7 +12,8 @@
       "import": "./dist/ia-front-ref-assistant.js",
       "require": "./dist/ia-front-ref-assistant.cjs"
     },
-    "./style.css": "./dist/style.css"
+    "./style.css": "./dist/style.css",
+    "./dist/*": "./dist/*"
   },
   "files": [
     "dist"
@@ -27,6 +28,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
+    "smoke": "node scripts/smoke.mjs && node scripts/smoke-global.mjs",
     "example:install": "npm install --prefix example",
     "example:dev": "npm run dev --prefix example"
   },
@@ -43,10 +45,6 @@
     "url": "git+https://github.com/cristianm-developer/IaFrontRefAssistant.git",
     "directory": "reactComponent"
   },
-  "peerDependencies": {
-    "react": "^18.0.0 || ^19.0.0",
-    "react-dom": "^18.0.0 || ^19.0.0"
-  },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^16.0.1",
@@ -55,6 +53,7 @@
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
     "jsdom": "^25.0.1",
+    "preact": "^10.29.8",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "typescript": "^5.6.3",

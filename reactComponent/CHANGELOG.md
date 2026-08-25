@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.3] — 2026-08-25
+
+- Published the framework-agnostic `mountIaFrontRefAssistant()` integration for React, Astro, Vue, Angular, Svelte, and plain HTML.
+- Bundled Preact at build time so consumers do not need React runtime peer dependencies.
+- Added the global browser build and runtime smoke tests.
+
+## [Unreleased]
+
+### ⚠️ Breaking
+
+- **The package now bundles [Preact](https://preactjs.com) instead of depending on `react`/`react-dom` as peer dependencies.** `react`/`react-dom` are no longer declared as `peerDependencies` at all — nothing to install alongside this package anymore, in any project.
+- **Removed the public `<IaFrontRefAssistant>` JSX component.** It's still used internally, but no longer exported from `ia-front-ref-assistant` — a real React reconciler cannot correctly render a component built against a different, bundled UI runtime (Preact) as a child of its own tree, so the old `<IaFrontRefAssistant>{children}</IaFrontRefAssistant>` wrapping pattern is unsafe under the new build and has been dropped rather than left as a footgun. Use `mountIaFrontRefAssistant()` instead (see below) — it doesn't have this problem, since it manages its own isolated render root instead of being reconciled by the host framework, and already worked this way for every framework, React included.
+- There is only one build/entry point now — the short-lived `ia-front-ref-assistant/standalone` subpath from the previous unreleased draft of this entry is gone; `ia-front-ref-assistant`'s main entry *is* the standalone build.
+
+### ✨ Added
+
+- **`mountIaFrontRefAssistant(definitions?, options?)`** — the package's only public way to mount the widget now. Creates its own isolated render root and portals the widget into `document.body`, works identically in React, Next.js, Astro, Angular, Vue, Svelte, or plain HTML (see `INTEGRATION.md`), with zero peer dependencies (Preact is bundled into the JS at build time — see "Breaking" above). Also injects its own CSS (a `<style>` tag), so there's no separate `ia-front-ref-assistant/style.css` import needed. Idempotent (a second call anywhere on the page is a no-op with a dev warning) and returns `{ unmount }` for cleanup.
+- A classic IIFE build, `dist/ia-front-ref-assistant.global.js`, for zero-bundler setups — exposes `window.IaFrontRefAssistant.mountIaFrontRefAssistant(...)`.
+
+### 📝 Documentation
+
+- `INTEGRATION.md` and both `README.md` files rewritten around the single `mountIaFrontRefAssistant()` call site, with per-framework examples for React, Next.js, Remix, Astro, Angular, Vue, Svelte, and plain HTML.
+
 ## [0.1.2] — 2026-08-22
 
 ### 📝 Documentation

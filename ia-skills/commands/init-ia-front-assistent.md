@@ -1,5 +1,5 @@
 ---
-description: Inicializa o audita ia-front-ref-assistant en este proyecto — instala el paquete si falta, crea/sincroniza iafrontrefassistant.config.ts, retagea vistas/componentes existentes con data-wrapper-id/data-component-id/data-component-kind, y monta <IaFrontRefAssistant> en la raíz de la app si todavía no está.
+description: Inicializa o audita ia-front-ref-assistant en este proyecto — instala el paquete si falta, crea/sincroniza iafrontrefassistant.config.ts, retagea vistas/componentes existentes con data-wrapper-id/data-component-id/data-component-kind, y agrega la llamada a mountIaFrontRefAssistant() si todavía no está.
 ---
 
 # Inicialización de ia-front-ref-assistant
@@ -14,6 +14,14 @@ description: Inicializa o audita ia-front-ref-assistant en este proyecto — ins
 > mientras se desarrolla el propio paquete), usá esa ruta local
 > (`file:../ruta/a/reactComponent`) en vez de la URL de git.
 
+> El paquete trae [Preact](https://preactjs.com) embebido en su propio JS
+> en vez de depender de `react`/`react-dom` — no hay que instalar nada más
+> allá de `ia-front-ref-assistant` mismo, en ningún stack (React, Astro,
+> Vue, Angular, Svelte, HTML plano). La única API pública es
+> `mountIaFrontRefAssistant()`: crea su propia raíz de render y porta el
+> widget a `document.body`, así que nunca hace falta envolver el árbol de
+> la app — solo llamarla una vez, desde donde sea que la app arranque.
+
 Ejecutá estos pasos en orden:
 
 1. Detectá el gestor de paquetes del proyecto consumidor (`npm`, `pnpm` o
@@ -21,11 +29,14 @@ Ejecutá estos pasos en orden:
    `yarn.lock`; si no hay ninguno, asumí `npm`).
 2. Verificá que `ia-front-ref-assistant` esté en las dependencias de
    `package.json`. **Si no está, instalalo vos mismo** (no le preguntes al
-   usuario si quiere instalarlo, salvo que el paso 3 detecte que el
-   proyecto no es React — ver "Casos borde"):
+   usuario si quiere instalarlo — el paquete aplica a cualquier proyecto,
+   no hay stack donde "no corresponda"):
    - `npm`: `npm install ia-front-ref-assistant`
    - `pnpm`: `pnpm add ia-front-ref-assistant`
    - `yarn`: `yarn add ia-front-ref-assistant`
+
+   No instales `react`, `react-dom`, ni ninguna integración de framework
+   como parte de este paso — no hacen falta.
 
    `dist/` ya viene compilado en el tarball publicado en npm, no hace falta
    ningún paso extra. (Si en cambio se instala desde la URL de git citada
@@ -64,62 +75,70 @@ Ejecutá estos pasos en orden:
    directorios típicos de componentes/vistas del proyecto (detectalos por
    convención: `src/components`, `src/views`, `src/pages`, `app/`, etc. —
    los que existan).
-7. **Montá el componente en la raíz de la app si todavía no está.**
-   Buscá si ya existe un `<IaFrontRefAssistant>` importado en algún lado
-   del código (grep de `from 'ia-front-ref-assistant'`) — si ya está
-   montado, no toques nada de este paso, solo confirmalo en el resumen.
-   Si no está:
-   1. Detectá el archivo raíz de la app según el framework:
-      - Next.js (App Router): `app/layout.tsx` (o `.jsx`) — envolvé
-        `children` dentro del `<body>`.
-      - Next.js (Pages Router): `pages/_app.tsx` — envolvé el `<Component
-        {...pageProps} />`.
-      - Vite/CRA/SPA genérica: `src/App.tsx` (el componente raíz que
-        renderiza `src/main.tsx`/`src/index.tsx`) — envolvé el JSX que
-        devuelve.
-      - Si ninguno de estos existe, preguntale al usuario cuál es el
-        componente raíz de su app en vez de adivinar.
-   2. Agregá el import del componente y, si el proyecto no importa CSS
-      globalmente de otra forma incompatible, también su hoja de estilos:
-      ```tsx
-      import { IaFrontRefAssistant } from 'ia-front-ref-assistant';
-      import 'ia-front-ref-assistant/style.css';
-      ```
-   3. Envolvé el JSX raíz con `<IaFrontRefAssistant definitions={config}>`,
-      donde `config` es el default export de `iafrontrefassistant.config.ts`
-      creado/sincronizado en el paso 5 (agregá también ese import). Ejemplo
-      mínimo (Vite/CRA):
-      ```tsx
-      import { IaFrontRefAssistant } from 'ia-front-ref-assistant';
-      import 'ia-front-ref-assistant/style.css';
-      import config from '../iafrontrefassistant.config';
+7. **Agregá la llamada a `mountIaFrontRefAssistant()` si todavía no está.**
+   Buscá si ya existe (grep de `mountIaFrontRefAssistant` o de
+   `from 'ia-front-ref-assistant'`) — si ya está, no toques nada de este
+   paso, solo confirmalo en el resumen. Si no está:
+   1. Encontrá el **punto de arranque** del proyecto — no un componente
+      raíz para envolver, solo dónde correr una línea de código una vez.
+      Según el stack:
+      - Next.js (App Router): un componente cliente chico montado desde
+        `app/layout.tsx` (Server Component — no puede llamar
+        `mountIaFrontRefAssistant()` directamente, pero puede renderizar un
+        hijo `'use client'` que sí):
+        ```tsx
+        // app/components/AssistantMount.tsx
+        'use client';
+        import { useEffect } from 'react';
+        import { mountIaFrontRefAssistant } from 'ia-front-ref-assistant';
+        import config from '../../iafrontrefassistant.config';
 
-      export default function App() {
-        return (
-          <IaFrontRefAssistant definitions={config}>
-            {/* JSX raíz existente, sin modificar */}
-          </IaFrontRefAssistant>
-        );
-      }
-      ```
-   4. Es un cambio quirúrgico: no reordenes ni reformatees el resto del
-      archivo, solo agregá los 2-3 imports y el wrapper alrededor del JSX
-      que ya devolvía el componente raíz.
-   5. Si `<IaFrontRefAssistant>` en Server Components de Next.js App
-      Router no puede envolver `children` directamente (porque `layout.tsx`
-      es un Server Component y el componente es `'use client'`), eso es
-      normal — `'use client'` en el propio paquete lo resuelve, se puede
-      envolver igual en el layout server sin marcar el layout entero como
-      client.
+        export function AssistantMount() {
+          useEffect(() => {
+            const handle = mountIaFrontRefAssistant(config);
+            return () => handle.unmount();
+          }, []);
+          return null;
+        }
+        ```
+        y montalo una vez en `app/layout.tsx`: `<AssistantMount />` dentro
+        de `<body>`, junto a `{children}` (no hace falta envolverlo).
+      - Next.js (Pages Router) / Remix: mismo patrón — un componente chico
+        con `useEffect` + `mountIaFrontRefAssistant()`, montado una vez en
+        `pages/_app.tsx` / `app/root.tsx`.
+      - Vite/CRA/SPA de React genérica: llamalo directamente en
+        `src/main.tsx`/`src/index.tsx`, junto a
+        `ReactDOM.createRoot(...).render(...)` (no hace falta un
+        componente aparte ni `useEffect` — no está dentro del árbol de
+        React ahí).
+      - Astro: un `<script>` (módulo ES normal, sin `@astrojs/react`) en el
+        layout que comparten todas las páginas (el `.astro` con
+        `<html>`/`<body>` y `<slot />` — normalmente
+        `src/layouts/Layout.astro`).
+      - Angular/Vue/Svelte/cualquier otro: en el entry point que arranca la
+        app (`main.ts` en Angular/Vue/Svelte).
+      - Sin bundler (HTML servido tal cual): dos `<script>` cerca de
+        `</body>` — `<script src="ruta/a/node_modules/ia-front-ref-assistant/dist/ia-front-ref-assistant.global.js"></script>`
+        seguido de `<script>window.IaFrontRefAssistant.mountIaFrontRefAssistant(config)</script>`.
+      - Si no reconocés ninguno de estos, preguntale al usuario cuál es el
+        punto de arranque de su app en vez de adivinar.
+   2. Importá `mountIaFrontRefAssistant` desde `ia-front-ref-assistant` y
+      `config` desde `iafrontrefassistant.config.ts` (creado/sincronizado
+      en el paso 5), y llamá `mountIaFrontRefAssistant(config)` una sola
+      vez en el punto encontrado. No hace falta importar ningún CSS —
+      `mountIaFrontRefAssistant()` inyecta sus propios estilos.
+   3. Es un cambio quirúrgico: agregá solo el/los import(s) y la línea de
+      la llamada (o el componente chico + su uso, en los casos que lo
+      necesitan), sin reordenar ni reformatear el resto del archivo.
 8. Al terminar, mostrá un resumen: si se instaló el paquete (y con qué
    comando), cuántos wrappers/componentes se tagearon (y en qué archivos),
    cuántos ya estaban tagueados y se dejaron igual, el resumen que dejó
-   `config-mapper` sobre el config (incluido el `prePrompt` final), y si
-   se montó `<IaFrontRefAssistant>` en la raíz (y en qué archivo) o ya
-   estaba montado.
+   `config-mapper` sobre el config (incluido el `prePrompt` final), y en
+   qué archivo se agregó la llamada a `mountIaFrontRefAssistant()` (o si
+   ya estaba).
 9. Sugerí correr `npm run build`/`npm run dev` del proyecto consumidor para
    confirmar que todo compila con los cambios (instalación de dependencia,
-   atributos `data-*`, y el nuevo wrapper en la raíz).
+   atributos `data-*`, y la nueva llamada de montaje).
 
 Este comando es **idempotente**: correrlo dos veces seguidas no debe
 reinstalar el paquete si ya está (paso 2), no debe duplicar ids ni volver a
@@ -128,9 +147,10 @@ está tagueado"), no debe duplicar entradas en el config (paso 5 delega en
 `config-mapper`, que actualiza entradas existentes en vez de agregarlas de
 nuevo — y sobre el `prePrompt` puntualmente, si ya existe y el usuario no
 pidió cambiarlo en el paso 4, `config-mapper` lo deja tal cual, no lo
-regenera), y no debe volver a envolver la app en un segundo
-`<IaFrontRefAssistant>` (paso 7 explícitamente chequea si ya está montado
-antes de tocar nada).
+regenera), y no debe agregar una segunda llamada a
+`mountIaFrontRefAssistant()` (paso 7 explícitamente chequea si ya está
+antes de tocar nada — y aunque no lo chequeara, la función misma es
+idempotente en tiempo de ejecución, ver su doc-comment).
 
 ## Casos borde
 
@@ -150,20 +170,14 @@ antes de tocar nada).
   union de literales) → no se puede derivar una lista cerrada de opciones;
   `config-mapper` no agrega `variants`/`sizes` para ese componente en ese
   caso (deja el array vacío/ausente), no inventa valores.
-- El usuario corre `/init-ia-front-assistent` en un proyecto que **no** usa React (el
-  paquete es React-only) → detectá esto (ausencia de `react`/`react-dom`
-  en dependencias) **antes** del paso 2 (instalación) y avisá que el
-  paquete no aplica, sin instalar ni taguear ni montar nada.
+- No hay ningún caso de "el paquete no aplica a este proyecto" — el paso 7
+  cubre React, cualquier stack con bundler, y HTML sin build alguno. No
+  bloquees el paso 2 preguntando o negándote a instalar por el framework
+  detectado.
 - El install del paso 2 falla (sin acceso a la URL de git, red caída,
   permisos) → mostrar el error del gestor de paquetes tal cual y frenar
   ahí, sin seguir con el resto de los pasos.
-- No se encuentra un componente raíz reconocible en el paso 7 (estructura
-  de carpetas no estándar, monorepo con múltiples apps) → preguntarle al
-  usuario cuál es el archivo correcto en vez de adivinar o modificar el
-  primer archivo `.tsx` que aparezca.
-- El componente raíz detectado en el paso 7 no es un componente de
-  función simple (ej. tiene HOCs, múltiples providers ya anidados) →
-  igual encontrar el `return (...)` / JSX que se retorna y envolverlo ahí,
-  sin reordenar los providers existentes — `<IaFrontRefAssistant>` puede
-  ir como el provider más externo o más interno, no importa el orden
-  relativo a otros providers del usuario.
+- No se encuentra un punto de arranque reconocible en el paso 7
+  (estructura de carpetas no estándar, monorepo con múltiples apps) →
+  preguntarle al usuario cuál es el archivo correcto en vez de adivinar o
+  modificar el primer archivo que aparezca.

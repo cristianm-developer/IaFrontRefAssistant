@@ -1,45 +1,36 @@
 # Integration Guide
 
-Examples of how to integrate `ia-front-ref-assistant` into different stacks and frameworks.
-
-## Table of contents
-
-1. [React (Vite)](#react-vite)
-2. [Next.js (App Router)](#nextjs-app-router)
-3. [Create React App](#create-react-app)
-4. [Remix](#remix)
-5. [Astro](#astro)
-
----
-
-## React + Vite
-
-### Installation
+`ia-front-ref-assistant` is one function call — `mountIaFrontRefAssistant()` — that works the same in every framework, because it bundles [Preact](https://preactjs.com) internally instead of depending on `react`/`react-dom`. There's nothing to wrap and nothing else to install; what differs per framework below is only **where** you place that one call.
 
 ```bash
 npm install ia-front-ref-assistant
 ```
 
-### Basic setup
+## Table of contents
+
+1. [React (Vite / CRA / any SPA)](#react-vite--cra--any-spa)
+2. [Next.js](#nextjs)
+3. [Remix](#remix)
+4. [Astro](#astro)
+5. [Angular](#angular)
+6. [Vue](#vue)
+7. [Svelte](#svelte)
+8. [Plain HTML, no bundler](#plain-html-no-bundler)
+9. [Advanced use cases](#advanced-use-cases)
+10. [Troubleshooting](#troubleshooting)
+
+---
+
+## React (Vite / CRA / any SPA)
+
+Call it once from your entry file, alongside (not wrapping) `ReactDOM.createRoot(...).render(...)`:
 
 ```tsx
 // main.tsx
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { mountIaFrontRefAssistant, defineConfig } from 'ia-front-ref-assistant'
 import App from './App.tsx'
-import './index.css'
-
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-)
-```
-
-```tsx
-// App.tsx
-import IaFrontRefAssistant, { defineConfig } from 'ia-front-ref-assistant'
-import 'ia-front-ref-assistant/style.css'
 
 const config = defineConfig({
   active: true,
@@ -52,15 +43,18 @@ const config = defineConfig({
   },
 })
 
-function App() {
-  return (
-    <IaFrontRefAssistant definitions={config}>
-      <Main />
-    </IaFrontRefAssistant>
-  )
-}
+mountIaFrontRefAssistant(config)
 
-function Main() {
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)
+```
+
+```tsx
+// App.tsx — tag elements normally, no wrapper needed
+function App() {
   return (
     <div>
       <section data-wrapper-id="hero">
@@ -78,8 +72,9 @@ export default App
 
 ### Customizing themes
 
-```tsx
-// theme.css
+```css
+/* theme.css — import this AFTER mountIaFrontRefAssistant() runs, so it
+   wins the cascade over the widget's injected styles */
 .ia-fra-root {
   --ia-fra-bg: #f8f9fa;
   --ia-fra-fg: #212529;
@@ -87,7 +82,6 @@ export default App
   --ia-fra-border: #dee2e6;
 }
 
-/* Dark mode */
 @media (prefers-color-scheme: dark) {
   .ia-fra-root {
     --ia-fra-bg: #212529;
@@ -99,64 +93,69 @@ export default App
 ```
 
 ```tsx
-// main.tsx
-import './theme.css'
-import 'ia-front-ref-assistant/style.css'
+mountIaFrontRefAssistant(config)
+import './theme.css' // after the call above
 ```
 
 ---
 
-## Next.js (App Router)
+## Next.js
 
-### Installation
-
-```bash
-npm install ia-front-ref-assistant
-```
-
-### Setup with a Client Component
+Call it from a small client component, mounted once from the root layout — a Server Component can render a `'use client'` child without itself becoming a Client Component:
 
 ```tsx
-// app/page.tsx (Server Component)
-import { AssistantWrapper } from '@/components/AssistantWrapper'
+// app/layout.tsx (Server Component)
+import { AssistantMount } from '@/components/AssistantMount'
 
-export default function Home() {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <AssistantWrapper>
-      <main>
-        <section data-wrapper-id="hero">
-          <h1>My Next.js App</h1>
-          <button data-component-id="cta">Sign Up</button>
-        </section>
-      </main>
-    </AssistantWrapper>
+    <html lang="en">
+      <body>
+        <AssistantMount />
+        {children}
+      </body>
+    </html>
   )
 }
 ```
 
 ```tsx
-// components/AssistantWrapper.tsx
+// components/AssistantMount.tsx
 'use client'
 
-import IaFrontRefAssistant, { defineConfig } from 'ia-front-ref-assistant'
-import 'ia-front-ref-assistant/style.css'
-import { ReactNode } from 'react'
+import { useEffect } from 'react'
+import { mountIaFrontRefAssistant, defineConfig } from 'ia-front-ref-assistant'
 
 const config = defineConfig({
   active: process.env.NODE_ENV === 'development',
   components: {
-    'cta-button': {
-      label: 'CTA Button',
-      variants: ['primary', 'secondary'],
-    },
+    'cta-button': { label: 'CTA Button', variants: ['primary', 'secondary'] },
   },
 })
 
-export function AssistantWrapper({ children }: { children: ReactNode }) {
+export function AssistantMount() {
+  useEffect(() => {
+    const handle = mountIaFrontRefAssistant(config)
+    return () => handle.unmount()
+  }, [])
+
+  return null
+}
+```
+
+Wrapping the call in `useEffect` (with an `unmount()` cleanup) is what makes this safe under React Strict Mode's double-invoke in development — `mountIaFrontRefAssistant()` is idempotent either way, but this avoids a stray dev-mode warning.
+
+Tag elements the same way, anywhere in your pages/components:
+
+```tsx
+export default function Home() {
   return (
-    <IaFrontRefAssistant definitions={config}>
-      {children}
-    </IaFrontRefAssistant>
+    <main>
+      <section data-wrapper-id="hero">
+        <h1>My Next.js App</h1>
+        <button data-component-id="cta">Sign Up</button>
+      </section>
+    </main>
   )
 }
 ```
@@ -165,7 +164,7 @@ export function AssistantWrapper({ children }: { children: ReactNode }) {
 
 ```tsx
 // app/api/assistant-config/route.ts
-import { IaFraConfig } from 'ia-front-ref-assistant'
+import type { IaFraConfig } from 'ia-front-ref-assistant'
 
 export async function GET() {
   const config: IaFraConfig = {
@@ -173,31 +172,8 @@ export async function GET() {
     currentVariant: 'default',
     currentTheme: 'light',
     components: {
-      'button': {
-        label: 'Button',
-        variants: ['primary', 'secondary', 'danger'],
-        sizes: ['sm', 'md', 'lg'],
-      },
-      'card': {
-        label: 'Card',
-        variants: ['elevated', 'outline'],
-      },
-    },
-    themeTokens: {
-      light: {
-        label: 'Light',
-        values: {
-          primary: '#0d6efd',
-          text: '#212529',
-        },
-      },
-      dark: {
-        label: 'Dark',
-        values: {
-          primary: '#0dcaf0',
-          text: '#f8f9fa',
-        },
-      },
+      'button': { label: 'Button', variants: ['primary', 'secondary', 'danger'], sizes: ['sm', 'md', 'lg'] },
+      'card': { label: 'Card', variants: ['elevated', 'outline'] },
     },
   }
 
@@ -206,158 +182,38 @@ export async function GET() {
 ```
 
 ```tsx
-// components/DynamicAssistantWrapper.tsx
+// components/DynamicAssistantMount.tsx
 'use client'
 
-import IaFrontRefAssistant from 'ia-front-ref-assistant'
-import 'ia-front-ref-assistant/style.css'
-import { ReactNode, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { mountIaFrontRefAssistant } from 'ia-front-ref-assistant'
 import type { IaFraConfig } from 'ia-front-ref-assistant'
 
-export function DynamicAssistantWrapper({ children }: { children: ReactNode }) {
+export function DynamicAssistantMount() {
   const [config, setConfig] = useState<IaFraConfig | null>(null)
 
   useEffect(() => {
-    fetch('/api/assistant-config')
-      .then(res => res.json())
-      .then(setConfig)
+    fetch('/api/assistant-config').then((res) => res.json()).then(setConfig)
   }, [])
 
-  if (!config) return children
+  useEffect(() => {
+    if (!config) return
+    const handle = mountIaFrontRefAssistant(config)
+    return () => handle.unmount()
+  }, [config])
 
-  return (
-    <IaFrontRefAssistant definitions={config}>
-      {children}
-    </IaFrontRefAssistant>
-  )
+  return null
 }
-```
-
-### With layout.tsx
-
-```tsx
-// app/layout.tsx
-import type { Metadata } from 'next'
-import { AssistantWrapper } from '@/components/AssistantWrapper'
-import './globals.css'
-
-export const metadata: Metadata = {
-  title: 'My App',
-}
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  return (
-    <html lang="en">
-      <body>
-        <AssistantWrapper>
-          {children}
-        </AssistantWrapper>
-      </body>
-    </html>
-  )
-}
-```
-
----
-
-## Create React App
-
-### Installation
-
-```bash
-npm install ia-front-ref-assistant
-```
-
-### Setup
-
-```tsx
-// src/index.tsx
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import './index.css'
-import App from './App'
-
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-)
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-)
-```
-
-```tsx
-// src/App.tsx
-import IaFrontRefAssistant, { defineConfig } from 'ia-front-ref-assistant'
-import 'ia-front-ref-assistant/style.css'
-import './App.css'
-
-const config = defineConfig({
-  active: process.env.NODE_ENV === 'development',
-  components: {
-    'button': {
-      label: 'Button',
-      variants: ['primary', 'secondary'],
-    },
-  },
-})
-
-function App() {
-  return (
-    <IaFrontRefAssistant definitions={config}>
-      <div className="App">
-        <header>
-          <h1>My CRA App</h1>
-        </header>
-        <main>
-          <button data-component-id="hero-button" data-component-kind="button">
-            Click me
-          </button>
-        </main>
-      </div>
-    </IaFrontRefAssistant>
-  )
-}
-
-export default App
 ```
 
 ---
 
 ## Remix
 
-### Installation
-
-```bash
-npm install ia-front-ref-assistant
-```
-
-### Setup with Outlet
-
 ```tsx
 // app/root.tsx
-import { cssBundleHref } from "@remix-run/css-bundle"
-import type { LinksFunction } from "@remix-run/node"
-import {
-  Links,
-  LiveReload,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from "@remix-run/react"
-import iaFraStyles from "ia-front-ref-assistant/style.css"
-import { AssistantWrapper } from "./components/AssistantWrapper"
-
-export const links: LinksFunction = () => [
-  ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
-  { rel: "stylesheet", href: iaFraStyles },
-]
+import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "@remix-run/react"
+import { AssistantMount } from "./components/AssistantMount"
 
 export default function App() {
   return (
@@ -369,12 +225,10 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <AssistantWrapper>
-          <Outlet />
-        </AssistantWrapper>
+        <AssistantMount />
+        <Outlet />
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
       </body>
     </html>
   )
@@ -382,28 +236,22 @@ export default function App() {
 ```
 
 ```tsx
-// app/components/AssistantWrapper.tsx
-'use client'
-
-import IaFrontRefAssistant, { defineConfig } from 'ia-front-ref-assistant'
-import { ReactNode } from 'react'
+// app/components/AssistantMount.tsx
+import { useEffect } from 'react'
+import { mountIaFrontRefAssistant, defineConfig } from 'ia-front-ref-assistant'
 
 const config = defineConfig({
   active: process.env.NODE_ENV === 'development',
-  components: {
-    'button': {
-      label: 'Button',
-      variants: ['primary', 'secondary'],
-    },
-  },
+  components: { 'button': { label: 'Button', variants: ['primary', 'secondary'] } },
 })
 
-export function AssistantWrapper({ children }: { children: ReactNode }) {
-  return (
-    <IaFrontRefAssistant definitions={config}>
-      {children}
-    </IaFrontRefAssistant>
-  )
+export function AssistantMount() {
+  useEffect(() => {
+    const handle = mountIaFrontRefAssistant(config)
+    return () => handle.unmount()
+  }, [])
+
+  return null
 }
 ```
 
@@ -411,60 +259,147 @@ export function AssistantWrapper({ children }: { children: ReactNode }) {
 
 ## Astro
 
-### Installation
+```astro
+---
+// src/layouts/Layout.astro (the layout every page uses)
+---
 
-```bash
-npm install ia-front-ref-assistant
-npm install react react-dom
+<html lang="en">
+  <body>
+    <slot />
+    <script>
+      import { mountIaFrontRefAssistant, defineConfig } from 'ia-front-ref-assistant'
+
+      const config = defineConfig({
+        active: import.meta.env.DEV,
+        components: {
+          'button': { label: 'Button', variants: ['primary', 'secondary'] },
+        },
+      })
+
+      mountIaFrontRefAssistant(config)
+    </script>
+  </body>
+</html>
 ```
-
-### Setup in a React island
 
 ```astro
 ---
-// src/pages/index.astro
+// src/pages/index.astro — plain Astro markup, tagged normally
 import Layout from '../layouts/Layout.astro'
-import { AssistantClient } from '../components/AssistantClient'
 ---
 
 <Layout title="Welcome">
-  <AssistantClient client:load>
-    <main>
-      <section data-wrapper-id="hero">
-        <h1>My Astro Site</h1>
-        <button data-component-id="cta">Get Started</button>
-      </section>
-    </main>
-  </AssistantClient>
+  <main>
+    <section data-wrapper-id="hero">
+      <h1>My Astro Site</h1>
+      <button data-component-id="cta">Get Started</button>
+    </section>
+  </main>
 </Layout>
 ```
 
-```tsx
-// src/components/AssistantClient.tsx
-'use client'
+No `@astrojs/react` integration needed — the `<script>` is a plain ES module that Astro/Vite bundles as-is. Put it once in the layout every page shares, not per-page, so you don't end up with multiple floating buttons (the call is idempotent either way).
 
-import IaFrontRefAssistant, { defineConfig } from 'ia-front-ref-assistant'
-import 'ia-front-ref-assistant/style.css'
-import type { ReactNode } from 'react'
+---
 
-const config = defineConfig({
-  active: import.meta.env.DEV,
-  components: {
-    'button': {
-      label: 'Button',
-      variants: ['primary', 'secondary'],
-    },
-  },
-})
+## Angular
 
-export function AssistantClient({ children }: { children: ReactNode }) {
-  return (
-    <IaFrontRefAssistant definitions={config}>
-      {children}
-    </IaFrontRefAssistant>
-  )
-}
+Call it once from `main.ts`, at bootstrap:
+
+```ts
+// main.ts
+import { bootstrapApplication } from '@angular/platform-browser'
+import { mountIaFrontRefAssistant, defineConfig } from 'ia-front-ref-assistant'
+import { AppComponent } from './app/app.component'
+import { appConfig } from './app/app.config'
+
+mountIaFrontRefAssistant(defineConfig({
+  active: true,
+  components: { 'button': { label: 'Button', variants: ['primary', 'secondary'] } },
+}))
+
+bootstrapApplication(AppComponent, appConfig)
 ```
+
+Tag elements directly in your Angular templates — `data-*` attributes work the same as any other HTML attribute:
+
+```html
+<!-- app.component.html -->
+<section data-wrapper-id="hero">
+  <h1>My Angular App</h1>
+  <button data-component-id="cta">Get Started</button>
+</section>
+```
+
+---
+
+## Vue
+
+```ts
+// main.ts
+import { createApp } from 'vue'
+import { mountIaFrontRefAssistant, defineConfig } from 'ia-front-ref-assistant'
+import App from './App.vue'
+
+mountIaFrontRefAssistant(defineConfig({
+  active: true,
+  components: { 'button': { label: 'Button', variants: ['primary', 'secondary'] } },
+}))
+
+createApp(App).mount('#app')
+```
+
+```html
+<!-- App.vue -->
+<template>
+  <section data-wrapper-id="hero">
+    <h1>My Vue App</h1>
+    <button data-component-id="cta">Get Started</button>
+  </section>
+</template>
+```
+
+---
+
+## Svelte
+
+```ts
+// main.ts
+import { mountIaFrontRefAssistant, defineConfig } from 'ia-front-ref-assistant'
+import App from './App.svelte'
+
+mountIaFrontRefAssistant(defineConfig({
+  active: true,
+  components: { 'button': { label: 'Button', variants: ['primary', 'secondary'] } },
+}))
+
+const app = new App({ target: document.getElementById('app')! })
+export default app
+```
+
+```html
+<!-- App.svelte -->
+<section data-wrapper-id="hero">
+  <h1>My Svelte App</h1>
+  <button data-component-id="cta">Get Started</button>
+</section>
+```
+
+---
+
+## Plain HTML, no bundler
+
+Use the classic `<script>` global build — no `import`/`type="module"` required:
+
+```html
+<script src="node_modules/ia-front-ref-assistant/dist/ia-front-ref-assistant.global.js"></script>
+<script>
+  window.IaFrontRefAssistant.mountIaFrontRefAssistant({ active: true })
+</script>
+```
+
+Serve `ia-front-ref-assistant.global.js` from wherever you host static assets (copy it out of `node_modules`, or point at a CDN mirror of the npm package). `window.IaFrontRefAssistant` also exposes `defineConfig` if you want the type-checked helper (only useful if that inline script is itself TypeScript-checked somehow — a plain object literal works just as well here).
 
 ---
 
@@ -472,17 +407,16 @@ export function AssistantClient({ children }: { children: ReactNode }) {
 
 ### 1. Development only
 
-```tsx
+```ts
 const config = defineConfig({
-  // Only active in development
-  active: process.env.NODE_ENV === 'development',
+  active: process.env.NODE_ENV === 'development', // or import.meta.env.DEV, etc.
   components: { /* ... */ },
 })
 ```
 
 ### 2. Toggle via URL param
 
-```tsx
+```ts
 const searchParams = new URLSearchParams(window.location.search)
 const config = defineConfig({
   active: searchParams.get('debug') === 'true',
@@ -492,7 +426,7 @@ const config = defineConfig({
 
 ### 3. Toggle via localStorage
 
-```tsx
+```ts
 const config = defineConfig({
   active: localStorage.getItem('ia-fra-enabled') === 'true',
   components: { /* ... */ },
@@ -501,36 +435,34 @@ const config = defineConfig({
 
 ### 4. Per-user configuration
 
-```tsx
-// Load from an API
-const userConfig = await fetch(`/api/user/${userId}/ia-fra-config`).then(r => r.json())
-const config = defineConfig(userConfig)
+```ts
+// Load from an API, then mount
+const userConfig = await fetch(`/api/user/${userId}/ia-fra-config`).then((r) => r.json())
+mountIaFrontRefAssistant(userConfig)
 ```
 
 ### 5. Storybook integration
 
 ```tsx
 // .storybook/preview.tsx
-import { AssistantWrapper } from '../src/components/AssistantWrapper'
-import { defineConfig } from 'ia-front-ref-assistant'
+import { mountIaFrontRefAssistant, defineConfig } from 'ia-front-ref-assistant'
 
 const config = defineConfig({
   active: true,
   components: {
-    'button': {
-      label: 'Button',
-      variants: ['primary', 'secondary', 'tertiary'],
-      sizes: ['sm', 'md', 'lg'],
-    },
+    'button': { label: 'Button', variants: ['primary', 'secondary', 'tertiary'], sizes: ['sm', 'md', 'lg'] },
   },
 })
 
+let mounted = false
 export const decorators = [
-  (Story) => (
-    <AssistantWrapper config={config}>
-      <Story />
-    </AssistantWrapper>
-  ),
+  (Story) => {
+    if (!mounted) {
+      mountIaFrontRefAssistant(config)
+      mounted = true
+    }
+    return Story()
+  },
 ]
 ```
 
@@ -538,78 +470,33 @@ export const decorators = [
 
 ## Troubleshooting
 
-### "Styles aren't applied"
+### "Widget doesn't show up"
 
-✅ Make sure you're importing the CSS:
-```tsx
-import 'ia-front-ref-assistant/style.css'
-```
+✅ Confirm `mountIaFrontRefAssistant(...)` is actually called (check the browser console for the dev warning it logs if called more than once — that at least confirms the module loaded).
 
-### "Component doesn't show up"
+✅ Check that `active: true` in the config (or omit `active`/leave it undefined, which also mounts the button).
 
-✅ Verify the wrapper is at the root:
-```tsx
-<IaFrontRefAssistant>
-  {/* Your app must be here */}
-</IaFrontRefAssistant>
-```
+### "Styles aren't applied" / "flash of unstyled widget"
 
-✅ Check that `active: true` in the config
-
-### "localStorage errors during SSR"
-
-✅ This is expected — the component handles SSR-safety. There's no real error, just a warning.
+✅ Not expected — `mountIaFrontRefAssistant()` injects its CSS synchronously, before rendering. If you see this, check for a Content-Security-Policy blocking inline `<style>` tags (the widget injects one into `document.head`).
 
 ### "TypeScript errors with React Server Components"
 
-✅ Use `'use client'` in the wrapper:
-```tsx
-'use client'
-
-import IaFrontRefAssistant from 'ia-front-ref-assistant'
-```
+✅ Use `'use client'` in the wrapper component that calls it (see the Next.js section above) — the call itself needs `document`, so it can't run in a Server Component.
 
 ### "z-index conflicts"
 
 ✅ Use the CSS variables:
 ```css
-/* Raise the z-index if needed */
 .ia-fra-root {
   --ia-fra-z-menu: 9999;
   --ia-fra-z-overlay: 9998;
 }
 ```
 
----
+### "Called it twice and only saw one dev warning, no crash"
 
-## Performance
-
-### Lazy loading (optional)
-
-```tsx
-import { lazy, Suspense } from 'react'
-
-const IaFrontRefAssistant = lazy(() => import('ia-front-ref-assistant'))
-
-export function App() {
-  return (
-    <Suspense fallback={<>{/* children */}</>}>
-      <IaFrontRefAssistant>
-        {/* ... */}
-      </IaFrontRefAssistant>
-    </Suspense>
-  )
-}
-```
-
-### Disabling in production
-
-```tsx
-const config = defineConfig({
-  active: process.env.NODE_ENV !== 'production',
-  components: { /* ... */ },
-})
-```
+✅ Expected — `mountIaFrontRefAssistant()` is idempotent by design (checks for a marker element before mounting again), specifically so it's safe to call from code paths that might run more than once (React Strict Mode, HMR, multiple `<script>` includes).
 
 ---
 

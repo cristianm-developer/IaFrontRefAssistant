@@ -23,7 +23,10 @@ import type { IaFraConfig } from './config/types';
 import { NOOP_CAPTURE_FLAGS, NOOP_SHOW_FLAGS } from './lib/constants';
 
 export interface IaFrontRefAssistantProps {
-  children: React.ReactNode;
+  // Opcional: el widget flotante se renderiza vía portal a document.body
+  // independientemente de los children — no necesita envolver el árbol de
+  // la app para funcionar (útil para mountIaFrontRefAssistant(), ver mount.ts).
+  children?: React.ReactNode;
   definitions?: IaFraConfig;
 }
 

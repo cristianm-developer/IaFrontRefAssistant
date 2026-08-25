@@ -1,7 +1,7 @@
 # CLAUDE.md — Technical Documentation
 
 **Project:** IA Front Ref Assistant
-**Description:** React component providing a visual interface to assist AI-driven coding
+**Description:** Framework-agnostic visual widget (Preact bundled inside) to assist AI-driven coding — mounted via `mountIaFrontRefAssistant()`
 **Version:** 0.1.2
 **Status:** Complete (Phases 0-10)
 
@@ -25,14 +25,16 @@ reactComponent/
 ├── plan/            # Phase 0-10 documentation
 ├── package.json     # Metadata and scripts
 ├── tsconfig.json    # TypeScript configuration
-├── vite.config.ts   # Vite configuration (builder)
+├── vite.config.ts   # Vite config — one build, Preact bundled in (see "Build")
+├── scripts/         # smoke*.mjs — post-build runtime checks
 └── vitest.config.ts # Vitest configuration (tests)
 ```
 
 ### Main scripts
 
 ```bash
-npm run build           # Build the library (Vite lib mode)
+npm run build           # Build the library (single bundle, see "Build")
+npm run smoke            # Runtime check of the built dist/ output
 npm test               # Run tests (Vitest)
 npm run dev            # Watch mode for development
 npm run typecheck      # Check types (tsc --noEmit)
@@ -174,11 +176,12 @@ src/components/Menu/*         → 35 tests (Menu, MenuItem, SubMenu, etc.)
 src/components/Overlay/*      → 33 tests (overlays + hooks)
 src/components/PromptModal/*  → 27 tests (Modal, pickers)
 
-src/IaFrontRefAssistant       → 2 tests (composition, Portal SSR)
+src/IaFrontRefAssistant       → 3 tests (composition, Portal SSR)
+src/mount                     → 5 tests (mountIaFrontRefAssistant: mount/unmount/idempotency/CSS injection)
 src/index.ts                  → (exports, no tests)
 ```
 
-**Total: 155 passing tests**
+**Total: 160 passing tests**
 
 ### Running them
 
@@ -261,41 +264,74 @@ All defined in `tokens.css`, `--ia-fra-*` namespace:
 
 ## 📦 Build
 
-### Vite (builder)
+### Vite (builder) — one bundle, Preact inside
+
+`react`/`react-dom`/`react/jsx-runtime` are **aliased to `preact/compat`**
+(see `resolve.alias` in `vite.config.ts`) instead of externalized, so Preact
+ends up bundled inside the output instead of resolved from the consumer's
+`node_modules`. This is the standard "alias React to Preact" technique
+([preactjs.com/guide/v10/switching-to-preact](https://preactjs.com/guide/v10/switching-to-preact/#aliasing-react-to-preact))
+— no code in `src/` needs to know or care that it ends up bundled with
+Preact rather than React. The alias is skipped when `process.env.VITEST` is
+set, so tests keep running against real `react`/`react-dom` (via
+`@testing-library/react`) — see "Testing notes".
 
 ```typescript
-// vite.config.ts
+// vite.config.ts (simplified)
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: process.env.VITEST ? undefined : [
+      { find: 'react-dom/client', replacement: 'preact/compat/client' },
+      { find: 'react/jsx-runtime', replacement: 'preact/compat/jsx-runtime' },
+      { find: 'react-dom', replacement: 'preact/compat' },
+      { find: 'react', replacement: 'preact/compat' },
+    ],
+  },
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'IaFrontRefAssistant',
-      // Outputs
-      fileName: (format) => `ia-front-ref-assistant.${format === 'es' ? 'js' : 'cjs'}`
+      formats: ['es', 'cjs', 'iife'],
+      fileName: (format) => /* ia-front-ref-assistant.{js,cjs,global.js} */,
     },
-    rollupOptions: {
-      external: ['react', 'react-dom'],
-      output: {
-        globals: { react: 'React', 'react-dom': 'ReactDOM' }
-      }
-    }
-  }
+    // no `external` — preact (= react/react-dom aliased) ships bundled in
+  },
 });
 ```
 
 **Outputs:**
 - `dist/ia-front-ref-assistant.js` (ESM)
 - `dist/ia-front-ref-assistant.cjs` (CommonJS)
+- `dist/ia-front-ref-assistant.global.js` (IIFE, classic `<script>` — exposes `window.IaFrontRefAssistant`)
 - `dist/index.d.ts` (TypeScript definitions)
-- `dist/style.css` (compiled styles)
+- `dist/style.css` (compiled styles — optional; `mountIaFrontRefAssistant()` already self-injects this same CSS at runtime)
+
+Verify a build didn't regress with `npm run smoke` — it imports the
+compiled `dist/ia-front-ref-assistant.js` (and loads
+`dist/ia-front-ref-assistant.global.js` into a `<script>`) inside a real
+jsdom document, outside Vite/Vitest, to confirm the widget actually mounts
+with zero `react`/`react-dom` installed (`scripts/smoke*.mjs`). This is a
+manual/CI smoke check, not part of `npm test` — it needs the `dist/` build
+to exist first.
+
+### Why no `<IaFrontRefAssistant>` export
+
+`src/IaFrontRefAssistant.tsx` still exists and `mount.tsx` still renders it
+— but it's not exported from `src/index.ts`. Once react/react-dom are
+aliased to `preact/compat` for the build, this component's hooks are
+Preact's hook implementation; a real React host reconciling it as a JSX
+child of its own tree would call it without Preact's reconciler ever
+setting the "current component" Preact's hooks read from, and it would
+throw. `mountIaFrontRefAssistant()` sidesteps this entirely by creating its
+own isolated render root via `preact/compat/client`'s `createRoot` — it's
+never reconciled by the host, so it works the same regardless of what UI
+runtime (if any) the host page uses. Don't re-export `IaFrontRefAssistant`
+from `index.ts` without re-solving this.
 
 ### Size
 
-- **JS (ESM)**: ~28.7 kB (minified)
-- **CJS**: ~19.3 kB (minified)
-- **CSS**: ~6 kB (minified)
-- **Total**: ~54 kB before gzip
+- **JS (ESM)**: ~63 kB minified / ~18 kB gzip · **CJS**: ~46 kB minified / ~16 kB gzip · **IIFE global**: ~46 kB minified / ~16 kB gzip · **CSS**: ~6 kB minified / ~1.6 kB gzip (Preact bundled in, zero peer deps)
 
 ---
 
@@ -419,7 +455,8 @@ console.table(Array.from(targets).map(el => ({
 ### Critical files
 
 - **`src/index.ts`** — Public entry point
-- **`src/IaFrontRefAssistant.tsx`** — Root component
+- **`src/mount.tsx`** — `mountIaFrontRefAssistant()`, the only public way to mount the widget
+- **`src/IaFrontRefAssistant.tsx`** — Internal root component (not exported — see "Why no `<IaFrontRefAssistant>` export")
 - **`src/context/AssistantProvider.tsx`** — Global state
 - **`src/hooks/useTrackedTargets.ts`** — Core DOM detection
 - **`src/styles/tokens.css`** — Design system (source of truth)
