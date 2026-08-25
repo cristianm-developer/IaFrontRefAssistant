@@ -95,6 +95,47 @@ function AssistantRoot({
   const showTargets = useTrackedTargets(config.active ? config.show : NOOP_SHOW_FLAGS);
   const hovered = useHoveredTarget(config.active ? [...captureTargets, ...showTargets] : []);
 
+  // El overlay solo sirve como feedback visual. La selección se hace en
+  // captura sobre el documento para que cualquier click dentro del target
+  // cuente, incluso cuando el label flotante queda fuera del hover. También
+  // interceptamos el click original mientras el asistente está activo para
+  // evitar activar accidentalmente botones, links o inputs de la página.
+  useEffect(() => {
+    if (!config.active || captureTargets.length === 0) return;
+
+    const onDocumentClick = (event: MouseEvent) => {
+      const hit = event.target;
+      if (!(hit instanceof Element)) return;
+      if (hit.closest('.ia-fra-root')) return;
+
+      let selected: TrackedTarget | null = null;
+      let selectedDepth = Number.POSITIVE_INFINITY;
+
+      for (const target of captureTargets) {
+        if (target.el !== hit && !target.el.contains(hit)) continue;
+
+        let depth = 0;
+        let node: Element | null = hit;
+        while (node && node !== target.el) {
+          depth += 1;
+          node = node.parentElement;
+        }
+        if (node === target.el && depth < selectedDepth) {
+          selected = target;
+          selectedDepth = depth;
+        }
+      }
+
+      if (!selected) return;
+      event.preventDefault();
+      event.stopPropagation();
+      setModalTarget(selected);
+    };
+
+    document.addEventListener('click', onDocumentClick, true);
+    return () => document.removeEventListener('click', onDocumentClick, true);
+  }, [config.active, captureTargets]);
+
   // Compartida entre FloatingButton.onCtrlAltClick y el ActionRow "Copiar
   // fila de prompts" del submenú "Modo prompt" (fase 3/6). No vacía la fila
   // si copyText falla, para no perder prompts guardados. Incluye el
