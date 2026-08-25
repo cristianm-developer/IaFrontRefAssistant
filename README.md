@@ -1,6 +1,6 @@
 # IA Front Ref Assistant
 
-A React component that adds a floating visual interface to your app for working with AI coding assistants. It lets you capture, tag, and generate prompts for UI elements in real time.
+A framework-agnostic floating visual widget for working with AI coding assistants. It lets you capture, tag, and generate prompts for UI elements in real time — drop it into any web app to get started.
 
 ![Version](https://img.shields.io/badge/version-0.1.2-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -17,6 +17,12 @@ A React component that adds a floating visual interface to your app for working 
 
 It's especially useful when working with Claude, ChatGPT, or any AI coding assistant — it lets you capture visual references from your UI and turn them into detailed, in-context prompts.
 
+## Framework support
+
+The package is **framework-agnostic**. It ships [Preact](https://preactjs.com) bundled inside its own JavaScript and does not require `react`, `react-dom`, or a framework integration package. The same public API works in React, Astro, Vue, Angular, Svelte, and plain HTML.
+
+Integration is intentionally DOM-based: call `mountIaFrontRefAssistant()` once from the browser entry point or a client-side script. The assistant mounts its own isolated root and does not wrap, render, or depend on your application's component tree.
+
 ## Installation
 
 ### The package
@@ -25,14 +31,11 @@ It's especially useful when working with Claude, ChatGPT, or any AI coding assis
 npm install ia-front-ref-assistant
 ```
 
-#### Requirements
-
-- **React**: 18+ or 19+
-- **React DOM**: 18+ or 19+
+No peer dependencies to install — the package's own build already bundles what it needs to render.
 
 ### Recommended: install the skill pack (automated setup)
 
-Installing the package by itself only gets you the component — you still have to hand-write `iafrontrefassistant.config.ts` and tag every component with `data-wrapper-id`/`data-component-id`/`data-component-kind` yourself. This repo also ships an **agent skill pack** that does all of that for you: adds the dependency, creates/syncs the config file, tags your existing components, and mounts `<IaFrontRefAssistant>` at your app's root — idempotently, safe to re-run any time.
+Installing the package by itself only gets you the widget — you still have to hand-write `iafrontrefassistant.config.ts`, tag your existing components, and call `mountIaFrontRefAssistant()` yourself. This repo also ships an **agent skill pack** that does all of that for you: adds the dependency, creates/syncs the config file, tags your existing components, and wires up the mount call — idempotently, safe to re-run any time.
 
 The skills are plain Markdown (`SKILL.md` with YAML frontmatter), following the shared, multi-vendor [Agent Skills](https://agents.md) convention — so the same files work across tools. What differs per tool is only *where* Skills are discovered from and how you register them:
 
@@ -68,11 +71,11 @@ claude plugin install ia-skills@ia-front-ref-assistant --scope project --yes
 
 ## Basic Usage
 
-Wrap your app with the `IaFrontRefAssistant` component:
+Call `mountIaFrontRefAssistant()` once wherever your app boots — for example in `main.ts`, an Astro layout `<script>`, or a client-side lifecycle hook. It creates its own render root and portals the widget into `document.body`, so it doesn't need to wrap your app's JSX/template:
 
 ```tsx
-import IaFrontRefAssistant, { defineConfig } from 'ia-front-ref-assistant';
-import 'ia-front-ref-assistant/style.css';
+// e.g. main.ts, main.tsx, an Astro client script, or any app entry point
+import { mountIaFrontRefAssistant, defineConfig } from 'ia-front-ref-assistant';
 
 const config = defineConfig({
   active: true,
@@ -93,25 +96,21 @@ const config = defineConfig({
   },
 });
 
-export default function App() {
-  return (
-    <IaFrontRefAssistant definitions={config}>
-      <YourApp />
-    </IaFrontRefAssistant>
-  );
-}
+mountIaFrontRefAssistant(config);
 ```
+
+No CSS import needed either — `mountIaFrontRefAssistant()` injects its own styles. See [INTEGRATION.md](reactComponent/INTEGRATION.md) for the exact call site in React, Next.js, Astro, Angular, Vue, Svelte, and plain HTML.
 
 ## Tagging Elements
 
-For the component to identify your elements, add the `data-wrapper-id` and `data-component-id` attributes:
+For the widget to identify your elements, add the `data-wrapper-id` and `data-component-id` attributes — plain HTML attributes, so this works the same in JSX, an Astro/Vue/Angular template, or raw HTML:
 
-```tsx
-// Site section
+```html
+<!-- Site section -->
 <section data-wrapper-id="hero">
   <h1>Welcome</h1>
 
-  {/* Individual component */}
+  <!-- Individual component -->
   <div data-component-id="cta-button" data-component-kind="button-primary">
     <button>Sign Up</button>
   </div>
@@ -134,11 +133,11 @@ For the component to identify your elements, add the `data-wrapper-id` and `data
 
 Type-safe configuration helper:
 
-```tsx
+```ts
 import { defineConfig } from 'ia-front-ref-assistant';
 
 const config = defineConfig({
-  // Turn the component on/off globally
+  // Turn the widget on/off globally
   active: true,
 
   // Current variant (to test different UI versions)
@@ -184,16 +183,18 @@ const config = defineConfig({
 });
 ```
 
-### Component props
+### `mountIaFrontRefAssistant(definitions?, options?)`
 
-```tsx
-<IaFrontRefAssistant
-  // Configuration with component/theme definitions (optional)
-  definitions={config}
->
-  {/* Your app */}
-</IaFrontRefAssistant>
+```ts
+mountIaFrontRefAssistant(
+  config,          // optional — the object from defineConfig()
+  {
+    container: myDiv, // optional — defaults to a <div> it creates and appends to document.body
+  }
+);
 ```
+
+Returns `{ unmount() }` if you ever need to tear the widget down. Calling it more than once is a no-op (logs a dev warning) — safe to call from code that might run twice (e.g. React Strict Mode, HMR).
 
 ## Features
 
@@ -231,7 +232,7 @@ const config = defineConfig({
 
 ## Styling and Theming
 
-The component uses CSS custom properties for theming:
+The widget uses CSS custom properties for theming:
 
 ```css
 .ia-fra-root {
@@ -252,19 +253,14 @@ The component uses CSS custom properties for theming:
 }
 ```
 
-Customize it by importing your own variables before the component:
+`mountIaFrontRefAssistant()` injects its own `<style>` tag, appended to `document.head` the first time it runs. To override tokens, add your own rule for `.ia-fra-root` **after** calling `mountIaFrontRefAssistant()` (so it wins the cascade), or target it with higher specificity/`!important` if your override needs to load earlier:
 
 ```css
-/* your-theme.css */
+/* your-theme.css — loaded/injected after mountIaFrontRefAssistant() */
 .ia-fra-root {
   --ia-fra-accent: #your-brand-color;
   --ia-fra-bg: #your-bg;
 }
-```
-
-```tsx
-import './your-theme.css';
-import 'ia-front-ref-assistant/style.css';
 ```
 
 ## Development Scripts
@@ -287,6 +283,9 @@ npm run test:watch
 # TypeScript typecheck
 npm run typecheck
 
+# Runtime smoke test of the built dist/ output (zero react/react-dom installed)
+npm run smoke
+
 # Example project
 npm run example:install
 npm run example:dev
@@ -294,7 +293,7 @@ npm run example:dev
 
 ## Full Example
 
-See [reactComponent/example/](reactComponent/example/) for a working React app that uses the component.
+See [reactComponent/example/](reactComponent/example/) for a working React app that uses the widget.
 
 To run it:
 
@@ -329,7 +328,7 @@ reactComponent/src/
 │   ├── useHoverCloseTimer.ts     # Auto-close timer
 │   └── useTrackedTargets.ts      # MutationObserver-based detection
 │
-├── components/            # React components
+├── components/            # UI components (internal — not part of the public API, see "API Reference")
 │   ├── FloatingButton.tsx        # Main floating button
 │   ├── BugIcon.tsx               # Bug SVG icon
 │   ├── Menu/                     # Dropdown menu
@@ -357,7 +356,8 @@ reactComponent/src/
 │   ├── pickers.css        # Pickers
 │   └── index.css          # Imports all partials
 │
-└── IaFrontRefAssistant.tsx  # Root component
+├── IaFrontRefAssistant.tsx  # Internal root component (used by mount.tsx only — see "Why no <IaFrontRefAssistant> export")
+└── mount.tsx                # mountIaFrontRefAssistant() — the public entry point
 
 .agents/skills/             # Portable skill pack (Codex CLI, Cursor, ...)
 ├── config-mapper/          # Syncs iafrontrefassistant.config.ts
@@ -422,15 +422,25 @@ export interface AssistantConfig {
 // Type-safe configuration helper
 export function defineConfig(config: IaFraConfig): IaFraConfig
 
-// Hook to access the context
-export function useAssistant(): AssistantContextValue
+// Mounts the widget in its own render root and injects its own CSS —
+// see "Basic Usage" above.
+export function mountIaFrontRefAssistant(
+  definitions?: IaFraConfig,
+  options?: { container?: HTMLElement }
+): { unmount: () => void }
 ```
+
+A classic `<script>` global build is also published at `dist/ia-front-ref-assistant.global.js` for zero-bundler setups — it exposes the same two functions under `window.IaFrontRefAssistant`. See [INTEGRATION.md](reactComponent/INTEGRATION.md#plain-html-no-bundler).
+
+### Why no `<IaFrontRefAssistant>` JSX component export
+
+Earlier versions exported a `<IaFrontRefAssistant>{children}</IaFrontRefAssistant>` component meant to wrap your app's JSX. That pattern is now internal-only: this package bundles [Preact](https://preactjs.com) instead of depending on `react`/`react-dom` (see "Compatibility"), and a real React reconciler in a host app cannot correctly render a component built against a different, bundled UI runtime as a child of its own tree — Preact's hooks need Preact's own reconciler to track their state, which a foreign React tree never provides. `mountIaFrontRefAssistant()` doesn't have this problem because it creates and manages its own isolated render root, so it's the one supported way to mount the widget, in React apps included.
 
 ## Compatibility
 
 - **Browsers**: Chrome/Edge 90+, Firefox 88+, Safari 14+
-- **React**: 18.0.0+, 19.0.0+
-- **SSR**: Supported (detects `typeof window`)
+- **Frameworks**: none required — the package bundles [Preact](https://preactjs.com) internally (no `react`/`react-dom`/`@astrojs/react`/etc. to install), so `mountIaFrontRefAssistant()` works the same in React, Next.js, Astro, Angular, Vue, Svelte, or plain HTML with no build step at all (`dist/ia-front-ref-assistant.global.js` as a classic `<script>`). See [INTEGRATION.md](reactComponent/INTEGRATION.md) for per-framework call sites.
+- **SSR**: Supported (detects `typeof document === 'undefined'` and no-ops)
 
 ## License
 
