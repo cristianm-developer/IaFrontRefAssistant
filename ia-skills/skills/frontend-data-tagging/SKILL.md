@@ -13,6 +13,7 @@ generes o edites debe respetar este contrato de atributos `data-*`:
 | `data-wrapper-id` | Secciones/divs de layout (agrupadores visuales de una página: hero, footer, sidebar, etc.) | kebab-case, descriptivo del rol de esa sección en ESA página (ej. `hero`, `pricing-table`, `footer`) |
 | `data-component-id` | El elemento raíz de un componente reutilizable (no cada wrapper interno del componente, solo el nodo más externo) | kebab-case, único dentro de la página. Si hay más de una instancia del mismo componente en la misma vista, sufijo numérico: `cta-card-1`, `cta-card-2` |
 | `data-component-kind` | El mismo elemento raíz que lleva `data-component-id` | El **tipo** del componente, estable entre instancias — PascalCase igual al nombre del componente fuente (ej. `Button`, `CtaCard`, `Modal`). Dos instancias del mismo componente comparten `kind` pero no `id`. |
+| `data-capture-wrapper-id` | Wrappers internos de layout detectados por el modo "Capturar wrappers" | Lo genera automáticamente `ia-front-ref-assistant` en runtime; no agregarlo manualmente ni usarlo como reemplazo de `data-wrapper-id`. |
 
 Reglas:
 
@@ -23,6 +24,11 @@ Reglas:
 - Un `data-wrapper-id` puede contener uno o más `data-component-id` adentro
   — no hace falta que cada componente esté envuelto en su propio wrapper
   extra solo para tener id; el wrapper es para secciones de layout reales.
+- Los wrappers internos de layout (por ejemplo, un `div` flex/column que
+  agrupa título y subtítulo) no necesitan ser tageados por esta skill. El
+  asistente los detecta cuando está activo "Capturar wrappers" y les asigna
+  `data-capture-wrapper-id` automáticamente. No convertirlos en
+  `data-wrapper-id` salvo que sean una sección real de la página.
 - No re-tagear elementos que ya tienen `data-wrapper-id`/`data-component-id`
   al editarlos — preservar el id existente salvo que el usuario pida
   explícitamente renombrar el componente/sección (un id estable es lo que
