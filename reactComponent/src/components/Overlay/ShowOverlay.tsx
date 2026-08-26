@@ -25,5 +25,12 @@ export function ShowOverlay({ targets, hovered }: ShowOverlayProps) {
 function ShowOverlayFrame({ target, isHovered }: { target: TrackedTarget; isHovered: boolean }) {
   const rect = useRect(target.el);
   if (!rect) return null;
-  return <FrameLabel rect={rect} label={target.id} opacity={isHovered ? 1 : 0.35} />;
+  const frameClassName = target.type === 'section'
+    ? 'ia-fra-frame--section'
+    : target.type === 'wrapper'
+    ? 'ia-fra-frame--wrapper'
+    : target.type === 'component'
+    ? 'ia-fra-frame--component'
+    : 'ia-fra-frame--element';
+  return <FrameLabel rect={rect} label={target.id} opacity={isHovered ? 1 : 0.35} className={frameClassName} />;
 }

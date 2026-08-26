@@ -20,11 +20,11 @@ export function useTrackedTargets(flags: TrackedTargetFlags): TrackedTarget[] {
   const scan = useCallback(() => {
     const result: TrackedTarget[] = [];
     const sectionEls = getSectionElements();
-    const wrapperEls = getWrapperElements();
     const componentEls = getComponentElements();
     // Los wrappers internos comparten la semántica visual de una sección en
     // el modo "Mostrar": se generan aunque solo esté activo show.sections.
-    const captureWrapperEls = wrappers ? getCaptureWrapperElements() : [];
+    const generatedWrapperEls = wrappers ? getCaptureWrapperElements() : [];
+    const wrapperEls = Array.from(new Set([...getWrapperElements(), ...generatedWrapperEls]));
 
     if (sections) {
       for (const el of sectionEls) {
@@ -37,12 +37,12 @@ export function useTrackedTargets(flags: TrackedTargetFlags): TrackedTarget[] {
       }
     }
     if (wrappers) {
-      for (const el of captureWrapperEls) {
+      for (const el of wrapperEls) {
         result.push({ el, id: el.getAttribute(ATTR_WRAPPER)!, type: 'wrapper' });
       }
     }
     if (elements) {
-      const scopeEls = Array.from(new Set([...sectionEls, ...wrapperEls, ...componentEls, ...captureWrapperEls]));
+      const scopeEls = Array.from(new Set([...sectionEls, ...wrapperEls, ...componentEls]));
       for (const scopeEl of scopeEls) {
         const scopeId = scopeEl.hasAttribute(ATTR_COMPONENT)
           ? scopeEl.getAttribute(ATTR_COMPONENT)!
@@ -57,7 +57,7 @@ export function useTrackedTargets(flags: TrackedTargetFlags): TrackedTarget[] {
       }
     }
     setTargets(result);
-  }, [sections, components, elements]);
+  }, [sections, components, wrappers, elements]);
 
   useEffect(() => {
     if (!sections && !components && !wrappers && !elements) {

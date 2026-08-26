@@ -21,6 +21,10 @@ export function CaptureOverlay({ targets, hovered, onSelect }: CaptureOverlayPro
 
   const frameClassName = hovered!.type === 'component'
     ? 'ia-fra-frame--component'
+    : hovered!.type === 'wrapper'
+    ? 'ia-fra-frame--wrapper'
+    : hovered!.type === 'section'
+    ? 'ia-fra-frame--section'
     : hovered!.type === 'element'
     ? 'ia-fra-frame--element'
     : undefined;
