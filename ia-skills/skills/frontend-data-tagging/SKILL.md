@@ -25,9 +25,15 @@ Reglas:
   `data-component-id` adentro. No hace falta crear wrappers extra solo para
   tener identidad: `data-section-id` es para contexto independiente y
   `data-wrapper-id` para organización visual interna.
-- Los wrappers internos pueden anidarse. La skill puede agregar
-  `data-wrapper-id` cuando el wrapper tenga identidad visual/semántica propia;
-  no convertirlo en `data-section-id` salvo que sea una sección independiente.
+- Los wrappers internos pueden anidarse. El runtime puede detectar y asignar
+  automáticamente `data-wrapper-id` cuando está activo "Capturar wrappers" o
+  "Mostrar wrappers"; la skill no debe agregarlo a cada `div` presentacional.
+  Solo agregarlo manualmente cuando el wrapper tenga una identidad
+  visual/semántica clara y estable. No convertirlo en `data-section-id` salvo
+  que sea una sección independiente.
+- "Mostrar secciones" y "Mostrar wrappers" son modos independientes: una
+  sección no debe incluirse en el inventario de wrappers y un wrapper no debe
+  presentarse como sección.
 - No re-tagear elementos que ya tienen `data-section-id`/`data-wrapper-id`/`data-component-id`
   al editarlos — preservar el id existente salvo que el usuario pida
   explícitamente renombrar el componente/sección (un id estable es lo que
