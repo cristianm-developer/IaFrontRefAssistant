@@ -1,17 +1,18 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ATTR_COMPONENT, ATTR_WRAPPER, ATTR_COMPONENT_KIND } from '../lib/constants';
-import { findIndividualElements, getComponentElements, getWrapperElements, buildRelativeId, type TrackedTarget } from '../lib/dom';
+import { ATTR_COMPONENT, ATTR_WRAPPER, ATTR_COMPONENT_KIND, ATTR_CAPTURE_WRAPPER } from '../lib/constants';
+import { findIndividualElements, getComponentElements, getWrapperElements, getCaptureWrapperElements, buildRelativeId, type TrackedTarget } from '../lib/dom';
 
 export interface TrackedTargetFlags {
   sections: boolean;
   components: boolean;
+  wrappers?: boolean;
   elements?: boolean;
 }
 
 export function useTrackedTargets(flags: TrackedTargetFlags): TrackedTarget[] {
-  const { sections, components } = flags;
+  const { sections, components, wrappers = false } = flags;
   const elements = flags.elements ?? false;
   const [targets, setTargets] = useState<TrackedTarget[]>([]);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -20,6 +21,7 @@ export function useTrackedTargets(flags: TrackedTargetFlags): TrackedTarget[] {
     const result: TrackedTarget[] = [];
     const wrapperEls = getWrapperElements();
     const componentEls = getComponentElements();
+    const captureWrapperEls = wrappers ? getCaptureWrapperElements() : [];
 
     if (sections) {
       for (const el of wrapperEls) {
@@ -31,12 +33,19 @@ export function useTrackedTargets(flags: TrackedTargetFlags): TrackedTarget[] {
         result.push({ el, id: el.getAttribute(ATTR_COMPONENT)!, type: 'component', kind: el.getAttribute(ATTR_COMPONENT_KIND) ?? undefined });
       }
     }
+    if (wrappers) {
+      for (const el of captureWrapperEls) {
+        result.push({ el, id: el.getAttribute(ATTR_CAPTURE_WRAPPER)!, type: 'wrapper' });
+      }
+    }
     if (elements) {
-      const scopeEls = [...wrapperEls, ...componentEls];
+      const scopeEls = [...wrapperEls, ...componentEls, ...captureWrapperEls];
       for (const scopeEl of scopeEls) {
         const scopeId = scopeEl.hasAttribute(ATTR_COMPONENT)
           ? scopeEl.getAttribute(ATTR_COMPONENT)!
-          : scopeEl.getAttribute(ATTR_WRAPPER)!;
+          : scopeEl.hasAttribute(ATTR_WRAPPER)
+          ? scopeEl.getAttribute(ATTR_WRAPPER)!
+          : scopeEl.getAttribute(ATTR_CAPTURE_WRAPPER)!;
         for (const leafEl of findIndividualElements(scopeEl)) {
           result.push({ el: leafEl, id: buildRelativeId(leafEl, scopeEl, scopeId), type: 'element' });
         }
@@ -46,7 +55,7 @@ export function useTrackedTargets(flags: TrackedTargetFlags): TrackedTarget[] {
   }, [sections, components, elements]);
 
   useEffect(() => {
-    if (!sections && !components && !elements) {
+    if (!sections && !components && !wrappers && !elements) {
       setTargets([]);
       return;
     }
@@ -68,7 +77,7 @@ export function useTrackedTargets(flags: TrackedTargetFlags): TrackedTarget[] {
       observer.disconnect();
       if (timeoutRef.current !== null) clearTimeout(timeoutRef.current);
     };
-  }, [sections, components, elements, scan]);
+  }, [sections, components, wrappers, elements, scan]);
 
   return targets;
 }

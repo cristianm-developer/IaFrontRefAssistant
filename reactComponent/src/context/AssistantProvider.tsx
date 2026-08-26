@@ -15,6 +15,7 @@ function mergeConfig(stored: Partial<AssistantConfig> | null | undefined): Assis
     capture: {
       sections: stored?.capture?.sections ?? DEFAULT_CONFIG.capture.sections,
       components: stored?.capture?.components ?? DEFAULT_CONFIG.capture.components,
+      wrappers: stored?.capture?.wrappers ?? DEFAULT_CONFIG.capture.wrappers,
       elements: stored?.capture?.elements ?? DEFAULT_CONFIG.capture.elements,
     },
     show: {

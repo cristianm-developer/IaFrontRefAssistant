@@ -1,10 +1,11 @@
-export type TargetType = 'section' | 'component' | 'element';
+export type TargetType = 'section' | 'component' | 'wrapper' | 'element';
 
 export interface AssistantConfig {
   active: boolean;
   capture: {
     sections: boolean;
     components: boolean;
+    wrappers: boolean;
     elements: boolean;
   };
   show: {
@@ -24,6 +25,6 @@ export interface PromptEntry {
 
 export const DEFAULT_CONFIG: AssistantConfig = {
   active: true,
-  capture: { sections: false, components: false, elements: false },
+  capture: { sections: false, components: false, wrappers: false, elements: false },
   show: { sections: false, components: false },
 };

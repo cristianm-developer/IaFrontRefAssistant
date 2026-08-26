@@ -1,5 +1,5 @@
 import type { TargetType } from './types';
-import { ATTR_WRAPPER, ATTR_COMPONENT, LEAF_TAGS, TEXT_CONTAINER_TAGS } from './constants';
+import { ATTR_WRAPPER, ATTR_COMPONENT, ATTR_CAPTURE_WRAPPER, LEAF_TAGS, TEXT_CONTAINER_TAGS } from './constants';
 
 export interface TrackedTarget {
   el: Element;
@@ -14,6 +14,28 @@ export function getWrapperElements(root: ParentNode = document): Element[] {
 
 export function getComponentElements(root: ParentNode = document): Element[] {
   return Array.from(root.querySelectorAll(`[${ATTR_COMPONENT}]`));
+}
+
+function wrapperLabel(el: Element): string {
+  const source = el.id || el.getAttribute('aria-label') || el.getAttribute('role') || el.className || el.textContent || 'container';
+  const label = String(source).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
+  return label || 'container';
+}
+
+export function getCaptureWrapperElements(root: ParentNode = document): Element[] {
+  const candidates = Array.from(root.querySelectorAll('div, article, nav, header, footer, main, aside, ul, ol'))
+    .filter((el) => !el.hasAttribute(ATTR_WRAPPER) && !el.hasAttribute(ATTR_COMPONENT) && !el.hasAttribute(ATTR_CAPTURE_WRAPPER));
+  const used = new Set<string>();
+  return candidates.filter((el) => {
+    if (el.children.length < 2) return false;
+    const base = `wrapper-${wrapperLabel(el)}`;
+    let id = base;
+    let suffix = 2;
+    while (used.has(id) || root.querySelector(`[${ATTR_CAPTURE_WRAPPER}="${id}"]`)) id = `${base}-${suffix++}`;
+    used.add(id);
+    el.setAttribute(ATTR_CAPTURE_WRAPPER, id);
+    return true;
+  });
 }
 
 export function hasDirectText(el: Element): boolean {

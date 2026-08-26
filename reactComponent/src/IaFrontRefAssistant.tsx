@@ -202,6 +202,11 @@ function AssistantRoot({
           {openSubmenu === 'capturar' && (
             <SubMenu anchorRef={capturarRef}>
               <ToggleRow
+                label="Capturar wrappers"
+                checked={config.capture.wrappers}
+                onChange={(v) => actions.setCaptureFlag('wrappers', v)}
+              />
+              <ToggleRow
                 label="Capturar secciones"
                 checked={config.capture.sections}
                 onChange={(v) => actions.setCaptureFlag('sections', v)}
