@@ -34,13 +34,21 @@ import App from './App.tsx'
 
 const config = defineConfig({
   active: true,
-  components: {
-    'button-primary': {
-      label: 'Primary Button',
-      variants: ['default', 'hover', 'disabled'],
-      sizes: ['sm', 'md', 'lg'],
+  components: [
+    {
+      kind: 'Button',
+      variants: [
+        { value: 'default', label: 'Default' },
+        { value: 'hover', label: 'Hover' },
+        { value: 'disabled', label: 'Disabled' },
+      ],
+      sizes: [
+        { value: 'sm', label: 'Small' },
+        { value: 'md', label: 'Medium' },
+        { value: 'lg', label: 'Large' },
+      ],
     },
-  },
+  ],
 })
 
 mountIaFrontRefAssistant(config)

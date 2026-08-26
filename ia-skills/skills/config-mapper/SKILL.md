@@ -29,6 +29,13 @@ export default defineConfig({
 
 ## Mapear componentes
 
+**Contrato obligatorio del runtime:** `components` es siempre un array de
+`ComponentDefinition`. No generar el formato legado de objeto indexado
+(`components: { Button: { ... } }`), aunque el proyecto ya use ese formato:
+convertirlo a entradas `{ kind, variants?, sizes? }`. `variants` y `sizes`
+también son arrays de `{ value, label }`, nunca arrays de strings. El valor de
+`kind` debe coincidir exactamente con `data-component-kind`.
+
 Para cada componente del proyecto que tenga `data-component-kind` (ver
 skill `frontend-data-tagging`) o que sea candidato a tenerlo:
 
