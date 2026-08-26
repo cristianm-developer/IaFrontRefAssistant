@@ -21,6 +21,7 @@ function mergeConfig(stored: Partial<AssistantConfig> | null | undefined): Assis
     show: {
       sections: stored?.show?.sections ?? DEFAULT_CONFIG.show.sections,
       components: stored?.show?.components ?? DEFAULT_CONFIG.show.components,
+      wrappers: stored?.show?.wrappers ?? DEFAULT_CONFIG.show.wrappers,
     },
   };
 }

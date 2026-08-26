@@ -11,6 +11,7 @@ export interface AssistantConfig {
   show: {
     sections: boolean;
     components: boolean;
+    wrappers: boolean;
   };
 }
 
@@ -26,5 +27,5 @@ export interface PromptEntry {
 export const DEFAULT_CONFIG: AssistantConfig = {
   active: true,
   capture: { sections: false, components: false, wrappers: false, elements: false },
-  show: { sections: false, components: false },
+  show: { sections: false, components: false, wrappers: false },
 };

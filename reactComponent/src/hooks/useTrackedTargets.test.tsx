@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { useTrackedTargets, type TrackedTargetFlags } from './useTrackedTargets';
-import { ATTR_WRAPPER, ATTR_COMPONENT } from '../lib/constants';
+import { ATTR_SECTION, ATTR_COMPONENT } from '../lib/constants';
+const ATTR_WRAPPER = ATTR_SECTION;
 
 // Test component that uses the hook and displays results
 function TestComponent({ flags }: { flags: TrackedTargetFlags }) {

@@ -1,8 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ATTR_COMPONENT, ATTR_WRAPPER, ATTR_COMPONENT_KIND, ATTR_CAPTURE_WRAPPER } from '../lib/constants';
-import { findIndividualElements, getComponentElements, getWrapperElements, getCaptureWrapperElements, buildRelativeId, type TrackedTarget } from '../lib/dom';
+import { ATTR_SECTION, ATTR_COMPONENT, ATTR_WRAPPER, ATTR_COMPONENT_KIND } from '../lib/constants';
+import { findIndividualElements, getComponentElements, getSectionElements, getWrapperElements, getCaptureWrapperElements, buildRelativeId, type TrackedTarget } from '../lib/dom';
 
 export interface TrackedTargetFlags {
   sections: boolean;
@@ -19,13 +19,16 @@ export function useTrackedTargets(flags: TrackedTargetFlags): TrackedTarget[] {
 
   const scan = useCallback(() => {
     const result: TrackedTarget[] = [];
+    const sectionEls = getSectionElements();
     const wrapperEls = getWrapperElements();
     const componentEls = getComponentElements();
+    // Los wrappers internos comparten la semántica visual de una sección en
+    // el modo "Mostrar": se generan aunque solo esté activo show.sections.
     const captureWrapperEls = wrappers ? getCaptureWrapperElements() : [];
 
     if (sections) {
-      for (const el of wrapperEls) {
-        result.push({ el, id: el.getAttribute(ATTR_WRAPPER)!, type: 'section' });
+      for (const el of sectionEls) {
+        result.push({ el, id: el.getAttribute(ATTR_SECTION) ?? el.getAttribute(ATTR_WRAPPER)!, type: 'section' });
       }
     }
     if (components) {
@@ -35,17 +38,19 @@ export function useTrackedTargets(flags: TrackedTargetFlags): TrackedTarget[] {
     }
     if (wrappers) {
       for (const el of captureWrapperEls) {
-        result.push({ el, id: el.getAttribute(ATTR_CAPTURE_WRAPPER)!, type: 'wrapper' });
+        result.push({ el, id: el.getAttribute(ATTR_WRAPPER)!, type: 'wrapper' });
       }
     }
     if (elements) {
-      const scopeEls = [...wrapperEls, ...componentEls, ...captureWrapperEls];
+      const scopeEls = Array.from(new Set([...sectionEls, ...wrapperEls, ...componentEls, ...captureWrapperEls]));
       for (const scopeEl of scopeEls) {
         const scopeId = scopeEl.hasAttribute(ATTR_COMPONENT)
           ? scopeEl.getAttribute(ATTR_COMPONENT)!
+          : scopeEl.hasAttribute(ATTR_SECTION)
+          ? scopeEl.getAttribute(ATTR_SECTION)!
           : scopeEl.hasAttribute(ATTR_WRAPPER)
           ? scopeEl.getAttribute(ATTR_WRAPPER)!
-          : scopeEl.getAttribute(ATTR_CAPTURE_WRAPPER)!;
+          : scopeEl.getAttribute(ATTR_WRAPPER)!;
         for (const leafEl of findIndividualElements(scopeEl)) {
           result.push({ el: leafEl, id: buildRelativeId(leafEl, scopeEl, scopeId), type: 'element' });
         }
@@ -71,7 +76,7 @@ export function useTrackedTargets(flags: TrackedTargetFlags): TrackedTarget[] {
       childList: true,
       subtree: true,
       attributes: true,
-      attributeFilter: [ATTR_WRAPPER, ATTR_COMPONENT, ATTR_COMPONENT_KIND],
+      attributeFilter: [ATTR_SECTION, ATTR_WRAPPER, ATTR_COMPONENT, ATTR_COMPONENT_KIND],
     });
     return () => {
       observer.disconnect();

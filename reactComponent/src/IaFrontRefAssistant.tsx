@@ -227,6 +227,11 @@ function AssistantRoot({
                 onChange={(v) => actions.setShowFlag('sections', v)}
               />
               <ToggleRow
+                label="Mostrar todos los wrappers"
+                checked={config.show.wrappers}
+                onChange={(v) => actions.setShowFlag('wrappers', v)}
+              />
+              <ToggleRow
                 label="Mostrar todos los componentes"
                 checked={config.show.components}
                 onChange={(v) => actions.setShowFlag('components', v)}
