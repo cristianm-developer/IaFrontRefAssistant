@@ -8,16 +8,20 @@ export interface TrackedTarget {
   kind?: string;       // solo puede venir presente cuando type === 'component'
 }
 
+function isAssistantElement(el: Element): boolean {
+  return el.closest('.ia-fra-root') !== null;
+}
+
 export function getWrapperElements(root: ParentNode = document): Element[] {
-  return Array.from(root.querySelectorAll(`[${ATTR_WRAPPER}]`));
+  return Array.from(root.querySelectorAll(`[${ATTR_WRAPPER}]`)).filter((el) => !isAssistantElement(el));
 }
 
 export function getSectionElements(root: ParentNode = document): Element[] {
-  return Array.from(root.querySelectorAll(`[${ATTR_SECTION}]`));
+  return Array.from(root.querySelectorAll(`[${ATTR_SECTION}]`)).filter((el) => !isAssistantElement(el));
 }
 
 export function getComponentElements(root: ParentNode = document): Element[] {
-  return Array.from(root.querySelectorAll(`[${ATTR_COMPONENT}]`));
+  return Array.from(root.querySelectorAll(`[${ATTR_COMPONENT}]`)).filter((el) => !isAssistantElement(el));
 }
 
 function wrapperLabel(el: Element): string {
@@ -28,7 +32,7 @@ function wrapperLabel(el: Element): string {
 
 export function getCaptureWrapperElements(root: ParentNode = document): Element[] {
   const candidates = Array.from(root.querySelectorAll('div, article, nav, header, footer, main, aside, ul, ol'))
-    .filter((el) => !el.hasAttribute(ATTR_SECTION) && !el.hasAttribute(ATTR_WRAPPER) && !el.hasAttribute(ATTR_COMPONENT));
+    .filter((el) => !isAssistantElement(el) && !el.hasAttribute(ATTR_SECTION) && !el.hasAttribute(ATTR_WRAPPER) && !el.hasAttribute(ATTR_COMPONENT));
   const used = new Set<string>();
   return candidates.filter((el) => {
     if (el.children.length < 2) return false;
