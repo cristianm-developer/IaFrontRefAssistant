@@ -1,6 +1,6 @@
 {
   "name": "@cristianmpx/aiui-assistant",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "Widget visual (Preact embebido, cero dependencias de runtime) para asistir la codificación con IA — funciona en cualquier framework",
   "type": "module",
   "main": "./dist/aiui-assistant.cjs",
@@ -38,7 +38,10 @@
     "assistant",
     "component"
   ],
-  "author": "",
+  "author": {
+    "name": "Cristian M.",
+    "url": "https://github.com/cristianm-developer"
+  },
   "license": "MIT",
   "publishConfig": {
     "access": "public"

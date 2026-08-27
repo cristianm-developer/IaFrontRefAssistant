@@ -1,6 +1,6 @@
 # Integration Guide
 
-`ia-front-ref-assistant` is one function call — `mountIaFrontRefAssistant()` — that works the same in every framework, because it bundles [Preact](https://preactjs.com) internally instead of depending on `react`/`react-dom`. There's nothing to wrap and nothing else to install; what differs per framework below is only **where** you place that one call.
+`@cristianmpx/aiui-assistant` is one function call — `mountIaFrontRefAssistant()` — that works the same in every framework, because it bundles [Preact](https://preactjs.com) internally instead of depending on `react`/`react-dom`. There's nothing to wrap and nothing else to install; what differs per framework below is only **where** you place that one call.
 
 ```bash
 npm install @cristianmpx/aiui-assistant

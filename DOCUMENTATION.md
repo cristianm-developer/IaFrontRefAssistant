@@ -223,7 +223,7 @@ Each phase documents one specific aspect of the component:
 ### Project resources
 
 - [GitHub Repository](https://github.com/cristianm-developer/IaFrontRefAssistant)
-- [NPM Package](https://www.npmjs.com/package/ia-front-ref-assistant)
+- [NPM Package](https://www.npmjs.com/package/@cristianmpx/aiui-assistant)
 - [Issues](https://github.com/cristianm-developer/IaFrontRefAssistant/issues)
 - [Discussions](https://github.com/cristianm-developer/IaFrontRefAssistant/discussions)
 
@@ -282,7 +282,7 @@ Documentation is updated alongside the code:
 
 - **Documentation version:** 0.1.2
 - **Last updated:** August 22, 2026
-- **Compatible with:** ia-front-ref-assistant 0.1.2+
+- **Compatible with:** @cristianmpx/aiui-assistant 0.1.13+
 
 ---
 
