@@ -179,6 +179,8 @@ function AssistantRoot({
     [modalTarget, actions]
   );
 
+  const promptCount = prompts.reduce((total, prompt) => total + (prompt.requestCount ?? 1), 0);
+
   const floatingUI = (
     <div
       ref={widgetRootRef}
@@ -190,7 +192,7 @@ function AssistantRoot({
         ref={buttonRef}
         active={config.active}
         open={menuOpen}
-        badgeCount={prompts.length}
+        badgeCount={promptCount}
         onToggleMenu={() => setMenuOpen((v) => !v)}
         onCtrlClick={actions.toggleActive}
         onCtrlAltClick={handleCopyAndClear}

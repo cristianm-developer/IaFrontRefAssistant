@@ -65,9 +65,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 function App() {
   return (
     <div>
-      <section data-wrapper-id="hero">
+      <section data-section-id="hero">
         <h1>Welcome to my app</h1>
-        <button data-component-id="cta" data-component-kind="button-primary">
+        <button data-component-id="cta" data-component-kind="Button">
           Get Started
         </button>
       </section>
@@ -159,7 +159,7 @@ Tag elements the same way, anywhere in your pages/components:
 export default function Home() {
   return (
     <main>
-      <section data-wrapper-id="hero">
+      <section data-section-id="hero">
         <h1>My Next.js App</h1>
         <button data-component-id="cta">Sign Up</button>
       </section>
@@ -177,12 +177,15 @@ import type { IaFraConfig } from '@cristianmpx/aiui-assistant'
 export async function GET() {
   const config: IaFraConfig = {
     active: process.env.NODE_ENV === 'development',
-    currentVariant: 'default',
-    currentTheme: 'light',
-    components: {
-      'button': { label: 'Button', variants: ['primary', 'secondary', 'danger'], sizes: ['sm', 'md', 'lg'] },
-      'card': { label: 'Card', variants: ['elevated', 'outline'] },
-    },
+    components: [
+      {
+        kind: 'Button',
+        label: 'Button',
+        variants: ['primary', 'secondary', 'danger'],
+        sizes: ['sm', 'md', 'lg'],
+      },
+      { kind: 'Card', label: 'Card' },
+    ],
   }
 
   return Response.json(config)
@@ -299,7 +302,7 @@ import Layout from '../layouts/Layout.astro'
 
 <Layout title="Welcome">
   <main>
-    <section data-wrapper-id="hero">
+    <section data-section-id="hero">
       <h1>My Astro Site</h1>
       <button data-component-id="cta">Get Started</button>
     </section>
@@ -334,7 +337,7 @@ Tag elements directly in your Angular templates — `data-*` attributes work the
 
 ```html
 <!-- app.component.html -->
-<section data-wrapper-id="hero">
+<section data-section-id="hero">
   <h1>My Angular App</h1>
   <button data-component-id="cta">Get Started</button>
 </section>
@@ -361,7 +364,7 @@ createApp(App).mount('#app')
 ```html
 <!-- App.vue -->
 <template>
-  <section data-wrapper-id="hero">
+  <section data-section-id="hero">
     <h1>My Vue App</h1>
     <button data-component-id="cta">Get Started</button>
   </section>
@@ -388,7 +391,7 @@ export default app
 
 ```html
 <!-- App.svelte -->
-<section data-wrapper-id="hero">
+<section data-section-id="hero">
   <h1>My Svelte App</h1>
   <button data-component-id="cta">Get Started</button>
 </section>
@@ -520,5 +523,5 @@ npm run dev
 
 ---
 
-**Version:** 0.1.2
+**Version:** 0.1.14
 **Last updated:** 2026-08-22

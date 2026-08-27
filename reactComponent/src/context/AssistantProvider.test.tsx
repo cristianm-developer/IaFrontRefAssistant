@@ -9,6 +9,7 @@ function TestComponent() {
     <div>
       <div data-testid="active">{config.active ? 'active' : 'inactive'}</div>
       <div data-testid="prompts-count">{prompts.length}</div>
+      <div data-testid="requests-count">{prompts.reduce((total, prompt) => total + (prompt.requestCount ?? 1), 0)}</div>
       <button onClick={toggleActive}>Toggle</button>
       <button
         onClick={() =>
@@ -176,5 +177,26 @@ describe('AssistantProvider', () => {
     });
     expect(prompts[0].id).toBeDefined();
     expect(prompts[0].createdAt).toBeDefined();
+    expect(prompts[0].requestCount).toBe(1);
+  });
+
+  it('mantiene el contador individual aunque agrupe solicitudes del mismo target', async () => {
+    render(
+      <AssistantProvider>
+        <TestComponent />
+      </AssistantProvider>
+    );
+
+    const addBtn = screen.getByText('Add Prompt');
+    addBtn.click();
+    addBtn.click();
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    expect(screen.getByTestId('prompts-count')).toHaveTextContent('1');
+    expect(screen.getByTestId('requests-count')).toHaveTextContent('2');
+
+    const stored = JSON.parse(localStorage.getItem('ia-fra:prompts')!);
+    expect(stored[0].requestCount).toBe(2);
+    expect(stored[0].text).toBe('test text\n\ntest text');
   });
 });

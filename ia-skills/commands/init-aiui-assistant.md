@@ -1,12 +1,12 @@
 ---
-description: Inicializa o audita @cristianmpx/aiui-assistant en este proyecto — instala el paquete si falta, crea/sincroniza iafrontrefassistant.config.ts, retagea vistas/componentes existentes con data-wrapper-id/data-component-id/data-component-kind, y agrega la llamada a mountIaFrontRefAssistant() si todavía no está.
+description: Initialize or audit @cristianmpx/aiui-assistant — install the package, sync iafrontrefassistant.config.ts, tag frontend metadata, optionally configure production cleanup, and add mountIaFrontRefAssistant() when missing.
 ---
 
-# Inicialización de @cristianmpx/aiui-assistant
+# Initialize @cristianmpx/aiui-assistant
 
 > El paquete ya está publicado en npm (`npm install @cristianmpx/aiui-assistant`);
 > usá esa forma por default. Solo recurrí a la URL de git
-> (`git+https://github.com/cristianm-developer/IaFrontRefAssistant.git`,
+> (`git+https://github.com/cristianm-developer/aiui-assistant.git`,
 > subdirectorio `reactComponent`) si el usuario pide explícitamente
 > instalar desde el repo (ej. para probar un cambio sin publicar).
 > Si este comando se corre desde una copia local
@@ -50,7 +50,7 @@ Ejecutá estos pasos en orden:
    una versión fijada a propósito.
 4. Antes de escribir nada, **interrogá al usuario** sobre lo que sea
    ambiguo para generar un buen `prePrompt` (ver sección "Mapear
-   prePrompt" de la skill `config-mapper`) — no lo inventes ni lo dejes en
+   prePrompt" de la skill `aiui-config-mapper`) — no lo inventes ni lo dejes en
    blanco solo porque el proyecto no deja algo 100% claro por sí solo. En
    concreto, preguntá (adaptá las preguntas si algo ya es evidente del
    código, no repreguntes lo obvio):
@@ -82,11 +82,11 @@ Ejecutá estos pasos en orden:
    No sigas con el paso 5 hasta tener esto resuelto (con las respuestas
    del usuario, o con su confirmación explícita de que no hace falta
    `prePrompt` para este proyecto).
-5. Usá la skill `config-mapper` para crear (si no existe) o sincronizar
+5. Usá la skill `aiui-config-mapper` para crear (si no existe) o sincronizar
    `iafrontrefassistant.config.ts` con los componentes, el theme y el
    `prePrompt` (con lo relevado en el paso 4) actuales del proyecto.
 6. Recorré el código fuente de frontend del proyecto (vistas, componentes)
-   y, usando las reglas de la skill `frontend-data-tagging`, agregá los
+   y, usando las reglas de la skill `aiui-frontend-data-tagging`, agregá los
    atributos `data-section-id` / `data-wrapper-id` / `data-component-id` /
    `data-component-kind`
    donde falten. No re-tagear lo que ya está tagueado. Priorizá los
@@ -137,7 +137,7 @@ Ejecutá estos pasos en orden:
         app (`main.ts` en Angular/Vue/Svelte).
       - Sin bundler (HTML servido tal cual): dos `<script>` cerca de
         `</body>` — `<script src="ruta/a/node_modules/@cristianmpx/aiui-assistant/dist/aiui-assistant.global.js"></script>`
-        seguido de `<script>window.IaFrontRefAssistant.mountIaFrontRefAssistant(config)</script>`.
+        seguido de `<script>window.AIUIAssistant.mountIaFrontRefAssistant(config)</script>`.
       - Si no reconocés ninguno de estos, preguntale al usuario cuál es el
         punto de arranque de su app en vez de adivinar.
    2. Importá `mountIaFrontRefAssistant` desde `@cristianmpx/aiui-assistant` y
@@ -167,7 +167,7 @@ Ejecutá estos pasos en orden:
 9. Al terminar, mostrá un resumen: si se instaló el paquete (y con qué
    comando), cuántos wrappers/componentes se tagearon (y en qué archivos),
    cuántos ya estaban tagueados y se dejaron igual, el resumen que dejó
-   `config-mapper` sobre el config (incluido el `prePrompt` final), y en
+   `aiui-config-mapper` sobre el config (incluido el `prePrompt` final), y en
    qué archivo se agregó la llamada a `mountIaFrontRefAssistant()` (o si
    ya estaba).
 10. Sugerí correr `npm run build`/`npm run dev` del proyecto consumidor para
@@ -178,9 +178,9 @@ Este comando es **idempotente**: correrlo dos veces seguidas no debe
 reinstalar el paquete si ya está (paso 2), no debe duplicar ids ni volver a
 taguear lo ya tagueado (paso 6 explícitamente dice "no re-tagear lo que ya
 está tagueado"), no debe duplicar entradas en el config (paso 5 delega en
-`config-mapper`, que actualiza entradas existentes en vez de agregarlas de
+`aiui-config-mapper`, que actualiza entradas existentes en vez de agregarlas de
 nuevo — y sobre el `prePrompt` puntualmente, si ya existe y el usuario no
-pidió cambiarlo en el paso 4, `config-mapper` lo deja tal cual, no lo
+pidió cambiarlo en el paso 4, `aiui-config-mapper` lo deja tal cual, no lo
 regenera), y no debe agregar una segunda llamada a
 `mountIaFrontRefAssistant()` (paso 7 explícitamente chequea si ya está
 antes de tocar nada — y aunque no lo chequeara, la función misma es
@@ -189,7 +189,7 @@ idempotente en tiempo de ejecución, ver su doc-comment).
 ## Casos borde
 
 - Proyecto sin ningún componente/vista detectable (recién creado, vacío) →
-  `/init-ia-front-assistent` crea igual el `iafrontrefassistant.config.ts` base (con
+  `/init-aiui-assistant` crea igual el `iafrontrefassistant.config.ts` base (con
   `components: []`, `theme: []`) y reporta "0 componentes tagueados" sin
   error.
 - Proyecto muy grande (cientos de componentes) → recorrer por directorios
@@ -199,10 +199,10 @@ idempotente en tiempo de ejecución, ver su doc-comment).
   fijas que valga la pena citar siempre (proyecto chico, sin `ia-skills/`
   propio) → tras preguntar en el paso 4, si el usuario confirma que no
   hace falta, seguir sin `prePrompt` (no es obligatorio, ver nota en
-  `config-mapper`).
+  `aiui-config-mapper`).
 - Un componente con `variant`/`size` tipado como `string` genérico (no
   union de literales) → no se puede derivar una lista cerrada de opciones;
-  `config-mapper` no agrega `variants`/`sizes` para ese componente en ese
+  `aiui-config-mapper` no agrega `variants`/`sizes` para ese componente en ese
   caso (deja el array vacío/ausente), no inventa valores.
 - No hay ningún caso de "el paquete no aplica a este proyecto" — el paso 7
   cubre React, cualquier stack con bundler, y HTML sin build alguno. No

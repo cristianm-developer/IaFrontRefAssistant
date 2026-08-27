@@ -1,6 +1,6 @@
 ---
-name: frontend-data-tagging
-description: Usar SIEMPRE que se cree, genere o edite código de frontend (componentes, vistas, secciones, layouts) en un proyecto que tenga `@cristianmpx/aiui-assistant` como dependencia en package.json o un archivo `iafrontrefassistant.config.ts` en el root. Asegura que las secciones, wrappers lógicos y componentes raíz lleven los atributos data-section-id / data-wrapper-id / data-component-id / data-component-kind.
+name: aiui-frontend-data-tagging
+description: Use whenever frontend code is created or edited in a project using `@cristianmpx/aiui-assistant`. Ensures independent sections, logical wrappers, and component roots use data-section-id, data-wrapper-id, data-component-id, and data-component-kind.
 ---
 
 # Tagueo de frontend para Ia Front Ref Assistant
@@ -64,12 +64,13 @@ Reglas:
   (ej. si ya existe `{ kind: 'Button', ... }`, un nuevo botón usa
   `data-component-kind="Button"`, no inventa `"Btn"` o `"ButtonPrimary"`).
   Si es un componente genuinamente nuevo sin entrada en el config, taguear
-  igual con el `kind` que corresponda — la skill `config-mapper` (u
-  `/init-ia-front-assistent`) se encarga de agregar la entrada al config después, no
+  igual con el `kind` que corresponda — la skill `aiui-config-mapper` (u
+  `/init-aiui-assistant`) se encarga de agregar la entrada al config después, no
   hace falta bloquear el tagueo por eso.
 
 La captura construye una referencia por elemento con su tipo lógico (`section`,
 `wrapper`, `component` o `element`), ruta, nombre de componente, clases,
-atributos y estilos computados. Los pedidos adicionales sobre el mismo
+atributos y estilos visuales declarados (no todos los estilos computados).
+Los pedidos adicionales sobre el mismo
 elemento se agrupan en una sola entrada; no dupliques metadata ni inventes un
 context packet externo.

@@ -1,6 +1,6 @@
 ---
-name: config-mapper
-description: Usar cuando el usuario pida crear, actualizar o sincronizar iafrontrefassistant.config.ts con los componentes, el theme, y/o el `prePrompt` reales del proyecto (variantes, sizes, tokens de color/radios/etc. usados en el CSS, y las referencias fijas — skills/convenciones — que debe llevar todo prompt), o cuando el comando /init-ia-front-assistent la invoque, o cuando el usuario pida agregar/cambiar algo puntual en el `prePrompt` (ej. "en el prompt final agregá que revise X").
+name: aiui-config-mapper
+description: Use when creating, updating, or synchronizing iafrontrefassistant.config.ts with the consumer project's components, theme, prePrompt, referenceAttributes, and semantic-state preferences, or when invoked by /init-aiui-assistant.
 ---
 
 # Mapeo de componentes/theme a iafrontrefassistant.config.ts
@@ -54,7 +54,7 @@ también son arrays de `{ value, label }`, nunca arrays de strings. El valor de
 `kind` debe coincidir exactamente con `data-component-kind`.
 
 Para cada componente del proyecto que tenga `data-component-kind` (ver
-skill `frontend-data-tagging`) o que sea candidato a tenerlo:
+skill `aiui-frontend-data-tagging`) o que sea candidato a tenerlo:
 
 1. Buscar su definición de props (interface/type de TS, o PropTypes).
 2. Si tiene una prop tipo `variant` (o similar: `type`, `appearance`) con
@@ -126,10 +126,10 @@ proyecto — típicamente qué skills/convenciones propias usar para
 implementar el cambio (ej. "Usa la skill frontend-component y la skill
 frontend-context para entender cómo implementar estos cambios.").
 
-### Si no existe todavía (generación inicial, normalmente desde `/init-ia-front-assistent`)
+### Si no existe todavía (generación inicial, normalmente desde `/init-aiui-assistant`)
 
 1. Detectar qué skills/comandos propios del proyecto existen (en este
-   propio repo: `.agents/skills/*`, `ia-skills/skills/*`, `ia-skills/commands/*`, o el
+   propio repo: `ia-skills/skills/*`, `ia-skills/commands/*`, o el
    directorio equivalente de skills de Claude Code del proyecto
    consumidor si lo tiene) y qué convenciones fijas de implementación
    tiene el proyecto (linters/formatters obligatorios, carpeta de
@@ -139,7 +139,7 @@ frontend-context para entender cómo implementar estos cambios.").
    cambio a la IA" — si hay ambigüedad (varias skills candidatas, o no
    está claro qué convención es obligatoria vs. opcional), preguntarle al
    usuario en vez de adivinar (ver paso de interrogación en
-   `/init-ia-front-assistent`).
+   `/init-aiui-assistant`).
 3. Redactar `prePrompt` como una o pocas oraciones directas e imperativas
    (no un párrafo largo — se antepone a cada prompt, tiene que ser barato
    de leer), ej.:

@@ -22,6 +22,7 @@ export interface PromptEntry {
   url: string;
   text: string;         // texto final ya formateado, ver fase 6
   createdAt: number;
+  requestCount?: number; // cantidad de solicitudes individuales agrupadas aquí
 }
 
 export const DEFAULT_CONFIG: AssistantConfig = {

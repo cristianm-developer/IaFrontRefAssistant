@@ -1,7 +1,7 @@
 {
   "name": "@cristianmpx/aiui-assistant",
-  "version": "0.1.14",
-  "description": "Widget visual (Preact embebido, cero dependencias de runtime) para asistir la codificación con IA — funciona en cualquier framework",
+  "version": "0.1.15",
+  "description": "Framework-agnostic visual widget with bundled Preact and zero runtime dependencies for AI-assisted frontend development",
   "type": "module",
   "main": "./dist/aiui-assistant.cjs",
   "module": "./dist/aiui-assistant.js",

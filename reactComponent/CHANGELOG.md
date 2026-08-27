@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.15] — 2026-08-27
+
+### Added
+
+- Count individual saved requests in the widget badge while preserving grouped prompt entries for the clipboard queue.
+- Added the Codex plugin manifest and aligned the Claude Code plugin with the `aiui-assistant` identity.
+- Renamed the canonical skills and initialization command to the `aiui-*` namespace.
+- Translated the package description to English.
+
+## [0.1.14] — 2026-08-27
+
+### Added
+
+- Renamed the published package to `@cristianmpx/aiui-assistant` and aligned the repository documentation and skill installation paths with the new project identity.
+- Added AI-ready target references for sections, wrappers, components, and elements, including route, source location, component name, semantic state, visible content, immediate parent context, and declared visual styles.
+- Added readable-text and JSON copy formats, plus grouping of repeated requests for the same target.
+- Added configurable `referenceAttributes` and `includeSemanticState` options.
+- Added production metadata cleanup for Vite/Astro and Next.js, including the `keepAttributes` allowlist.
+
+### Documentation
+
+- Updated the user guide, integration guide, documentation index, and skill guidance in English to describe the current API and production workflow.
+
 ## [0.1.3] — 2026-08-25
 
 - Published the framework-agnostic `mountIaFrontRefAssistant()` integration for React, Astro, Vue, Angular, Svelte, and plain HTML.

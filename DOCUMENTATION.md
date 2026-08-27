@@ -1,18 +1,17 @@
-# 📚 Documentation Index
+# Documentation Index — AIUI Assistant
 
-A complete documentation guide for the **IA Front Ref Assistant** project.
+A complete documentation guide for the **AIUI Assistant** project.
 
 ---
 
 ## 🗂️ File locations
 
 ```
-IaFrontRefAssistant/
-├── README.md                    # ← User guide
+aiui-assistant/
+├── README.md                    # ← User guide and AI context reference
 ├── LICENSE                      # ← MIT License
 ├── DOCUMENTATION.md             # ← This file
-├── .agents/skills/              # ← Portable skill pack (Codex CLI, Cursor, ...)
-├── ia-skills/                   # ← Claude Code plugin wrapper
+├── ia-skills/                   # ← Canonical skills, Codex and Claude plugins
 └── reactComponent/              # Main library (npm)
     ├── README.md               # ← Copy of the root README (npm needs its own)
     ├── CLAUDE.md                # ← Technical documentation (devs)
@@ -33,6 +32,16 @@ IaFrontRefAssistant/
     ├── vite.config.ts
     └── vitest.config.ts
 ```
+
+## Current feature coverage
+
+- DOM metadata for independent sections, nested logical wrappers, reusable components, and individual elements.
+- AI-ready references with route, source location, component name, semantic state, immediate parent context, declared visual styles, and visible content.
+- Human-readable and JSON copy formats, with repeated requests for the same target grouped into one prompt entry.
+- Configurable `referenceAttributes` and `includeSemanticState` options.
+- Production cleanup plugins for Vite/Astro and Next.js, with an optional `keepAttributes` allowlist.
+- Framework-agnostic mounting for React, Next.js, Astro, Angular, Vue, Svelte, and plain HTML.
+- Versioned plugin distribution for Codex and Claude Code, with canonical skill files that can be copied into Cursor or another compatible system.
 
 ---
 
@@ -71,15 +80,16 @@ IaFrontRefAssistant/
    - PR workflow
    - Style guides
 
-### 🚀 **To install the skill pack in your AI tool**
+### 🚀 **To install the AIUI Assistant plugin or skills**
 
 **I want to use the skills in my Claude Code / Codex CLI / Cursor workflow**
 
 1. Start with: [`README.md` — Recommended install](README.md#recommended-install-the-skill-pack-automated-setup)
    - What the skills do
-   - Per-tool installation table (Claude Code, Codex CLI, Cursor)
+   - Native plugin installation for Claude Code and Codex
+   - Manual skill installation for Cursor and other compatible systems
 
-2. Or read directly: [`.agents/skills/`](.agents/skills/) (portable, Codex/Cursor) or [`ia-skills/`](ia-skills/) (Claude Code plugin)
+2. Or read directly from [`ia-skills/skills/`](ia-skills/skills/) (canonical skill source and Claude Code plugin)
    - Plugin manifests
    - `SKILL.md` files
 
@@ -222,10 +232,10 @@ Each phase documents one specific aspect of the component:
 
 ### Project resources
 
-- [GitHub Repository](https://github.com/cristianm-developer/IaFrontRefAssistant)
+- [GitHub Repository](https://github.com/cristianm-developer/aiui-assistant)
 - [NPM Package](https://www.npmjs.com/package/@cristianmpx/aiui-assistant)
-- [Issues](https://github.com/cristianm-developer/IaFrontRefAssistant/issues)
-- [Discussions](https://github.com/cristianm-developer/IaFrontRefAssistant/discussions)
+- [Issues](https://github.com/cristianm-developer/aiui-assistant/issues)
+- [Discussions](https://github.com/cristianm-developer/aiui-assistant/discussions)
 
 ---
 
@@ -280,12 +290,12 @@ Documentation is updated alongside the code:
 
 ## 📝 Documentation versioning
 
-- **Documentation version:** 0.1.2
-- **Last updated:** August 22, 2026
-- **Compatible with:** @cristianmpx/aiui-assistant 0.1.13+
+- **Documentation version:** 0.1.14
+- **Last updated:** August 27, 2026
+- **Compatible with:** @cristianmpx/aiui-assistant 0.1.15+
 
 ---
 
 **Welcome to the community!** 🙌
 
-For any documentation questions, [open an issue](https://github.com/cristianm-developer/IaFrontRefAssistant/issues).
+For any documentation questions, [open an issue](https://github.com/cristianm-developer/aiui-assistant/issues).

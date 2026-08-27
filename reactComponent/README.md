@@ -1,13 +1,13 @@
-# IA Front Ref Assistant
+# AIUI Assistant
 
 A framework-agnostic floating visual widget for working with AI coding assistants. It lets you capture, tag, and generate prompts for UI elements in real time — drop it into any web app to get started.
 
-![Version](https://img.shields.io/badge/version-0.1.3-blue)
+![Version](https://img.shields.io/badge/version-0.1.15-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 ## What is it?
 
-**IA Front Ref Assistant** mounts into your app and gives you:
+**AIUI Assistant** mounts into your app and gives you:
 
 - 🎯 **Visual capture** of HTML elements via an interactive overlay
 - 📍 **Automatic tagging** of components and sections with data attributes
@@ -35,21 +35,21 @@ No peer dependencies to install — the package's own build already bundles what
 
 ### Recommended: install the skill pack (automated setup)
 
-Installing the package by itself only gets you the widget — you still have to hand-write `iafrontrefassistant.config.ts`, tag your existing components, and call `mountIaFrontRefAssistant()` yourself. This repo also ships an **agent skill pack** that does all of that for you: adds the dependency, creates/syncs the config file, tags your existing components, and wires up the mount call — idempotently, safe to re-run any time.
+Installing the package by itself only gets you the widget — you still have to hand-write `iafrontrefassistant.config.ts`, tag your existing components, and call `mountIaFrontRefAssistant()` yourself. This repository also ships a versioned **AIUI Assistant skill/plugin pack** that does all of that for you: adds the dependency, creates/syncs the config file, tags your existing components, and wires up the mount call — idempotently, safe to re-run any time.
 
 The skills are plain Markdown (`SKILL.md` with YAML frontmatter), following the shared, multi-vendor [Agent Skills](https://agents.md) convention — so the same files work across tools. What differs per tool is only *where* Skills are discovered from and how you register them:
 
 | Tool | Skills folder it reads | How to install this pack |
 |---|---|---|
-| **Claude Code** | `.claude/skills/` (project) or via a plugin | `/plugin marketplace add https://github.com/cristianm-developer/IaFrontRefAssistant.git` then `/plugin install ia-skills@ia-front-ref-assistant` — see [Non-interactive / CI](#non-interactive--ci) to script it. |
-| **OpenAI Codex CLI** | `.agents/skills/` (project) | Copy this repo's [`.agents/skills/`](.agents/skills/) folder into your project's `.agents/skills/`, e.g.: `npx degit cristianm-developer/IaFrontRefAssistant/.agents/skills .agents/skills` |
-| **Cursor** | `.agents/skills/` or `.cursor/skills/` (project) | Same copy as Codex above — Cursor reads `.agents/skills/` too: `npx degit cristianm-developer/IaFrontRefAssistant/.agents/skills .agents/skills` |
-| **Claude.ai / Claude API (Agent Skills)** | Uploaded, not filesystem-based | Upload the `.agents/skills/*/SKILL.md` folders as Skills (Settings → Capabilities in claude.ai, or the `skills` param in the Agent SDK/API). |
-| **Any other assistant** (Windsurf, Cline, a custom agent, ...) | Varies | Point the assistant at [`.agents/skills/`](.agents/skills/) and ask it to follow those `SKILL.md` files directly — they're self-contained. |
+| **Claude Code** | `.claude/skills/` (project) or via a plugin | `/plugin marketplace add https://github.com/cristianm-developer/aiui-assistant.git` then `/plugin install aiui-assistant@aiui-assistant`. |
+| **OpenAI Codex** | Native plugin | Add this repository as a Codex plugin source and install `aiui-assistant`; the manifest is at [`ia-skills/.codex-plugin/plugin.json`](../ia-skills/.codex-plugin/plugin.json). |
+| **Cursor** | Native skill directory or plugin format | Use the canonical skills in [`ia-skills/skills/`](../ia-skills/skills/) through Cursor's skill installation flow. |
+| **Claude.ai / Claude API** | Uploaded or API-configured skills | Upload the `ia-skills/skills/*/SKILL.md` folders or register them through the Skills API. |
+| **Any other assistant** | Varies | Copy or register the canonical `SKILL.md` files under [`ia-skills/skills/`](../ia-skills/skills/) with that system's native skill format. |
 
 ([`degit`](https://github.com/Rich-Harris/degit) needs no install of its own — `npx degit ...` pulls just that subfolder without cloning the whole repo or leaving a `.git` behind.)
 
-Once installed, invoke `init-ia-front-assistant` (as `/init-ia-front-assistent` in Claude Code, `$init-ia-front-assistant` in Codex CLI, or by asking Cursor/any other assistant to run that skill).
+Once installed, invoke `init-aiui-assistant` (as `/init-aiui-assistant` in Claude Code or through the equivalent skill command in another compatible system).
 
 #### Non-interactive / CI
 
@@ -59,13 +59,13 @@ The `/plugin` commands above are typed inside an interactive Claude Code session
 // .claude/settings.json
 {
   "extraKnownMarketplaces": [
-    { "name": "aiui-assistant", "source": "https://github.com/cristianm-developer/IaFrontRefAssistant.git" }
+    { "name": "aiui-assistant", "source": "https://github.com/cristianm-developer/aiui-assistant.git" }
   ],
   "enabledPlugins": { "ia-skills": true }
 }
 ```
 ```bash
-claude plugin install ia-skills@ia-front-ref-assistant --scope project --yes
+claude plugin install aiui-assistant@aiui-assistant --scope project --yes
 ```
 `enabledPlugins` only toggles a plugin that's already installed — it doesn't install it by itself, so the `claude plugin install ... --yes` step is still required once per machine/CI runner.
 
@@ -79,21 +79,12 @@ import { mountIaFrontRefAssistant, defineConfig } from '@cristianmpx/aiui-assist
 
 const config = defineConfig({
   active: true,
-  currentVariant: 'default',
-  currentTheme: 'light',
-  components: {
-    'button-primary': {
-      label: 'Primary Button',
-      variants: ['default', 'hover', 'disabled'],
-      sizes: ['sm', 'md', 'lg'],
-    },
-  },
-  themeTokens: {
-    light: {
-      label: 'Light',
-      values: { primary: '#3B82F6', text: '#000000' },
-    },
-  },
+  components: [{
+    kind: 'Button',
+    variants: [{ value: 'primary', label: 'Primary' }],
+    sizes: [{ value: 'md', label: 'Medium' }],
+  }],
+  theme: [{ key: 'color-primary', label: 'Primary color' }],
 });
 
 mountIaFrontRefAssistant(config);
@@ -103,29 +94,49 @@ No CSS import needed either — `mountIaFrontRefAssistant()` injects its own sty
 
 ## Tagging Elements
 
-For the widget to identify your elements, add the `data-wrapper-id` and `data-component-id` attributes — plain HTML attributes, so this works the same in JSX, an Astro/Vue/Angular template, or raw HTML:
+For the widget to identify your elements, use explicit section, wrapper, and component attributes. They are plain HTML attributes, so they work the same in JSX, Astro/Vue/Angular templates, or raw HTML:
 
 ```html
 <!-- Site section -->
-<section data-wrapper-id="hero">
+<section data-section-id="hero">
+  <div data-wrapper-id="hero-content">
   <h1>Welcome</h1>
 
   <!-- Individual component -->
-  <div data-component-id="cta-button" data-component-kind="button-primary">
+  <div data-component-id="cta-button" data-component-kind="Button">
     <button>Sign Up</button>
+  </div>
   </div>
 </section>
 ```
 
-> If you installed via the Claude Code skill pack above, this tagging is done for you automatically by `/init-ia-front-assistent`.
+> If you installed via the Claude Code skill pack above, this tagging is done for you automatically by `/init-aiui-assistant`.
 
 ### Supported attributes
 
 | Attribute | Purpose | Example |
 |-----------|---------|---------|
-| `data-wrapper-id` | Identifies site sections | `data-wrapper-id="hero"` |
-| `data-component-id` | Identifies reusable components | `data-component-id="cta-button"` |
-| `data-component-kind` | Links to a config definition | `data-component-kind="button-primary"` |
+| `data-section-id` | Identifies an independent page/view section | `data-section-id="hero"` |
+| `data-wrapper-id` | Identifies a logical visual container; wrappers may be nested | `data-wrapper-id="hero-content"` |
+| `data-component-id` | Identifies a reusable component instance | `data-component-id="cta-button"` |
+| `data-component-kind` | Identifies the source component type | `data-component-kind="Button"` |
+
+## AI-ready frontend context
+
+When a target is captured, AIUI Assistant can generate a framework-agnostic reference containing its logical type (`section`, `wrapper`, `component`, or `element`), route, component name, source file/line, visible text, classes, semantic attributes, declared visual styles, and immediate visual parent.
+
+The prompt modal provides two formats:
+
+- **Copy reference** — readable text for a normal coding prompt.
+- **Copy JSON** — structured context for agents, scripts, and automation.
+
+Multiple requests for the same target are grouped into one prompt entry.
+
+### Reference configuration
+
+All supported attributes are included by default. Use the exported `AIUI_REFERENCE_ATTRIBUTES` constant as the canonical list, or select a subset through `referenceAttributes`. Set `includeSemanticState: false` to omit boolean states such as `disabled`, `checked`, and `expanded`.
+
+The style context includes only declared visual properties from inline CSS and matching stylesheet rules: display/flex alignment, dimensions, spacing, overflow, colors, font size/weight/line height, border, and border radius. Browser-computed defaults are excluded.
 
 ## Advanced Configuration
 
@@ -134,52 +145,26 @@ For the widget to identify your elements, add the `data-wrapper-id` and `data-co
 Type-safe configuration helper:
 
 ```ts
-import { defineConfig } from '@cristianmpx/aiui-assistant';
+import {
+  AIUI_REFERENCE_ATTRIBUTES,
+  defineConfig,
+} from '@cristianmpx/aiui-assistant';
 
 const config = defineConfig({
   // Turn the widget on/off globally
   active: true,
 
-  // Current variant (to test different UI versions)
-  currentVariant: 'default',
-
-  // Current theme
-  currentTheme: 'light',
-
   // Reusable component definitions
-  components: {
-    'button-primary': {
-      label: 'Primary Button',
-      variants: ['default', 'hover', 'disabled', 'loading'],
-      sizes: ['sm', 'md', 'lg'],
+  components: [
+    {
+      kind: 'Button',
+      variants: [{ value: 'primary', label: 'Primary' }],
+      sizes: [{ value: 'md', label: 'Medium' }],
     },
-    'card': {
-      label: 'Card Container',
-      variants: ['elevated', 'outline'],
-    },
-  },
-
-  // Theme token definitions
-  themeTokens: {
-    light: {
-      label: 'Light Mode',
-      values: {
-        primary: '#3B82F6',
-        secondary: '#8B5CF6',
-        text: '#000000',
-        bg: '#FFFFFF',
-      },
-    },
-    dark: {
-      label: 'Dark Mode',
-      values: {
-        primary: '#60A5FA',
-        secondary: '#A78BFA',
-        text: '#FFFFFF',
-        bg: '#1F2937',
-      },
-    },
-  },
+  ],
+  theme: [{ key: 'color-primary', label: 'Primary color' }],
+  referenceAttributes: AIUI_REFERENCE_ATTRIBUTES,
+  includeSemanticState: true,
 });
 ```
 
@@ -359,19 +344,16 @@ reactComponent/src/
 ├── IaFrontRefAssistant.tsx  # Internal root component (used by mount.tsx only — see "Why no <IaFrontRefAssistant> export")
 └── mount.tsx                # mountIaFrontRefAssistant() — the public entry point
 
-.agents/skills/             # Portable skill pack (Codex CLI, Cursor, ...)
-├── config-mapper/          # Syncs iafrontrefassistant.config.ts
-├── frontend-data-tagging/  # Applies data-* attributes
-└── init-ia-front-assistant/  # Full setup skill ($init-ia-front-assistant)
-
-ia-skills/                  # Claude Code plugin wrapper (see "Recommended" install above)
+ia-skills/                  # Canonical skills plus Codex/Claude plugin manifests
+├── .codex-plugin/
 ├── .claude-plugin/
 │   └── plugin.json         # Plugin manifest
 ├── commands/
-│   └── init-ia-front-assistent.md   # /init-ia-front-assistent
+│   └── init-aiui-assistant.md       # /init-aiui-assistant
 └── skills/
-    ├── config-mapper/      # Same content as .agents/skills/config-mapper
-    └── frontend-data-tagging/  # Same content as .agents/skills/frontend-data-tagging
+    ├── aiui-config-mapper/
+    ├── aiui-frontend-data-tagging/
+    └── init-aiui-assistant/
 ```
 
 ## API Reference
@@ -381,38 +363,48 @@ ia-skills/                  # Claude Code plugin wrapper (see "Recommended" inst
 ```typescript
 // Configuration
 export interface IaFraConfig {
-  active: boolean;
-  currentVariant?: string;
-  currentTheme?: string;
-  components?: Record<string, ComponentDefinition>;
-  themeTokens?: Record<string, ThemeTokenDefinition>;
+  active?: boolean;
+  components?: ComponentDefinition[];
+  theme?: ThemeTokenDefinition[];
+  prePrompt?: string;
+  referenceAttributes?: readonly AIUIReferenceAttribute[];
+  includeSemanticState?: boolean;
 }
 
 export interface ComponentDefinition {
-  label: string;
-  variants?: string[];
-  sizes?: string[];
+  kind: string;
+  variants?: ConfigOption[];
+  sizes?: ConfigOption[];
 }
 
 export interface ThemeTokenDefinition {
+  key: string;
   label: string;
-  values: Record<string, string>;
+  values?: ConfigOption[];
 }
 
-// Captured prompts
+export interface ConfigOption {
+  value: string;
+  label: string;
+}
+
+export type AIUIReferenceAttribute = string;
+
+export type TargetType = 'section' | 'wrapper' | 'component' | 'element';
+
+export interface AssistantConfig {
+  active: boolean;
+  capture: { sections: boolean; wrappers: boolean; components: boolean; elements: boolean };
+  show: { sections: boolean; wrappers: boolean; components: boolean };
+}
+
 export interface PromptEntry {
   id: string;
   targetId: string;
+  targetType: TargetType;
+  url: string;
   text: string;
-  timestamp: number;
-}
-
-// Assistant state
-export interface AssistantConfig {
-  active: boolean;
-  captureMode: boolean;
-  showMode: boolean;
-  prompts: PromptEntry[];
+  createdAt: number;
 }
 ```
 
@@ -456,7 +448,7 @@ AIUIReactAssistCleanup({
 });
 ```
 
-`referenceAttributes` controla qué información se envía a la IA; `keepAttributes` controla qué atributos permanecen en el HTML de producción. Son opciones independientes. Para excluir estados semánticos booleanos de la referencia:
+`referenceAttributes` controls what information is sent to the AI; `keepAttributes` controls which attributes remain in production HTML. They are independent settings. To exclude boolean semantic states from the reference:
 
 ```ts
 includeSemanticState: false

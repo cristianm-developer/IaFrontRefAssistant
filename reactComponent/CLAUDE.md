@@ -1,8 +1,8 @@
 # CLAUDE.md — Technical Documentation
 
-**Project:** IA Front Ref Assistant
+**Project:** AIUI Assistant
 **Description:** Framework-agnostic visual widget (Preact bundled inside) to assist AI-driven coding — mounted via `mountIaFrontRefAssistant()`
-**Version:** 0.1.2
+**Version:** 0.1.14
 **Status:** Complete (Phases 0-10)
 
 ---
@@ -91,7 +91,7 @@ The component identifies elements using 3 attributes (all optional):
 
 ```html
 <!-- Section identified as "hero" -->
-<section data-wrapper-id="hero">
+<section data-section-id="hero">
   <!-- Reusable component instance "card" -->
   <div data-component-id="featured-card" data-component-kind="card">
     <!-- Individual leaf element -->
@@ -128,23 +128,19 @@ interface TrackedTarget {
 ```typescript
 interface IaFraConfig {
   active: boolean;               // Turn the component on/off globally
-  currentVariant?: string;       // Current variant (e.g. "default", "dark")
-  currentTheme?: string;         // Current theme (e.g. "light")
-  components?: {                 // Component definitions
-    [kind: string]: {
-      label: string;
-      variants?: string[];
-      sizes?: string[];
-    }
-  };
-  themeTokens?: {                // Theme definitions
-    [themeName: string]: {
-      label: string;
-      values: Record<string, string>;
-    }
-  };
+  components?: ComponentDefinition[]; // Component definitions
+  theme?: ThemeTokenDefinition[];     // Theme token definitions
+  prePrompt?: string;             // Fixed prompt guidance
+  referenceAttributes?: readonly AIUIReferenceAttribute[];
+  includeSemanticState?: boolean;
 }
 ```
+
+`referenceAttributes` defaults to the complete supported allowlist. Set
+`includeSemanticState` to `false` only when boolean UI state should be omitted.
+References include logical target type, route/source metadata, semantic
+information, immediate parent context, visible content, and declared visual
+styles rather than browser-computed defaults.
 
 ---
 
@@ -291,7 +287,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'IaFrontRefAssistant',
+      name: 'AIUIAssistant',
       formats: ['es', 'cjs', 'iife'],
       fileName: (format) => /* ia-front-ref-assistant.{js,cjs,global.js} */,
     },
@@ -301,15 +297,15 @@ export default defineConfig({
 ```
 
 **Outputs:**
-- `dist/ia-front-ref-assistant.js` (ESM)
-- `dist/ia-front-ref-assistant.cjs` (CommonJS)
-- `dist/ia-front-ref-assistant.global.js` (IIFE, classic `<script>` — exposes `window.IaFrontRefAssistant`)
+- `dist/aiui-assistant.js` (ESM)
+- `dist/aiui-assistant.cjs` (CommonJS)
+- `dist/aiui-assistant.global.js` (IIFE, classic `<script>` — exposes `window.AIUIAssistant`)
 - `dist/index.d.ts` (TypeScript definitions)
 - `dist/style.css` (compiled styles — optional; `mountIaFrontRefAssistant()` already self-injects this same CSS at runtime)
 
 Verify a build didn't regress with `npm run smoke` — it imports the
-compiled `dist/ia-front-ref-assistant.js` (and loads
-`dist/ia-front-ref-assistant.global.js` into a `<script>`) inside a real
+compiled `dist/aiui-assistant.js` (and loads
+`dist/aiui-assistant.global.js` into a `<script>`) inside a real
 jsdom document, outside Vite/Vitest, to confirm the widget actually mounts
 with zero `react`/`react-dom` installed (`scripts/smoke*.mjs`). This is a
 manual/CI smoke check, not part of `npm test` — it needs the `dist/` build
@@ -341,8 +337,8 @@ from `index.ts` without re-solving this.
 
 ```bash
 # Clone/install
-git clone https://github.com/cristianm-developer/IaFrontRefAssistant.git
-cd IaFrontRefAssistant/reactComponent
+git clone https://github.com/cristianm-developer/aiui-assistant.git
+cd aiui-assistant/reactComponent
 npm install
 
 # Tests/verification
@@ -395,7 +391,7 @@ npm run build
 npm publish
 
 # Verify
-npm info ia-front-ref-assistant
+npm info @cristianmpx/aiui-assistant
 ```
 
 ---

@@ -1,6 +1,6 @@
 {
-  "name": "ia-skills",
-  "version": "0.1.2",
+  "name": "aiui-assistant",
+  "version": "0.1.15",
   "description": "Claude Code skills for @cristianmpx/aiui-assistant: installs the package, tags frontend context metadata, syncs config, and optionally configures production cleanup.",
   "author": {
     "name": "cristianm-developer"

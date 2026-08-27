@@ -1,11 +1,11 @@
 ---
-name: init-ia-front-assistant
+name: init-aiui-assistant
 description: Inicializa @cristianmpx/aiui-assistant en un proyecto, sincroniza metadata de frontend y configura opcionalmente el cleanup de producción para Vite, Astro o Next.js.
 ---
 
 # Inicialización de AIUI Assistant
 
-Usá el comando `/init-ia-front-assistent` como procedimiento canónico. La
+Usá el comando `/init-aiui-assistant` como procedimiento canónico. La
 skill debe:
 
 - Instalar `@cristianmpx/aiui-assistant` si falta.
@@ -33,4 +33,4 @@ estilos y origen disponible. Pedidos sucesivos sobre el mismo elemento se
 agrupan en una sola entrada.
 
 Para el detalle operativo y las preguntas interactivas, leer
-`../../commands/init-ia-front-assistent.md`.
+`../../commands/init-aiui-assistant.md`.

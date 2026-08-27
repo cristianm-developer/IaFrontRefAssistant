@@ -38,7 +38,11 @@ export function AssistantProvider({ children }: { children: React.ReactNode }) {
     mergeConfig(readJSON<AssistantConfig>(STORAGE_KEY_CONFIG, DEFAULT_CONFIG))
   );
   const [prompts, setPrompts] = useState<PromptEntry[]>(() =>
-    readJSON<PromptEntry[]>(STORAGE_KEY_PROMPTS, [])
+    readJSON<PromptEntry[]>(STORAGE_KEY_PROMPTS, []).map((entry) => ({
+      ...entry,
+      // Entries saved before grouping counts existed represent one request.
+      requestCount: entry.requestCount ?? 1,
+    }))
   );
 
   useEffect(() => {
@@ -68,8 +72,12 @@ export function AssistantProvider({ children }: { children: React.ReactNode }) {
   const addPrompt = useCallback((entry: Omit<PromptEntry, 'id' | 'createdAt'>) => {
     setPrompts((prev) => {
       const existing = prev.find((item) => item.targetId === entry.targetId && item.targetType === entry.targetType && item.url === entry.url);
-      if (!existing) return [...prev, { ...entry, id: generateId(), createdAt: Date.now() }];
-      return prev.map((item) => item.id === existing.id ? { ...item, text: `${item.text}\n\n${entry.text}` } : item);
+      if (!existing) {
+        return [...prev, { ...entry, id: generateId(), createdAt: Date.now(), requestCount: 1 }];
+      }
+      return prev.map((item) => item.id === existing.id
+        ? { ...item, text: `${item.text}\n\n${entry.text}`, requestCount: (item.requestCount ?? 1) + 1 }
+        : item);
     });
   }, []);
 
