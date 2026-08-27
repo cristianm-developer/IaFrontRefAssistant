@@ -27,7 +27,7 @@ consumidor importa su propio módulo de config y lo pasa como prop.
 
 ```ts
 // iafrontrefassistant.config.ts (en el root del proyecto consumidor)
-import { defineConfig } from 'ia-front-ref-assistant';
+import { defineConfig } from '@cristianmpx/aiui-assistant';
 
 export default defineConfig({
   components: [
@@ -56,7 +56,7 @@ export default defineConfig({
 ```tsx
 // App.tsx del consumidor
 import config from '../iafrontrefassistant.config';
-import { IaFrontRefAssistant } from 'ia-front-ref-assistant';
+import { IaFrontRefAssistant } from '@cristianmpx/aiui-assistant';
 
 <IaFrontRefAssistant definitions={config} />
 ```

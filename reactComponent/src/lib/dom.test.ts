@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ATTR_WRAPPER, ATTR_COMPONENT } from './constants';
-import { getWrapperElements, getComponentElements, findIndividualElements, buildRelativeId } from './dom';
+import { getWrapperElements, getComponentElements, findIndividualElements, buildRelativeId, getTargetContext } from './dom';
 
 describe('DOM functions', () => {
   beforeEach(() => {
@@ -122,5 +122,39 @@ describe('DOM functions', () => {
     const elements = findIndividualElements(wrap);
     expect(elements.length).toBe(1);
     expect(elements[0]).toBe(btn);
+  });
+
+  it('captures only declared visual styles, not browser-computed defaults', () => {
+    const style = document.createElement('style');
+    style.textContent = '.card { display: flex; color: red; border-radius: 8px; }';
+    document.head.appendChild(style);
+    const card = document.createElement('div');
+    card.className = 'card';
+    document.body.appendChild(card);
+
+    const context = getTargetContext(card);
+    expect(context.styles).toMatchObject({ display: 'flex', color: 'red', 'border-radius': '8px' });
+    expect(context.styles.position).toBeUndefined();
+
+    style.remove();
+  });
+
+  it('allows the project config to limit reference attributes', () => {
+    const link = document.createElement('a');
+    link.id = 'docs-link';
+    link.href = '/docs';
+    link.setAttribute('data-route', '/home');
+    document.body.appendChild(link);
+
+    const context = getTargetContext(link, ['id']);
+    expect(context.attributes).toEqual({ id: 'docs-link' });
+    expect(context.semantic.href).toBeUndefined();
+  });
+
+  it('can omit semantic boolean states from the reference', () => {
+    const button = document.createElement('button');
+    button.disabled = true;
+    document.body.appendChild(button);
+    expect(getTargetContext(button, undefined, false).semantic.states).toEqual({});
   });
 });

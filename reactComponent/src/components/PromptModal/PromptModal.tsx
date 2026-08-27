@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState } from 'react';
 import type { TrackedTarget } from '../../lib/dom';
 import type { IaFraConfig } from '../../config/types';
-import { formatPrompt } from '../../lib/promptFormat';
+import { formatPrompt, formatTargetReference, formatTargetReferenceJSON } from '../../lib/promptFormat';
+import { copyText } from '../../lib/clipboard';
+import { getTargetContext } from '../../lib/dom';
 import { VariantSizePicker } from './VariantSizePicker';
 import { ThemePicker } from './ThemePicker';
 
@@ -16,6 +18,8 @@ export interface PromptModalProps {
 
 export function PromptModal({ target, definitions, onClose, onSave }: PromptModalProps) {
   const [text, setText] = useState('');
+  const [reference, setReference] = useState('');
+  const [copied, setCopied] = useState<'text' | 'json' | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const cancelRef = useRef<HTMLButtonElement>(null);
   const saveRef = useRef<HTMLButtonElement>(null);
@@ -45,8 +49,26 @@ export function PromptModal({ target, definitions, onClose, onSave }: PromptModa
   function handleSubmit() {
     const trimmed = text.trim();
     if (trimmed.length === 0) return;
-    const fullText = formatPrompt(target.id, window.location.href, trimmed, definitions?.prePrompt);
+    const fullText = formatPrompt(target.id, window.location.href, trimmed, definitions?.prePrompt, reference.trim());
     onSave(fullText);
+  }
+
+  async function handleCopyReference() {
+    const context = getTargetContext(target.el, definitions?.referenceAttributes, definitions?.includeSemanticState ?? true);
+    const ok = await copyText(formatTargetReference(target.id, context, window.location.href, target.type));
+    if (ok) {
+      setCopied('text');
+      setTimeout(() => setCopied(null), 1200);
+    }
+  }
+
+  async function handleCopyReferenceJSON() {
+    const context = getTargetContext(target.el, definitions?.referenceAttributes, definitions?.includeSemanticState ?? true);
+    const ok = await copyText(formatTargetReferenceJSON(target.id, target.type, context, window.location.href));
+    if (ok) {
+      setCopied('json');
+      setTimeout(() => setCopied(null), 1200);
+    }
   }
 
   function handleTextareaKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -111,6 +133,20 @@ export function PromptModal({ target, definitions, onClose, onSave }: PromptModa
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleTextareaKeyDown}
+        />
+        <div className="ia-fra-modal__reference-actions">
+          <button type="button" className="ia-fra-modal__btn" onClick={handleCopyReference}>
+            {copied === 'text' ? '¡Referencia copiada!' : 'Copiar referencia'}
+          </button>
+          <button type="button" className="ia-fra-modal__btn" onClick={handleCopyReferenceJSON}>
+            {copied === 'json' ? '¡JSON copiado!' : 'Copiar JSON'}
+          </button>
+        </div>
+        <textarea
+          className="ia-fra-modal__reference"
+          placeholder="Pegá aquí una referencia adicional para anexarla al pedido…"
+          value={reference}
+          onChange={(e) => setReference(e.target.value)}
         />
         <div className="ia-fra-modal__actions">
           <button ref={cancelRef} type="button" className="ia-fra-modal__btn" onClick={onClose} onKeyDown={handleCancelKeyDown}>

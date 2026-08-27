@@ -3,7 +3,7 @@
 `ia-front-ref-assistant` is one function call — `mountIaFrontRefAssistant()` — that works the same in every framework, because it bundles [Preact](https://preactjs.com) internally instead of depending on `react`/`react-dom`. There's nothing to wrap and nothing else to install; what differs per framework below is only **where** you place that one call.
 
 ```bash
-npm install ia-front-ref-assistant
+npm install @cristianmpx/aiui-assistant
 ```
 
 ## Table of contents
@@ -29,7 +29,7 @@ Call it once from your entry file, alongside (not wrapping) `ReactDOM.createRoot
 // main.tsx
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { mountIaFrontRefAssistant, defineConfig } from 'ia-front-ref-assistant'
+import { mountIaFrontRefAssistant, defineConfig } from '@cristianmpx/aiui-assistant'
 import App from './App.tsx'
 
 const config = defineConfig({
@@ -132,7 +132,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 'use client'
 
 import { useEffect } from 'react'
-import { mountIaFrontRefAssistant, defineConfig } from 'ia-front-ref-assistant'
+import { mountIaFrontRefAssistant, defineConfig } from '@cristianmpx/aiui-assistant'
 
 const config = defineConfig({
   active: process.env.NODE_ENV === 'development',
@@ -172,7 +172,7 @@ export default function Home() {
 
 ```tsx
 // app/api/assistant-config/route.ts
-import type { IaFraConfig } from 'ia-front-ref-assistant'
+import type { IaFraConfig } from '@cristianmpx/aiui-assistant'
 
 export async function GET() {
   const config: IaFraConfig = {
@@ -194,8 +194,8 @@ export async function GET() {
 'use client'
 
 import { useEffect, useState } from 'react'
-import { mountIaFrontRefAssistant } from 'ia-front-ref-assistant'
-import type { IaFraConfig } from 'ia-front-ref-assistant'
+import { mountIaFrontRefAssistant } from '@cristianmpx/aiui-assistant'
+import type { IaFraConfig } from '@cristianmpx/aiui-assistant'
 
 export function DynamicAssistantMount() {
   const [config, setConfig] = useState<IaFraConfig | null>(null)
@@ -246,7 +246,7 @@ export default function App() {
 ```tsx
 // app/components/AssistantMount.tsx
 import { useEffect } from 'react'
-import { mountIaFrontRefAssistant, defineConfig } from 'ia-front-ref-assistant'
+import { mountIaFrontRefAssistant, defineConfig } from '@cristianmpx/aiui-assistant'
 
 const config = defineConfig({
   active: process.env.NODE_ENV === 'development',
@@ -276,7 +276,7 @@ export function AssistantMount() {
   <body>
     <slot />
     <script>
-      import { mountIaFrontRefAssistant, defineConfig } from 'ia-front-ref-assistant'
+      import { mountIaFrontRefAssistant, defineConfig } from '@cristianmpx/aiui-assistant'
 
       const config = defineConfig({
         active: import.meta.env.DEV,
@@ -318,7 +318,7 @@ Call it once from `main.ts`, at bootstrap:
 ```ts
 // main.ts
 import { bootstrapApplication } from '@angular/platform-browser'
-import { mountIaFrontRefAssistant, defineConfig } from 'ia-front-ref-assistant'
+import { mountIaFrontRefAssistant, defineConfig } from '@cristianmpx/aiui-assistant'
 import { AppComponent } from './app/app.component'
 import { appConfig } from './app/app.config'
 
@@ -347,7 +347,7 @@ Tag elements directly in your Angular templates — `data-*` attributes work the
 ```ts
 // main.ts
 import { createApp } from 'vue'
-import { mountIaFrontRefAssistant, defineConfig } from 'ia-front-ref-assistant'
+import { mountIaFrontRefAssistant, defineConfig } from '@cristianmpx/aiui-assistant'
 import App from './App.vue'
 
 mountIaFrontRefAssistant(defineConfig({
@@ -374,7 +374,7 @@ createApp(App).mount('#app')
 
 ```ts
 // main.ts
-import { mountIaFrontRefAssistant, defineConfig } from 'ia-front-ref-assistant'
+import { mountIaFrontRefAssistant, defineConfig } from '@cristianmpx/aiui-assistant'
 import App from './App.svelte'
 
 mountIaFrontRefAssistant(defineConfig({
@@ -401,13 +401,13 @@ export default app
 Use the classic `<script>` global build — no `import`/`type="module"` required:
 
 ```html
-<script src="node_modules/ia-front-ref-assistant/dist/ia-front-ref-assistant.global.js"></script>
+<script src="node_modules/@cristianmpx/aiui-assistant/dist/aiui-assistant.global.js"></script>
 <script>
-  window.IaFrontRefAssistant.mountIaFrontRefAssistant({ active: true })
+  window.AIUIAssistant.mountIaFrontRefAssistant({ active: true })
 </script>
 ```
 
-Serve `ia-front-ref-assistant.global.js` from wherever you host static assets (copy it out of `node_modules`, or point at a CDN mirror of the npm package). `window.IaFrontRefAssistant` also exposes `defineConfig` if you want the type-checked helper (only useful if that inline script is itself TypeScript-checked somehow — a plain object literal works just as well here).
+Serve `aiui-assistant.global.js` from wherever you host static assets (copy it out of `node_modules`, or point at a CDN mirror of the npm package). `window.AIUIAssistant` also exposes `defineConfig` if you want the type-checked helper (only useful if that inline script is itself TypeScript-checked somehow — a plain object literal works just as well here).
 
 ---
 
@@ -453,7 +453,7 @@ mountIaFrontRefAssistant(userConfig)
 
 ```tsx
 // .storybook/preview.tsx
-import { mountIaFrontRefAssistant, defineConfig } from 'ia-front-ref-assistant'
+import { mountIaFrontRefAssistant, defineConfig } from '@cristianmpx/aiui-assistant'
 
 const config = defineConfig({
   active: true,

@@ -2,6 +2,20 @@ export const ATTR_SECTION = 'data-section-id';
 export const ATTR_WRAPPER = 'data-wrapper-id';
 export const ATTR_COMPONENT = 'data-component-id';
 export const ATTR_COMPONENT_KIND = 'data-component-kind';
+export const ATTR_ROUTE = 'data-route';
+export const ATTR_SOURCE_FILE = 'data-source-file';
+export const ATTR_SOURCE_LINE = 'data-source-line';
+export const ATTR_COMPONENT_NAME = 'data-component-name';
+
+/** Attributes available to include in copied frontend references. */
+export const AIUI_REFERENCE_ATTRIBUTES = [
+  'id', 'role', 'aria-label', 'aria-labelledby', 'aria-describedby', 'href',
+  'type', 'name', 'placeholder', 'data-section-id', 'data-wrapper-id',
+  'data-component-id', 'data-component-kind', 'data-component-name',
+  'data-route', 'data-source-file', 'data-source-line',
+] as const;
+
+export type AIUIReferenceAttribute = typeof AIUI_REFERENCE_ATTRIBUTES[number];
 
 export const STORAGE_KEY_CONFIG = 'ia-fra:config';
 export const STORAGE_KEY_PROMPTS = 'ia-fra:prompts';

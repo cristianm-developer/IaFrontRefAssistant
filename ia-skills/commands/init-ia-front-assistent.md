@@ -1,10 +1,10 @@
 ---
-description: Inicializa o audita ia-front-ref-assistant en este proyecto — instala el paquete si falta, crea/sincroniza iafrontrefassistant.config.ts, retagea vistas/componentes existentes con data-wrapper-id/data-component-id/data-component-kind, y agrega la llamada a mountIaFrontRefAssistant() si todavía no está.
+description: Inicializa o audita @cristianmpx/aiui-assistant en este proyecto — instala el paquete si falta, crea/sincroniza iafrontrefassistant.config.ts, retagea vistas/componentes existentes con data-wrapper-id/data-component-id/data-component-kind, y agrega la llamada a mountIaFrontRefAssistant() si todavía no está.
 ---
 
-# Inicialización de ia-front-ref-assistant
+# Inicialización de @cristianmpx/aiui-assistant
 
-> El paquete ya está publicado en npm (`npm install ia-front-ref-assistant`);
+> El paquete ya está publicado en npm (`npm install @cristianmpx/aiui-assistant`);
 > usá esa forma por default. Solo recurrí a la URL de git
 > (`git+https://github.com/cristianm-developer/IaFrontRefAssistant.git`,
 > subdirectorio `reactComponent`) si el usuario pide explícitamente
@@ -16,7 +16,7 @@ description: Inicializa o audita ia-front-ref-assistant en este proyecto — ins
 
 > El paquete trae [Preact](https://preactjs.com) embebido en su propio JS
 > en vez de depender de `react`/`react-dom` — no hay que instalar nada más
-> allá de `ia-front-ref-assistant` mismo, en ningún stack (React, Astro,
+> allá de `@cristianmpx/aiui-assistant` mismo, en ningún stack (React, Astro,
 > Vue, Angular, Svelte, HTML plano). La única API pública es
 > `mountIaFrontRefAssistant()`: crea su propia raíz de render y porta el
 > widget a `document.body`, así que nunca hace falta envolver el árbol de
@@ -27,13 +27,13 @@ Ejecutá estos pasos en orden:
 1. Detectá el gestor de paquetes del proyecto consumidor (`npm`, `pnpm` o
    `yarn`, por el lockfile presente: `package-lock.json`, `pnpm-lock.yaml`,
    `yarn.lock`; si no hay ninguno, asumí `npm`).
-2. Verificá que `ia-front-ref-assistant` esté en las dependencias de
+2. Verificá que `@cristianmpx/aiui-assistant` esté en las dependencias de
    `package.json`. **Si no está, instalalo vos mismo** (no le preguntes al
    usuario si quiere instalarlo — el paquete aplica a cualquier proyecto,
    no hay stack donde "no corresponda"):
-   - `npm`: `npm install ia-front-ref-assistant`
-   - `pnpm`: `pnpm add ia-front-ref-assistant`
-   - `yarn`: `yarn add ia-front-ref-assistant`
+   - `npm`: `npm install @cristianmpx/aiui-assistant`
+   - `pnpm`: `pnpm add @cristianmpx/aiui-assistant`
+   - `yarn`: `yarn add @cristianmpx/aiui-assistant`
 
    No instales `react`, `react-dom`, ni ninguna integración de framework
    como parte de este paso — no hacen falta.
@@ -43,9 +43,9 @@ Ejecutá estos pasos en orden:
    arriba, el script `prepare` del paquete corre `npm run build` automáticamente
    al instalar.) Si el install falla, mostrá el error tal cual y no sigas
    (no tagees ni montes nada sobre un paquete que no quedó instalado).
-3. Si `ia-front-ref-assistant` ya estaba en las dependencias (paso 2 no
+3. Si `@cristianmpx/aiui-assistant` ya estaba en las dependencias (paso 2 no
    tuvo que instalar nada), preguntale al usuario si quiere que igual se
-   actualice a la última versión del git (`npm update ia-front-ref-assistant`
+   actualice a la última versión del git (`npm update @cristianmpx/aiui-assistant`
    o equivalente) antes de seguir — no lo hagas sin preguntar, puede tener
    una versión fijada a propósito.
 4. Antes de escribir nada, **interrogá al usuario** sobre lo que sea
@@ -62,6 +62,23 @@ Ejecutá estos pasos en orden:
      estilos) que la IA que reciba el prompt siempre deba tener en cuenta.
    - Si el usuario ya tiene una frase/texto que quiere usar tal cual como
      `prePrompt`, en vez de que se lo redacte esta skill.
+   - Si quiere configurar `AIUIReactAssistCleanup` en el pipeline de
+     build. Adaptá la pregunta al stack detectado: Vite, Astro o Next.js.
+     No agregues la integración si el usuario no la confirma.
+   - Si quiere incluir todos los atributos disponibles en las referencias
+     copiadas (comportamiento default) o definir una selección. Si elige una
+     selección, usá los nombres de `AIUI_REFERENCE_ATTRIBUTES` y guardalos en
+     `referenceAttributes` del config.
+   - Si quiere incluir estados semánticos (`disabled`, `checked`, `expanded`,
+     etc.). Por defecto `includeSemanticState` es `true`; guardá `false` solo
+     si el usuario prefiere referencias más pequeñas.
+   - Para el `prePrompt`, además de preguntar por skills y convenciones,
+     detectá el sistema de estilos real del proyecto (Tailwind, CSS Modules,
+     CSS global, styled-components u otro) y proponé una frase concreta
+     coherente con ese sistema. Por ejemplo, si usa Tailwind: "Usá Tailwind
+     para clases y layout siempre que sea posible; creá CSS independiente
+     solo cuando no exista un token/utilidad adecuada". El usuario debe
+     confirmar o editar la propuesta antes de escribirla.
    No sigas con el paso 5 hasta tener esto resuelto (con las respuestas
    del usuario, o con su confirmación explícita de que no hace falta
    `prePrompt` para este proyecto).
@@ -70,14 +87,15 @@ Ejecutá estos pasos en orden:
    `prePrompt` (con lo relevado en el paso 4) actuales del proyecto.
 6. Recorré el código fuente de frontend del proyecto (vistas, componentes)
    y, usando las reglas de la skill `frontend-data-tagging`, agregá los
-   atributos `data-wrapper-id` / `data-component-id` / `data-component-kind`
+   atributos `data-section-id` / `data-wrapper-id` / `data-component-id` /
+   `data-component-kind`
    donde falten. No re-tagear lo que ya está tagueado. Priorizá los
    directorios típicos de componentes/vistas del proyecto (detectalos por
    convención: `src/components`, `src/views`, `src/pages`, `app/`, etc. —
    los que existan).
 7. **Agregá la llamada a `mountIaFrontRefAssistant()` si todavía no está.**
    Buscá si ya existe (grep de `mountIaFrontRefAssistant` o de
-   `from 'ia-front-ref-assistant'`) — si ya está, no toques nada de este
+   `from '@cristianmpx/aiui-assistant'`) — si ya está, no toques nada de este
    paso, solo confirmalo en el resumen. Si no está:
    1. Encontrá el **punto de arranque** del proyecto — no un componente
       raíz para envolver, solo dónde correr una línea de código una vez.
@@ -90,7 +108,7 @@ Ejecutá estos pasos en orden:
         // app/components/AssistantMount.tsx
         'use client';
         import { useEffect } from 'react';
-        import { mountIaFrontRefAssistant } from 'ia-front-ref-assistant';
+        import { mountIaFrontRefAssistant } from '@cristianmpx/aiui-assistant';
         import config from '../../iafrontrefassistant.config';
 
         export function AssistantMount() {
@@ -118,11 +136,11 @@ Ejecutá estos pasos en orden:
       - Angular/Vue/Svelte/cualquier otro: en el entry point que arranca la
         app (`main.ts` en Angular/Vue/Svelte).
       - Sin bundler (HTML servido tal cual): dos `<script>` cerca de
-        `</body>` — `<script src="ruta/a/node_modules/ia-front-ref-assistant/dist/ia-front-ref-assistant.global.js"></script>`
+        `</body>` — `<script src="ruta/a/node_modules/@cristianmpx/aiui-assistant/dist/aiui-assistant.global.js"></script>`
         seguido de `<script>window.IaFrontRefAssistant.mountIaFrontRefAssistant(config)</script>`.
       - Si no reconocés ninguno de estos, preguntale al usuario cuál es el
         punto de arranque de su app en vez de adivinar.
-   2. Importá `mountIaFrontRefAssistant` desde `ia-front-ref-assistant` y
+   2. Importá `mountIaFrontRefAssistant` desde `@cristianmpx/aiui-assistant` y
       `config` desde `iafrontrefassistant.config.ts` (creado/sincronizado
       en el paso 5), y llamá `mountIaFrontRefAssistant(config)` una sola
       vez en el punto encontrado. No hace falta importar ningún CSS —
@@ -130,13 +148,29 @@ Ejecutá estos pasos en orden:
    3. Es un cambio quirúrgico: agregá solo el/los import(s) y la línea de
       la llamada (o el componente chico + su uso, en los casos que lo
       necesitan), sin reordenar ni reformatear el resto del archivo.
-8. Al terminar, mostrá un resumen: si se instaló el paquete (y con qué
+8. Si el usuario confirmó `AIUIReactAssistCleanup`, configurá la
+   integración en el archivo de build adecuado:
+   - Vite: importá `AIUIReactAssistCleanup` desde
+     `@cristianmpx/aiui-assistant` y agregá `AIUIReactAssistCleanup()` a
+     `plugins`. El plugin se aplica solo en `build`, por lo que no altera
+     Vitest ni el desarrollo.
+   - Astro: importá el mismo plugin y agregalo dentro de `vite.plugins` en
+     `astro.config.*`.
+   - Next.js: importá `withAIUIReactAssistCleanup` desde
+     `@cristianmpx/aiui-assistant` y envolvé el objeto exportado de
+     `next.config.*` con `withAIUIReactAssistCleanup(nextConfig)`. No
+     intentes cargar un plugin Vite directamente en Next.
+   - Vitest: no agregues un plugin separado. Vitest hereda la config de Vite,
+     pero el cleanup queda desactivado porque el plugin declara `apply:
+     'build'`; los atributos siguen disponibles durante tests y desarrollo.
+   Ejecutá la limpieza solo en builds de producción y preservá el source.
+9. Al terminar, mostrá un resumen: si se instaló el paquete (y con qué
    comando), cuántos wrappers/componentes se tagearon (y en qué archivos),
    cuántos ya estaban tagueados y se dejaron igual, el resumen que dejó
    `config-mapper` sobre el config (incluido el `prePrompt` final), y en
    qué archivo se agregó la llamada a `mountIaFrontRefAssistant()` (o si
    ya estaba).
-9. Sugerí correr `npm run build`/`npm run dev` del proyecto consumidor para
+10. Sugerí correr `npm run build`/`npm run dev` del proyecto consumidor para
    confirmar que todo compila con los cambios (instalación de dependencia,
    atributos `data-*`, y la nueva llamada de montaje).
 

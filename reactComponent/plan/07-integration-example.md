@@ -326,7 +326,7 @@ scaffold inicial) siga apuntando a `dist/style.css` — el consumidor debe
 poder hacer:
 
 ```ts
-import { IaFrontRefAssistant } from 'ia-front-ref-assistant';
+import { IaFrontRefAssistant } from '@cristianmpx/aiui-assistant';
 import 'ia-front-ref-assistant/style.css';
 ```
 

@@ -66,7 +66,11 @@ export function AssistantProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const addPrompt = useCallback((entry: Omit<PromptEntry, 'id' | 'createdAt'>) => {
-    setPrompts((prev) => [...prev, { ...entry, id: generateId(), createdAt: Date.now() }]);
+    setPrompts((prev) => {
+      const existing = prev.find((item) => item.targetId === entry.targetId && item.targetType === entry.targetType && item.url === entry.url);
+      if (!existing) return [...prev, { ...entry, id: generateId(), createdAt: Date.now() }];
+      return prev.map((item) => item.id === existing.id ? { ...item, text: `${item.text}\n\n${entry.text}` } : item);
+    });
   }, []);
 
   const clearPrompts = useCallback(() => {

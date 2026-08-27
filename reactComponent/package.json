@@ -1,16 +1,16 @@
 {
-  "name": "ia-front-ref-assistant",
-  "version": "0.1.11",
+  "name": "@cristianmpx/aiui-assistant",
+  "version": "0.1.13",
   "description": "Widget visual (Preact embebido, cero dependencias de runtime) para asistir la codificación con IA — funciona en cualquier framework",
   "type": "module",
-  "main": "./dist/ia-front-ref-assistant.cjs",
-  "module": "./dist/ia-front-ref-assistant.js",
+  "main": "./dist/aiui-assistant.cjs",
+  "module": "./dist/aiui-assistant.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/ia-front-ref-assistant.js",
-      "require": "./dist/ia-front-ref-assistant.cjs"
+      "import": "./dist/aiui-assistant.js",
+      "require": "./dist/aiui-assistant.cjs"
     },
     "./style.css": "./dist/style.css",
     "./dist/*": "./dist/*"
@@ -40,6 +40,9 @@
   ],
   "author": "",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cristianm-developer/IaFrontRefAssistant.git",

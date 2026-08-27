@@ -28,7 +28,7 @@ Integration is intentionally DOM-based: call `mountIaFrontRefAssistant()` once f
 ### The package
 
 ```bash
-npm install ia-front-ref-assistant
+npm install @cristianmpx/aiui-assistant
 ```
 
 No peer dependencies to install — the package's own build already bundles what it needs to render.
@@ -59,7 +59,7 @@ The `/plugin` commands above are typed inside an interactive Claude Code session
 // .claude/settings.json
 {
   "extraKnownMarketplaces": [
-    { "name": "ia-front-ref-assistant", "source": "https://github.com/cristianm-developer/IaFrontRefAssistant.git" }
+    { "name": "aiui-assistant", "source": "https://github.com/cristianm-developer/IaFrontRefAssistant.git" }
   ],
   "enabledPlugins": { "ia-skills": true }
 }
@@ -75,7 +75,7 @@ Call `mountIaFrontRefAssistant()` once wherever your app boots — for example i
 
 ```tsx
 // e.g. main.ts, main.tsx, an Astro client script, or any app entry point
-import { mountIaFrontRefAssistant, defineConfig } from 'ia-front-ref-assistant';
+import { mountIaFrontRefAssistant, defineConfig } from '@cristianmpx/aiui-assistant';
 
 const config = defineConfig({
   active: true,
@@ -134,7 +134,7 @@ For the widget to identify your elements, add the `data-wrapper-id` and `data-co
 Type-safe configuration helper:
 
 ```ts
-import { defineConfig } from 'ia-front-ref-assistant';
+import { defineConfig } from '@cristianmpx/aiui-assistant';
 
 const config = defineConfig({
   // Turn the widget on/off globally
@@ -430,16 +430,20 @@ export function mountIaFrontRefAssistant(
 ): { unmount: () => void }
 ```
 
-A classic `<script>` global build is also published at `dist/ia-front-ref-assistant.global.js` for zero-bundler setups — it exposes the same two functions under `window.IaFrontRefAssistant`. See [INTEGRATION.md](reactComponent/INTEGRATION.md#plain-html-no-bundler).
+A classic `<script>` global build is also published at `dist/aiui-assistant.global.js` for zero-bundler setups — it exposes the same two functions under `window.AIUIAssistant`. See [INTEGRATION.md](reactComponent/INTEGRATION.md#plain-html-no-bundler).
 
 ### Why no `<IaFrontRefAssistant>` JSX component export
 
 Earlier versions exported a `<IaFrontRefAssistant>{children}</IaFrontRefAssistant>` component meant to wrap your app's JSX. That pattern is now internal-only: this package bundles [Preact](https://preactjs.com) instead of depending on `react`/`react-dom` (see "Compatibility"), and a real React reconciler in a host app cannot correctly render a component built against a different, bundled UI runtime as a child of its own tree — Preact's hooks need Preact's own reconciler to track their state, which a foreign React tree never provides. `mountIaFrontRefAssistant()` doesn't have this problem because it creates and manages its own isolated render root, so it's the one supported way to mount the widget, in React apps included.
 
+## Production metadata cleanup
+
+Use `AIUIReactAssistCleanup()` from `@cristianmpx/aiui-assistant` in Vite/Astro builds, or `withAIUIReactAssistCleanup(nextConfig)` in Next.js. Cleanup runs only for production output and removes the assistant's generated `data-*` attributes without modifying source files. Use `keepAttributes` when route/source debugging metadata should remain. No separate Vitest plugin is needed.
+
 ## Compatibility
 
 - **Browsers**: Chrome/Edge 90+, Firefox 88+, Safari 14+
-- **Frameworks**: none required — the package bundles [Preact](https://preactjs.com) internally (no `react`/`react-dom`/`@astrojs/react`/etc. to install), so `mountIaFrontRefAssistant()` works the same in React, Next.js, Astro, Angular, Vue, Svelte, or plain HTML with no build step at all (`dist/ia-front-ref-assistant.global.js` as a classic `<script>`). See [INTEGRATION.md](reactComponent/INTEGRATION.md) for per-framework call sites.
+- **Frameworks**: none required — the package bundles [Preact](https://preactjs.com) internally (no `react`/`react-dom`/`@astrojs/react`/etc. to install), so `mountIaFrontRefAssistant()` works the same in React, Next.js, Astro, Angular, Vue, Svelte, or plain HTML with no build step at all (`dist/aiui-assistant.global.js` as a classic `<script>`). See [INTEGRATION.md](reactComponent/INTEGRATION.md) for per-framework call sites.
 - **SSR**: Supported (detects `typeof document === 'undefined'` and no-ops)
 
 ## License

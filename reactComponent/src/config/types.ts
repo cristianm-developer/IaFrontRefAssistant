@@ -27,4 +27,10 @@ export interface IaFraConfig {
   // `config-mapper` al correr /init-ia-front-assistent, pero el usuario puede
   // editarlo/reemplazarlo a mano en cualquier momento.
   prePrompt?: string;
+  // Por defecto se incluyen todos los atributos disponibles. Si se define,
+  // solo estos atributos entran en la referencia copiada.
+  referenceAttributes?: readonly AIUIReferenceAttribute[];
+  // Incluye estados booleanos como disabled, checked y expanded. Default true.
+  includeSemanticState?: boolean;
 }
+import type { AIUIReferenceAttribute } from '../lib/constants';

@@ -44,12 +44,12 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'IaFrontRefAssistant',
+      name: 'AIUIAssistant',
       formats: ['es', 'cjs', 'iife'],
       fileName: (format) => {
-        if (format === 'es') return 'ia-front-ref-assistant.js'
-        if (format === 'cjs') return 'ia-front-ref-assistant.cjs'
-        return 'ia-front-ref-assistant.global.js'
+        if (format === 'es') return 'aiui-assistant.js'
+        if (format === 'cjs') return 'aiui-assistant.cjs'
+        return 'aiui-assistant.global.js'
       },
     },
     sourcemap: true,

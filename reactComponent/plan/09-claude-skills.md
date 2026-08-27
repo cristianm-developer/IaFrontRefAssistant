@@ -158,7 +158,7 @@ Crearlo con esta forma base (ver
 para el tipo exacto de `IaFraConfig`):
 
 \`\`\`ts
-import { defineConfig } from 'ia-front-ref-assistant';
+import { defineConfig } from '@cristianmpx/aiui-assistant';
 
 export default defineConfig({
   components: [],

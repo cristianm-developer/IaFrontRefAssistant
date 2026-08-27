@@ -19,6 +19,8 @@ export type { AssistantConfig, PromptEntry, TargetType } from './lib/types';
 
 // Tipos de config (fase 8)
 export type { IaFraConfig, ComponentDefinition, ThemeTokenDefinition, ConfigOption } from './config/types';
+export { AIUI_REFERENCE_ATTRIBUTES } from './lib/constants';
+export type { AIUIReferenceAttribute } from './lib/constants';
 
 // Helper de config (fase 8)
 export { defineConfig } from './config/defineConfig';
@@ -27,3 +29,13 @@ export { defineConfig } from './config/defineConfig';
 // sin envolver el árbol de la app, e inyecta su propio CSS (ver mount.tsx).
 export { mountIaFrontRefAssistant } from './mount';
 export type { MountOptions, MountHandle } from './mount';
+
+// Build-time cleanup for assistant metadata in Vite/Astro/Next.js.
+export {
+  AIUIReactAssistCleanup,
+  AIUIReactAssistCleanupWebpackPlugin,
+  withAIUIReactAssistCleanup,
+  cleanupAIUIHtml,
+  AIUI_ASSISTANT_DATA_ATTRIBUTES,
+} from './cleanup';
+export type { AIUIReactAssistCleanupOptions } from './cleanup';

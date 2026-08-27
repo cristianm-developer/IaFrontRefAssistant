@@ -1,11 +1,145 @@
 import type { TargetType } from './types';
-import { ATTR_SECTION, ATTR_WRAPPER, ATTR_COMPONENT, LEAF_TAGS, TEXT_CONTAINER_TAGS } from './constants';
+import { ATTR_SECTION, ATTR_WRAPPER, ATTR_COMPONENT, ATTR_COMPONENT_KIND, ATTR_COMPONENT_NAME, ATTR_ROUTE, ATTR_SOURCE_FILE, ATTR_SOURCE_LINE, AIUI_REFERENCE_ATTRIBUTES, LEAF_TAGS, TEXT_CONTAINER_TAGS } from './constants';
+import type { AIUIReferenceAttribute } from './constants';
 
 export interface TrackedTarget {
   el: Element;
   id: string;         // valor real (wrapper/component) o id runtime (elemento)
   type: TargetType;    // 'section' | 'component' | 'element'
   kind?: string;       // solo puede venir presente cuando type === 'component'
+}
+
+export interface TargetContext {
+  route: string;
+  sourceFile?: string;
+  sourceLine?: string;
+  componentName?: string;
+  tagName: string;
+  text: string;
+  classes: string[];
+  attributes: Record<string, string>;
+  styles: Record<string, string>;
+  semantic: {
+    role?: string;
+    accessibleName?: string;
+    href?: string;
+    inputType?: string;
+    name?: string;
+    placeholder?: string;
+    states: Record<string, boolean>;
+  };
+  parent?: {
+    tagName: string;
+    id?: string;
+    type?: TargetType;
+    targetId?: string;
+    componentKind?: string;
+    classes: string[];
+  };
+}
+
+const CONTEXT_STATE_KEYS = ['disabled', 'checked', 'selected', 'expanded', 'pressed', 'hidden'] as const;
+
+const CONTEXT_STYLE_KEYS = new Set([
+  'display', 'flex-direction', 'align-items', 'justify-content', 'gap',
+  'width', 'height', 'min-width', 'max-width', 'min-height', 'max-height',
+  'margin', 'padding', 'overflow',
+  'color', 'background-color', 'border-color',
+  'font-size', 'font-weight', 'line-height',
+  'border', 'border-radius',
+]);
+
+function addDeclaredStyles(styles: Record<string, string>, declaration: CSSStyleDeclaration): void {
+  for (let index = 0; index < declaration.length; index += 1) {
+    const property = declaration.item?.(index) ?? declaration[index];
+    if (CONTEXT_STYLE_KEYS.has(property)) {
+      styles[property] = declaration.getPropertyValue(property).trim();
+    }
+  }
+}
+
+function collectDeclaredStyles(el: Element): Record<string, string> {
+  const styles: Record<string, string> = {};
+  if (el instanceof HTMLElement) addDeclaredStyles(styles, el.style);
+
+  const sheets = Array.from(el.ownerDocument.styleSheets);
+  for (const sheet of sheets) {
+    try {
+      const visit = (ruleList: CSSRuleList | undefined) => {
+        if (!ruleList) return;
+        for (let index = 0; index < ruleList.length; index += 1) {
+          const rule = ruleList.item?.(index) ?? ruleList[index];
+          if (!rule) continue;
+          if (rule.type === 1) {
+            const cssRule = rule as CSSStyleRule;
+            if (el.matches(cssRule.selectorText)) addDeclaredStyles(styles, cssRule.style);
+          } else if (rule.type === 4 || rule.type === 12) {
+            visit((rule as CSSMediaRule | CSSSupportsRule).cssRules);
+          }
+        }
+      };
+      visit(sheet.cssRules);
+    } catch {
+      // Cross-origin stylesheets do not expose cssRules; inline/class metadata
+      // remains available and the reference should still be usable.
+    }
+  }
+  return styles;
+}
+
+export function getTargetContext(
+  el: Element,
+  referenceAttributes: readonly AIUIReferenceAttribute[] = AIUI_REFERENCE_ATTRIBUTES,
+  includeSemanticState = true,
+): TargetContext {
+  const contextAttributes = new Set(referenceAttributes);
+  const attributes: Record<string, string> = {};
+  for (const attribute of Array.from(el.attributes)) {
+    if (contextAttributes.has(attribute.name as AIUIReferenceAttribute)) {
+      attributes[attribute.name] = attribute.value;
+    }
+  }
+  const styles = collectDeclaredStyles(el);
+  const semantic = {
+    role: contextAttributes.has('role') ? el.getAttribute('role') ?? undefined : undefined,
+    accessibleName: contextAttributes.has('aria-label') ? el.getAttribute('aria-label') ?? ((el.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 160) || undefined) : undefined,
+    href: contextAttributes.has('href') ? el.getAttribute('href') ?? undefined : undefined,
+    inputType: contextAttributes.has('type') ? el.getAttribute('type') ?? undefined : undefined,
+    name: contextAttributes.has('name') ? el.getAttribute('name') ?? undefined : undefined,
+    placeholder: contextAttributes.has('placeholder') ? el.getAttribute('placeholder') ?? undefined : undefined,
+    states: includeSemanticState
+      ? Object.fromEntries(CONTEXT_STATE_KEYS.map((key) => [key, el.hasAttribute(key)]))
+      : {},
+  };
+  const parent = el.parentElement;
+  const parentTarget = parent?.closest('[data-section-id], [data-wrapper-id], [data-component-id]');
+  const parentType: TargetType | undefined = parentTarget?.hasAttribute(ATTR_COMPONENT)
+    ? 'component'
+    : parentTarget?.hasAttribute(ATTR_SECTION)
+    ? 'section'
+    : parentTarget?.hasAttribute(ATTR_WRAPPER)
+    ? 'wrapper'
+    : undefined;
+  return {
+    route: el.getAttribute(ATTR_ROUTE) ?? window.location.pathname,
+    sourceFile: el.getAttribute(ATTR_SOURCE_FILE) ?? undefined,
+    sourceLine: el.getAttribute(ATTR_SOURCE_LINE) ?? undefined,
+    componentName: el.getAttribute(ATTR_COMPONENT_NAME) ?? el.getAttribute(ATTR_COMPONENT_KIND) ?? undefined,
+    tagName: el.tagName.toLowerCase(),
+    text: (el.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 500),
+    classes: Array.from(el.classList),
+    attributes,
+    styles,
+    semantic,
+    parent: parent ? {
+      tagName: parent.tagName.toLowerCase(),
+      id: parent.getAttribute('id') ?? undefined,
+      type: parentType,
+      targetId: parentTarget?.getAttribute(ATTR_COMPONENT) ?? parentTarget?.getAttribute(ATTR_SECTION) ?? parentTarget?.getAttribute(ATTR_WRAPPER) ?? undefined,
+      componentKind: parentTarget?.getAttribute(ATTR_COMPONENT_KIND) ?? undefined,
+      classes: Array.from(parent.classList),
+    } : undefined,
+  };
 }
 
 function isAssistantElement(el: Element): boolean {

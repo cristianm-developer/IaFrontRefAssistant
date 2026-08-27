@@ -10,7 +10,7 @@ consumidor) refleje los componentes reales del proyecto (con sus variantes
 y tamaños, si el componente los soporta como prop) y los tokens de theme
 reales (colores, radios, etc. usados en el CSS/design system del
 proyecto), usando el helper `defineConfig` que exporta
-`ia-front-ref-assistant`.
+`@cristianmpx/aiui-assistant`.
 
 ## Si el archivo no existe
 
@@ -19,13 +19,30 @@ Crearlo con esta forma base (ver
 para el tipo exacto de `IaFraConfig`):
 
 ```ts
-import { defineConfig } from 'ia-front-ref-assistant';
+import { defineConfig } from '@cristianmpx/aiui-assistant';
 
 export default defineConfig({
   components: [],
   theme: [],
 });
 ```
+
+`referenceAttributes` es opcional: si se omite, la referencia incluye todos
+los atributos de `AIUI_REFERENCE_ATTRIBUTES`. Si el usuario prefiere limitar
+el contexto, preguntale qué atributos quiere recibir y guardá únicamente esa
+selección, por ejemplo:
+
+```ts
+referenceAttributes: [
+  'id', 'role', 'aria-label', 'href',
+  'data-section-id', 'data-wrapper-id', 'data-component-id',
+  'data-component-kind', 'data-route',
+]
+```
+
+Preguntá también si quiere estados semánticos booleanos (`disabled`,
+`checked`, `selected`, `expanded`, `pressed`, `hidden`). Se incluyen por
+ defecto; si el usuario los rechaza, guardá `includeSemanticState: false`.
 
 ## Mapear componentes
 

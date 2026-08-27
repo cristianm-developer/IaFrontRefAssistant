@@ -1,11 +1,11 @@
 ---
 name: frontend-data-tagging
-description: Usar SIEMPRE que se cree, genere o edite código de frontend (componentes, vistas, secciones, layouts) en un proyecto que tenga `ia-front-ref-assistant` como dependencia en package.json o un archivo `iafrontrefassistant.config.ts` en el root. Asegura que las secciones, wrappers lógicos y componentes raíz lleven los atributos data-section-id / data-wrapper-id / data-component-id / data-component-kind.
+description: Usar SIEMPRE que se cree, genere o edite código de frontend (componentes, vistas, secciones, layouts) en un proyecto que tenga `@cristianmpx/aiui-assistant` como dependencia en package.json o un archivo `iafrontrefassistant.config.ts` en el root. Asegura que las secciones, wrappers lógicos y componentes raíz lleven los atributos data-section-id / data-wrapper-id / data-component-id / data-component-kind.
 ---
 
 # Tagueo de frontend para Ia Front Ref Assistant
 
-Este proyecto usa `ia-front-ref-assistant`. Todo código de frontend que
+Este proyecto usa `@cristianmpx/aiui-assistant`. Todo código de frontend que
 generes o edites debe respetar este contrato de atributos `data-*`:
 
 | Atributo | Va en | Valor |
@@ -14,6 +14,14 @@ generes o edites debe respetar este contrato de atributos `data-*`:
 | `data-wrapper-id` | Wrappers lógicos internos que organizan visualmente elementos y pueden anidarse | kebab-case, descriptivo del contenido/rol del container (ej. `hero-content`, `title-group`) |
 | `data-component-id` | El elemento raíz de un componente reutilizable (no cada wrapper interno del componente, solo el nodo más externo) | kebab-case, único dentro de la página. Si hay más de una instancia del mismo componente en la misma vista, sufijo numérico: `cta-card-1`, `cta-card-2` |
 | `data-component-kind` | El mismo elemento raíz que lleva `data-component-id` | El **tipo** del componente, estable entre instancias — PascalCase igual al nombre del componente fuente (ej. `Button`, `CtaCard`, `Modal`). Dos instancias del mismo componente comparten `kind` pero no `id`. |
+
+Metadata opcional para enriquecer la referencia que se copia al prompt:
+
+| Atributo | Uso |
+|---|---|
+| `data-route` | Ruta/view donde vive el elemento; si falta, el runtime usa `location.pathname`. |
+| `data-component-name` | Nombre real del componente fuente cuando difiere de `data-component-kind`. |
+| `data-source-file` / `data-source-line` | Archivo y línea de origen, si el framework o tooling puede conocerlos. |
 
 Reglas:
 
@@ -59,3 +67,9 @@ Reglas:
   igual con el `kind` que corresponda — la skill `config-mapper` (u
   `/init-ia-front-assistent`) se encarga de agregar la entrada al config después, no
   hace falta bloquear el tagueo por eso.
+
+La captura construye una referencia por elemento con su tipo lógico (`section`,
+`wrapper`, `component` o `element`), ruta, nombre de componente, clases,
+atributos y estilos computados. Los pedidos adicionales sobre el mismo
+elemento se agrupan en una sola entrada; no dupliques metadata ni inventes un
+context packet externo.

@@ -1,4 +1,4 @@
-// Smoke test del build IIFE: simula un <script src="ia-front-ref-assistant.global.js">
+// Smoke test del build IIFE: simula un <script src="aiui-assistant.global.js">
 // clásico (sin import/module), como lo usaría Angular/HTML plano.
 import { readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
@@ -7,13 +7,13 @@ const dom = new JSDOM('<!doctype html><html><body></body></html>', {
   url: 'http://localhost/',
   runScripts: 'dangerously',
 });
-const code = readFileSync(new URL('../dist/ia-front-ref-assistant.global.js', import.meta.url), 'utf8');
+const code = readFileSync(new URL('../dist/aiui-assistant.global.js', import.meta.url), 'utf8');
 const scriptEl = dom.window.document.createElement('script');
 scriptEl.textContent = code;
 dom.window.document.body.appendChild(scriptEl);
 
-const globalObj = dom.window.IaFrontRefAssistant;
-console.log('window.IaFrontRefAssistant exposed:', !!globalObj);
+const globalObj = dom.window.AIUIAssistant;
+console.log('window.AIUIAssistant exposed:', !!globalObj);
 console.log('has mountIaFrontRefAssistant:', typeof globalObj?.mountIaFrontRefAssistant === 'function');
 
 globalObj.mountIaFrontRefAssistant({ active: true });

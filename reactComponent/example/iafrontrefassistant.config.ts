@@ -1,4 +1,4 @@
-import { defineConfig } from 'ia-front-ref-assistant';
+import { defineConfig } from '@cristianmpx/aiui-assistant';
 
 export default defineConfig({
   components: [

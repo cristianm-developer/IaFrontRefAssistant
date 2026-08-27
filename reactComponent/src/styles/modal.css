@@ -91,6 +91,12 @@
   padding: 6px 12px;
   cursor: pointer;
 }
+
+.ia-fra-modal__reference-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
 .ia-fra-modal__btn--primary {
   background: var(--ia-fra-accent);
   border-color: var(--ia-fra-accent);

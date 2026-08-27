@@ -8,7 +8,7 @@ globalThis.window = dom.window;
 globalThis.document = dom.window.document;
 globalThis.HTMLElement = dom.window.HTMLElement;
 
-const { mountIaFrontRefAssistant } = await import('../dist/ia-front-ref-assistant.js');
+const { mountIaFrontRefAssistant } = await import('../dist/aiui-assistant.js');
 
 const handle = mountIaFrontRefAssistant({ active: true });
 
