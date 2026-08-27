@@ -1,6 +1,6 @@
 {
   "name": "ia-front-ref-assistant",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Widget visual (Preact embebido, cero dependencias de runtime) para asistir la codificación con IA — funciona en cualquier framework",
   "type": "module",
   "main": "./dist/ia-front-ref-assistant.cjs",

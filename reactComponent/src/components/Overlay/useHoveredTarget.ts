@@ -9,6 +9,7 @@ export function useHoveredTarget(targets: TrackedTarget[]): TrackedTarget | null
   targetsRef.current = targets;
   const rafRef = useRef<number | null>(null);
   const lastPointRef = useRef<{ x: number; y: number } | null>(null);
+  const lastHitRef = useRef<Element | null>(null);
 
   useEffect(() => {
     if (targets.length === 0) {
@@ -20,7 +21,9 @@ export function useHoveredTarget(targets: TrackedTarget[]): TrackedTarget | null
       rafRef.current = null;
       const point = lastPointRef.current;
       if (!point) return;
-      const hitEl = document.elementFromPoint(point.x, point.y);
+      // Preferimos el target real del evento: con portales, elementFromPoint
+      // puede devolver el overlay del asistente en lugar de la página.
+      const hitEl = lastHitRef.current ?? document.elementFromPoint(point.x, point.y);
       if (!hitEl) {
         setHovered((prev) => (prev === null ? prev : null));
         return;
@@ -50,6 +53,7 @@ export function useHoveredTarget(targets: TrackedTarget[]): TrackedTarget | null
 
     function handleMouseMove(e: MouseEvent) {
       lastPointRef.current = { x: e.clientX, y: e.clientY };
+      lastHitRef.current = e.target instanceof Element ? e.target : null;
       if (rafRef.current === null) {
         rafRef.current = requestAnimationFrame(resolveHover);
       }

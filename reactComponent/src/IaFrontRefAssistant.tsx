@@ -94,7 +94,12 @@ function AssistantRoot({
   // elemento que sigue vivo es el botón (para poder reactivar).
   const captureTargets = useTrackedTargets(config.active ? config.capture : NOOP_CAPTURE_FLAGS);
   const showTargets = useTrackedTargets(config.active ? config.show : NOOP_SHOW_FLAGS);
-  const hovered = useHoveredTarget(config.active ? [...captureTargets, ...showTargets] : []);
+  // Cada modo resuelve su propio target más específico. Si se mezclan ambas
+  // listas, un componente configurado solo para "Mostrar" puede ganar sobre
+  // una sección configurada para "Capturar" y ocultar accidentalmente el
+  // hover/label de captura.
+  const captureHovered = useHoveredTarget(config.active ? captureTargets : []);
+  const showHovered = useHoveredTarget(config.active ? showTargets : []);
 
   // El overlay solo sirve como feedback visual. La selección se hace en
   // captura sobre el documento para que cualquier click dentro del target
@@ -202,14 +207,14 @@ function AssistantRoot({
           {openSubmenu === 'capturar' && (
             <SubMenu anchorRef={capturarRef}>
               <ToggleRow
-                label="Capturar wrappers"
-                checked={config.capture.wrappers}
-                onChange={(v) => actions.setCaptureFlag('wrappers', v)}
-              />
-              <ToggleRow
                 label="Capturar secciones"
                 checked={config.capture.sections}
                 onChange={(v) => actions.setCaptureFlag('sections', v)}
+              />
+              <ToggleRow
+                label="Capturar wrappers"
+                checked={config.capture.wrappers}
+                onChange={(v) => actions.setCaptureFlag('wrappers', v)}
               />
               <ToggleRow
                 label="Capturar componentes"
@@ -264,8 +269,8 @@ function AssistantRoot({
       </Menu>
       {config.active && (
         <>
-          <CaptureOverlay targets={captureTargets} hovered={hovered} onSelect={setModalTarget} />
-          <ShowOverlay targets={showTargets} hovered={hovered} />
+          <CaptureOverlay targets={captureTargets} hovered={captureHovered} onSelect={setModalTarget} />
+          <ShowOverlay targets={showTargets} hovered={showHovered} />
         </>
       )}
       {modalTarget && (
