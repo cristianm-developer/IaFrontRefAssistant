@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.16] — 2026-08-31
+
+### Added
+
+- Added multimodal prompt attachments for optional visual captures.
+- Added viewport width, height, and device pixel ratio to generated prompts.
+- Prompt routes now omit the local host and repeated requests group by target and route.
+- Expanded automatic wrapper detection to generic visual aggregators such as icon-and-text spans.
+
 ## [0.1.15] — 2026-08-27
 
 ### Added

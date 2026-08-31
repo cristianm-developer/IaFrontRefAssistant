@@ -165,11 +165,19 @@ function wrapperLabel(el: Element): string {
 }
 
 export function getCaptureWrapperElements(root: ParentNode = document): Element[] {
-  const candidates = Array.from(root.querySelectorAll('div, article, nav, header, footer, main, aside, ul, ol'))
-    .filter((el) => !isAssistantElement(el) && !el.hasAttribute(ATTR_SECTION) && !el.hasAttribute(ATTR_WRAPPER) && !el.hasAttribute(ATTR_COMPONENT));
+  const candidates = Array.from(root.querySelectorAll('*'))
+    .filter((el) => !isAssistantElement(el) && !el.hasAttribute(ATTR_SECTION) && !el.hasAttribute(ATTR_WRAPPER) && !el.hasAttribute(ATTR_COMPONENT))
+    .filter((el) => !['html', 'head', 'body', 'button', 'input', 'select', 'textarea', 'option', 'img', 'svg'].includes(el.tagName.toLowerCase()))
+    .filter((el) => {
+      const directText = Array.from(el.childNodes).some((node) => node.nodeType === Node.TEXT_NODE && (node.textContent ?? '').trim());
+      return el.children.length >= 2 || (directText && el.children.length >= 1);
+    });
   const used = new Set<string>();
   return candidates.filter((el) => {
-    if (el.children.length < 2) return false;
+    const hasDirectText = Array.from(el.childNodes).some(
+      (node) => node.nodeType === Node.TEXT_NODE && (node.textContent ?? '').trim().length > 0
+    );
+    if (el.children.length < 2 && !(hasDirectText && el.children.length >= 1)) return false;
     const base = `wrapper-${wrapperLabel(el)}`;
     let id = base;
     let suffix = 2;

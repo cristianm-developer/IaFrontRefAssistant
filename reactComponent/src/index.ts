@@ -15,7 +15,8 @@ import './styles/index.css';
 // framework host, React incluido.
 
 // Tipos públicos (fase 1 y sucesivas)
-export type { AssistantConfig, PromptEntry, TargetType } from './lib/types';
+export type { AssistantConfig, PromptEntry, PromptImageAttachment, TargetType, ViewportInfo } from './lib/types';
+export { formatPromptForModel } from './lib/promptFormat';
 
 // Tipos de config (fase 8)
 export type { IaFraConfig, ComponentDefinition, ThemeTokenDefinition, ConfigOption } from './config/types';

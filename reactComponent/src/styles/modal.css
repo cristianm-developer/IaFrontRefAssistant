@@ -97,6 +97,16 @@
   gap: 8px;
   flex-wrap: wrap;
 }
+.ia-fra-modal__capture-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.ia-fra-modal__capture-option input {
+  accent-color: var(--ia-fra-accent);
+}
 .ia-fra-modal__btn--primary {
   background: var(--ia-fra-accent);
   border-color: var(--ia-fra-accent);

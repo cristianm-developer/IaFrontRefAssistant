@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ATTR_WRAPPER, ATTR_COMPONENT } from './constants';
-import { getWrapperElements, getComponentElements, findIndividualElements, buildRelativeId, getTargetContext } from './dom';
+import { getWrapperElements, getComponentElements, getCaptureWrapperElements, findIndividualElements, buildRelativeId, getTargetContext } from './dom';
 
 describe('DOM functions', () => {
   beforeEach(() => {
@@ -137,6 +137,17 @@ describe('DOM functions', () => {
     expect(context.styles.position).toBeUndefined();
 
     style.remove();
+  });
+
+  it('detecta wrappers genericos como un span que agrupa icono y texto', () => {
+    const group = document.createElement('span');
+    group.appendChild(document.createElement('svg'));
+    group.appendChild(document.createTextNode('Guardar'));
+    document.body.appendChild(group);
+
+    const wrappers = getCaptureWrapperElements();
+    expect(wrappers).toContain(group);
+    expect(group.getAttribute(ATTR_WRAPPER)).toMatch(/^wrapper-/);
   });
 
   it('allows the project config to limit reference attributes', () => {

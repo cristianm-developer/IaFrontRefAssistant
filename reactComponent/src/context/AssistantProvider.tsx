@@ -5,6 +5,7 @@ import { AssistantContext, type AssistantContextValue } from './AssistantContext
 import { readJSON, writeJSON } from '../lib/storage';
 import { STORAGE_KEY_CONFIG, STORAGE_KEY_PROMPTS } from '../lib/constants';
 import { DEFAULT_CONFIG, type AssistantConfig, type PromptEntry } from '../lib/types';
+import { getPromptRoute } from '../lib/promptFormat';
 
 function mergeConfig(stored: Partial<AssistantConfig> | null | undefined): AssistantConfig {
   // Merge campo por campo (no shallow spread) para tolerar configs viejas
@@ -71,12 +72,17 @@ export function AssistantProvider({ children }: { children: React.ReactNode }) {
 
   const addPrompt = useCallback((entry: Omit<PromptEntry, 'id' | 'createdAt'>) => {
     setPrompts((prev) => {
-      const existing = prev.find((item) => item.targetId === entry.targetId && item.targetType === entry.targetType && item.url === entry.url);
+      const existing = prev.find((item) => item.targetId === entry.targetId && item.targetType === entry.targetType && getPromptRoute(item.url) === getPromptRoute(entry.url));
       if (!existing) {
         return [...prev, { ...entry, id: generateId(), createdAt: Date.now(), requestCount: 1 }];
       }
       return prev.map((item) => item.id === existing.id
-        ? { ...item, text: `${item.text}\n\n${entry.text}`, requestCount: (item.requestCount ?? 1) + 1 }
+        ? {
+            ...item,
+            text: `${item.text}\n\n${entry.text}`,
+            attachments: [...(item.attachments ?? []), ...(entry.attachments ?? [])],
+            requestCount: (item.requestCount ?? 1) + 1,
+          }
         : item);
     });
   }, []);

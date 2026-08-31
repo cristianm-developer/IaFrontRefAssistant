@@ -1,16 +1,43 @@
-import type { PromptEntry } from './types';
+import type { PromptEntry, ViewportInfo } from './types';
 import type { TargetContext } from './dom';
+
+export function getPromptRoute(url: string): string {
+  try {
+    const parsed = new URL(url, 'http://aiui-assistant.local');
+    return parsed.pathname + parsed.search + parsed.hash;
+  } catch {
+    return url;
+  }
+}
 
 export function formatPrompt(
   targetId: string,
   url: string,
   userText: string,
   prePrompt?: string,
-  reference?: string
+  reference?: string,
+  viewport?: ViewportInfo,
 ): string {
-  const base = `${reference ? `${reference}\n\n` : ''}About ${targetId} in ${url}: ${userText}`;
+  const route = getPromptRoute(url);
+  const viewportLine = viewport ? `Viewport: ${viewport.width}x${viewport.height}px (DPR ${viewport.devicePixelRatio})\n` : '';
+  const base = `${reference ? `${reference}\n\n` : ''}${viewportLine}About ${targetId} on route ${route}: ${userText}`;
   const trimmedPrePrompt = prePrompt?.trim();
   return trimmedPrePrompt ? `${trimmedPrePrompt}\n\n${base}` : base;
+}
+
+export type ModelPromptPart =
+  | { type: 'text'; text: string }
+  | { type: 'image_url'; image_url: { url: string } };
+
+/** Converts a queued prompt into multimodal content for a vision-capable model. */
+export function formatPromptForModel(entry: PromptEntry): ModelPromptPart[] {
+  return [
+    { type: 'text', text: entry.text },
+    ...(entry.attachments ?? []).map((attachment) => ({
+      type: 'image_url' as const,
+      image_url: { url: attachment.dataUrl },
+    })),
+  ];
 }
 
 export function formatTargetReference(

@@ -21,6 +21,7 @@ import { PromptModal } from './components/PromptModal/PromptModal';
 import type { TrackedTarget } from './lib/dom';
 import type { IaFraConfig } from './config/types';
 import { NOOP_CAPTURE_FLAGS, NOOP_SHOW_FLAGS } from './lib/constants';
+import type { PromptSavePayload } from './components/PromptModal/PromptModal';
 
 export interface IaFrontRefAssistantProps {
   // Opcional: el widget flotante se renderiza vía portal a document.body
@@ -161,14 +162,16 @@ function AssistantRoot({
   }, [prompts, actions]);
 
   const handleSavePrompt = useCallback(
-    (text: string) => {
+    (payload: PromptSavePayload) => {
       if (!modalTarget) return;
       try {
         actions.addPrompt({
           targetId: modalTarget.id,
           targetType: modalTarget.type,
           url: window.location.href,
-          text,
+          text: payload.text,
+          attachments: payload.visualCapture ? [payload.visualCapture] : undefined,
+          viewport: payload.viewport,
         });
         setModalTarget(null);
       } catch (err) {

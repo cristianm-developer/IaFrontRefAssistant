@@ -1,5 +1,17 @@
 export type TargetType = 'section' | 'component' | 'wrapper' | 'element';
 
+export interface PromptImageAttachment {
+  type: 'image';
+  mimeType: 'image/png';
+  dataUrl: string;
+}
+
+export interface ViewportInfo {
+  width: number;
+  height: number;
+  devicePixelRatio: number;
+}
+
 export interface AssistantConfig {
   active: boolean;
   capture: {
@@ -21,6 +33,8 @@ export interface PromptEntry {
   targetType: TargetType;
   url: string;
   text: string;         // texto final ya formateado, ver fase 6
+  attachments?: PromptImageAttachment[];
+  viewport?: ViewportInfo;
   createdAt: number;
   requestCount?: number; // cantidad de solicitudes individuales agrupadas aquí
 }
