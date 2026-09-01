@@ -86,7 +86,10 @@ export function formatTargetReferenceJSON(targetId: string, targetType: string, 
 }
 
 export function formatQueueForClipboard(entries: PromptEntry[]): string {
-  return entries.map((e) => e.text).join('\n\n');
+  return entries.map((entry) => {
+    const captureCount = entry.attachments?.length ?? 0;
+    return `${entry.text}${captureCount > 0 ? `\n\n[Visual capture attached: ${captureCount} image${captureCount === 1 ? '' : 's'}]` : ''}`;
+  }).join('\n\n');
 }
 
 function escapeHtml(value: string): string {

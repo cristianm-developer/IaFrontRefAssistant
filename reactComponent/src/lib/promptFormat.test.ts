@@ -51,6 +51,14 @@ describe('formatQueueForClipboard', () => {
     expect(formatQueueForClipboard(entries)).toBe('uno\n\ndos');
   });
 
+  it('indica en texto plano cuando hay una captura adjunta', () => {
+    const entries: PromptEntry[] = [{
+      id: '1', targetId: 'a', targetType: 'component', url: 'u', text: 'ajustar', createdAt: 1,
+      attachments: [{ type: 'image', mimeType: 'image/png', dataUrl: 'data:image/png;base64,abc' }],
+    }];
+    expect(formatQueueForClipboard(entries)).toContain('[Visual capture attached: 1 image]');
+  });
+
   it('incluye capturas en el formato HTML del portapapeles', () => {
     const entries: PromptEntry[] = [{
       id: '1', targetId: 'a', targetType: 'component', url: 'u', text: 'ajustar', createdAt: 1,

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.19] — 2026-08-31
+
+### Fixed
+
+- Preserve visual captures in `Ctrl+Alt+click` prompt copying and avoid silently falling back to text-only clipboard data.
+
 ## [0.1.18] — 2026-08-31
 
 ### Fixed

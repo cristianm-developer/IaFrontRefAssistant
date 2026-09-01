@@ -1,6 +1,6 @@
 {
   "name": "@cristianmpx/aiui-assistant",
-  "version": "0.1.18",
+  "version": "0.1.19",
   "description": "Framework-agnostic visual widget with bundled Preact and zero runtime dependencies for AI-assisted frontend development",
   "type": "module",
   "main": "./dist/aiui-assistant.cjs",
@@ -58,6 +58,7 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
+    "html2canvas": "^1.4.1",
     "jsdom": "^25.0.1",
     "preact": "^10.29.8",
     "react": "^18.3.1",

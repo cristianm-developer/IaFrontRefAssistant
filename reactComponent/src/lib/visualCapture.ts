@@ -1,9 +1,26 @@
+import html2canvas from 'html2canvas';
+
 /** Create a self-contained PNG snapshot of a DOM target when the browser allows it. */
 export async function captureElementImage(el: Element): Promise<string | null> {
   if (!(el instanceof HTMLElement) || typeof window === 'undefined') return null;
 
   const rect = el.getBoundingClientRect();
   if (rect.width <= 0 || rect.height <= 0) return null;
+
+  try {
+    const canvas = await html2canvas(el, {
+      backgroundColor: null,
+      useCORS: true,
+      allowTaint: false,
+      imageTimeout: 0,
+      logging: false,
+      scale: window.devicePixelRatio || 1,
+    });
+    return canvas.toDataURL('image/png');
+  } catch {
+    // Keep the foreignObject fallback for browsers or DOM content that
+    // html2canvas cannot render.
+  }
 
   const clone = el.cloneNode(true) as HTMLElement;
   const sourceNodes = [el, ...Array.from(el.querySelectorAll('*'))];
