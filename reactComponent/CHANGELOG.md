@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.18] — 2026-08-31
+
+### Fixed
+
+- Preserve visual captures when copying the prompt queue by writing both plain-text and HTML clipboard formats.
+
 ## [0.1.17] — 2026-08-31
 
 ### Documentation

@@ -7,8 +7,7 @@ import { AssistantProvider } from './context/AssistantProvider';
 import { useHoverCloseTimer } from './hooks/useHoverCloseTimer';
 import { useTrackedTargets } from './hooks/useTrackedTargets';
 import { useHoveredTarget } from './components/Overlay/useHoveredTarget';
-import { copyText } from './lib/clipboard';
-import { formatQueueForClipboard } from './lib/promptFormat';
+import { copyPromptQueue } from './lib/clipboard';
 import { FloatingButton } from './components/FloatingButton';
 import { Menu } from './components/Menu/Menu';
 import { MenuItem } from './components/Menu/MenuItem';
@@ -153,7 +152,7 @@ function AssistantRoot({
   // feedback visual "¡Copiado!" (fase 3).
   const handleCopyAndClear = useCallback(async () => {
     if (prompts.length === 0) return;
-    const ok = await copyText(formatQueueForClipboard(prompts));
+    const ok = await copyPromptQueue(prompts);
     if (ok) {
       actions.clearPrompts();
       setJustCopied(true);

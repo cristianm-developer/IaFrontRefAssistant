@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatPrompt, formatPromptForModel, formatQueueForClipboard, formatTargetReferenceJSON } from './promptFormat';
+import { formatPrompt, formatPromptForModel, formatQueueForClipboard, formatQueueForClipboardHTML, formatTargetReferenceJSON } from './promptFormat';
 import type { PromptEntry } from './types';
 
 describe('formatPrompt', () => {
@@ -49,6 +49,14 @@ describe('formatQueueForClipboard', () => {
       { id: '2', targetId: 'b', targetType: 'element', url: 'u', text: 'dos', createdAt: 2 },
     ];
     expect(formatQueueForClipboard(entries)).toBe('uno\n\ndos');
+  });
+
+  it('incluye capturas en el formato HTML del portapapeles', () => {
+    const entries: PromptEntry[] = [{
+      id: '1', targetId: 'a', targetType: 'component', url: 'u', text: 'ajustar', createdAt: 1,
+      attachments: [{ type: 'image', mimeType: 'image/png', dataUrl: 'data:image/png;base64,abc' }],
+    }];
+    expect(formatQueueForClipboardHTML(entries)).toContain('<img src="data:image/png;base64,abc"');
   });
 });
 

@@ -88,3 +88,20 @@ export function formatTargetReferenceJSON(targetId: string, targetType: string, 
 export function formatQueueForClipboard(entries: PromptEntry[]): string {
   return entries.map((e) => e.text).join('\n\n');
 }
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  }[character] ?? character));
+}
+
+/** Rich clipboard representation so pasted prompts retain visual captures. */
+export function formatQueueForClipboardHTML(entries: PromptEntry[]): string {
+  return entries.map((entry) => {
+    const text = escapeHtml(entry.text).replace(/\n/g, '<br>');
+    const images = (entry.attachments ?? [])
+      .map((attachment) => `<p><img src="${escapeHtml(attachment.dataUrl)}" alt="Visual capture"></p>`)
+      .join('');
+    return `<div>${text}${images}</div>`;
+  }).join('<hr>');
+}

@@ -23,3 +23,22 @@ export async function copyText(text: string): Promise<boolean> {
     return false;
   }
 }
+
+export async function copyPromptQueue(entries: PromptEntry[]): Promise<boolean> {
+  const text = formatQueueForClipboard(entries);
+  const html = formatQueueForClipboardHTML(entries);
+  try {
+    if (navigator.clipboard?.write && typeof ClipboardItem !== 'undefined') {
+      await navigator.clipboard.write([new ClipboardItem({
+        'text/plain': new Blob([text], { type: 'text/plain' }),
+        'text/html': new Blob([html], { type: 'text/html' }),
+      })]);
+      return true;
+    }
+  } catch {
+    // fallback below keeps the text workflow available in restricted contexts
+  }
+  return copyText(text);
+}
+import type { PromptEntry } from './types';
+import { formatQueueForClipboard, formatQueueForClipboardHTML } from './promptFormat';
