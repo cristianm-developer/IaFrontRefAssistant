@@ -292,7 +292,7 @@ Documentation is updated alongside the code:
 
 - **Documentation version:** 0.1.14
 - **Last updated:** August 27, 2026
-- **Compatible with:** @cristianmpx/aiui-assistant 0.1.16+
+- **Compatible with:** @cristianmpx/aiui-assistant 0.1.17+
 
 ---
 

@@ -1,6 +1,6 @@
 {
   "name": "@cristianmpx/aiui-assistant",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "description": "Framework-agnostic visual widget with bundled Preact and zero runtime dependencies for AI-assisted frontend development",
   "type": "module",
   "main": "./dist/aiui-assistant.cjs",

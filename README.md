@@ -2,7 +2,7 @@
 
 A framework-agnostic floating visual widget for working with AI coding assistants. It lets you capture, tag, and generate prompts for UI elements in real time — drop it into any web app to get started.
 
-![Version](https://img.shields.io/badge/version-0.1.16-blue)
+![Version](https://img.shields.io/badge/version-0.1.17-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 ## What is it?
@@ -119,7 +119,7 @@ For the widget to identify your elements, use explicit section, wrapper, and com
 | Attribute | Purpose | Example |
 |-----------|---------|---------|
 | `data-section-id` | Identifies an independent page/view section | `data-section-id="hero"` |
-| `data-wrapper-id` | Identifies a logical visual container; wrappers may be nested | `data-wrapper-id="hero-content"` |
+| `data-wrapper-id` | Identifies any logical visual container, regardless of HTML tag; wrappers may be nested | `data-wrapper-id="hero-content"` |
 | `data-component-id` | Identifies a reusable component instance | `data-component-id="cta-button"` |
 | `data-component-kind` | Identifies the source component type | `data-component-kind="Button"` |
 

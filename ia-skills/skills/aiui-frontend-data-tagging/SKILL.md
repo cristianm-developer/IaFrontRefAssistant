@@ -11,7 +11,7 @@ generes o edites debe respetar este contrato de atributos `data-*`:
 | Atributo | Va en | Valor |
 |---|---|---|
 | `data-section-id` | Secciones de contexto independientes de una página/view (hero, footer, sidebar, etc.) | kebab-case, descriptivo del rol de esa sección en ESA página (ej. `hero`, `pricing-table`, `footer`) |
-| `data-wrapper-id` | Wrappers lógicos internos que organizan visualmente elementos y pueden anidarse | kebab-case, descriptivo del contenido/rol del container (ej. `hero-content`, `title-group`) |
+| `data-wrapper-id` | Cualquier container lógico que agrupe contenido visual, sin importar si es `<div>`, `<span>` u otro tag; pueden anidarse | kebab-case, descriptivo del contenido/rol del container (ej. `hero-content`, `title-group`) |
 | `data-component-id` | El elemento raíz de un componente reutilizable (no cada wrapper interno del componente, solo el nodo más externo) | kebab-case, único dentro de la página. Si hay más de una instancia del mismo componente en la misma vista, sufijo numérico: `cta-card-1`, `cta-card-2` |
 | `data-component-kind` | El mismo elemento raíz que lleva `data-component-id` | El **tipo** del componente, estable entre instancias — PascalCase igual al nombre del componente fuente (ej. `Button`, `CtaCard`, `Modal`). Dos instancias del mismo componente comparten `kind` pero no `id`. |
 
@@ -33,12 +33,15 @@ Reglas:
   `data-component-id` adentro. No hace falta crear wrappers extra solo para
   tener identidad: `data-section-id` es para contexto independiente y
   `data-wrapper-id` para organización visual interna.
-- Los wrappers internos pueden anidarse. El runtime puede detectar y asignar
-  automáticamente `data-wrapper-id` cuando está activo "Capturar wrappers" o
-  "Mostrar wrappers"; la skill no debe agregarlo a cada `div` presentacional.
-  Solo agregarlo manualmente cuando el wrapper tenga una identidad
-  visual/semántica clara y estable. No convertirlo en `data-section-id` salvo
-  que sea una sección independiente.
+- Un wrapper es un **container lógico visual**: cualquier elemento que agrupe
+  uno o más elementos/contenidos relacionados (por ejemplo, un `<span>` con
+  icono y texto, un grupo de botones o un bloque de contenido) es wrapper.
+  La etiqueta HTML no cambia esta clasificación. Los wrappers pueden
+  anidarse. El runtime puede detectar y asignar automáticamente
+  `data-wrapper-id` cuando está activo "Capturar wrappers" o "Mostrar
+  wrappers". No convertirlo en `data-section-id` salvo que sea una sección
+  independiente, ni en `data-component-id` si es la raíz de un componente
+  reutilizable.
 - "Mostrar secciones" y "Mostrar wrappers" son modos independientes: una
   sección no debe incluirse en el inventario de wrappers y un wrapper no debe
   presentarse como sección.

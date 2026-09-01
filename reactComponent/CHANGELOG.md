@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.17] — 2026-08-31
+
+### Documentation
+
+- Clarified that any logical visual container is a wrapper, regardless of its HTML tag.
+
 ## [0.1.16] — 2026-08-31
 
 ### Added
