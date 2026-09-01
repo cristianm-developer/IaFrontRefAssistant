@@ -48,7 +48,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cristianm-developer/IaFrontRefAssistant.git",
+    "url": "https://github.com/cristianm-developer/aiui-assistant",
     "directory": "reactComponent"
   },
   "devDependencies": {
